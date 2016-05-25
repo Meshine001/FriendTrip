@@ -1,14 +1,19 @@
 package com.xjtu.friendtrip.activity;
 
+
+
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.fragment.FriendFragment;
 import com.xjtu.friendtrip.fragment.HomeFragment;
+import com.xjtu.friendtrip.fragment.MeFragment;
+import com.xjtu.friendtrip.fragment.ShareFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,20 +43,24 @@ public class MainActivity extends BaseActivity {
         initBottom();
     }
 
+
+    /**
+     * 初始化底部TAB
+     */
     private void initBottom() {
         mFragments = new ArrayList<>();
-        mFragments.add(createFragment("A"));
-        mFragments.add(createFragment("B"));
-        mFragments.add(createFragment("C"));
-        mFragments.add(createFragment("D"));
-        mFragments.add(createFragment("E"));
+        mFragments.add(new HomeFragment());
+        mFragments.add(new FriendFragment());
+        mFragments.add(new ShareFragment());
+        mFragments.add(new MeFragment());
 
         controller = bottomTabLayout.builder()
-                .addTabItem(android.R.drawable.ic_menu_camera, "相机")
-                .addTabItem(android.R.drawable.ic_menu_compass, "位置")
-                .addTabItem(android.R.drawable.ic_menu_search, "搜索")
-                .addTabItem(android.R.drawable.ic_menu_help, "帮助")
+                .addTabItem(android.R.drawable.ic_menu_camera, "首页")
+                .addTabItem(android.R.drawable.ic_menu_compass, "驴圈")
+                .addTabItem(android.R.drawable.ic_menu_search, "分享")
+                .addTabItem(android.R.drawable.ic_menu_help, "我")
                 .build();
+        controller.addTabItemClickListener(tabItemListener);
     }
 
     OnTabItemSelectListener tabItemListener = new OnTabItemSelectListener() {
@@ -70,14 +79,12 @@ public class MainActivity extends BaseActivity {
             Log.i(TAG,"onRepeatClick:"+index+"   TAG: "+tag.toString());
         }
     };
-    //TODO
-    private Fragment createFragment(String content)
-    {
-        HomeFragment fragment = new HomeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("content",content);
-        fragment.setArguments(bundle);
 
-        return fragment;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            mFragments.get(2).onActivityResult(requestCode,resultCode,data);
+        }
     }
 }

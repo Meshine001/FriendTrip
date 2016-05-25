@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FriendTrip</string>
+
+    <string name="crop_image_activity_title">选择图片</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">裁剪</string>
 </resources>
