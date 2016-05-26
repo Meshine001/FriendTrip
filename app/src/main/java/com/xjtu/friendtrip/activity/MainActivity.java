@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 
 import com.orhanobut.dialogplus.DialogPlus;
@@ -76,12 +78,19 @@ public class MainActivity extends BaseActivity {
     }
 
     void showShareDialog(){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
+        arrayAdapter.add("新发现");
+        arrayAdapter.add("新心情");
+        arrayAdapter.add("新游记");
         DialogPlus dialog = DialogPlus.newDialog(this)
                 .setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                        Log.i(TAG,"position:"+position);
+                        Toast.makeText(MainActivity.this,position+"",Toast.LENGTH_SHORT).show();
                     }
                 })
+                .setAdapter(arrayAdapter)
                 .setGravity(Gravity.BOTTOM)
                 .setExpanded(true)  // This will enable the expand feature, (similar to android L share dialog)
                 .create();
