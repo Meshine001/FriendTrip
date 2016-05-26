@@ -15,5 +15,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Upload"/>
+    <ImageView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/image1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"/>
 
 </LinearLayout>
