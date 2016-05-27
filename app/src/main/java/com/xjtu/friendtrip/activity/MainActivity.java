@@ -2,11 +2,9 @@ package com.xjtu.friendtrip.activity;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -77,6 +75,8 @@ public class MainActivity extends BaseActivity {
         controller.addTabItemClickListener(tabItemListener);
     }
 
+    Class[] shareItems = {DiscoveryActivity.class,StoryActivity.class,StoryActivity.class};
+
     void showShareDialog(){
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
         arrayAdapter.add("新发现");
@@ -87,7 +87,9 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
                         Log.i(TAG,"position:"+position);
-                        Toast.makeText(MainActivity.this,position+"",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,position+"",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this,shareItems[position]);
+                        startActivity(intent);
                     }
                 })
                 .setAdapter(arrayAdapter)

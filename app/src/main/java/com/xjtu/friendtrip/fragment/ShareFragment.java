@@ -56,7 +56,7 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 public class ShareFragment extends Fragment {
 
     private static final int REQUEST_IMAGE = 0x0001;
-    private static final Object TAG = ShareFragment.class.getName() ;
+    private static final String TAG = ShareFragment.class.getName() ;
 
     List<Uri> uploadsUri = new ArrayList<>();
 
@@ -75,8 +75,6 @@ public class ShareFragment extends Fragment {
                 getPicUploadAuth();
                 break;
             case R.id.image:
-                selectImage();
-
                 break;
         }
 
@@ -184,18 +182,6 @@ public class ShareFragment extends Fragment {
         }
     }
 
-    public void selectImage() {
-        if (CropImage.isExplicitCameraPermissionRequired(getContext())) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
-        } else {
-            // Multi image selector form an Activity
-            MultiImageSelector.create(getContext())
-                    .showCamera(true) // show camera or not. true by default
-                    .count(1) // max select image size, 9 by default. used width #.multi()
-                    .single() // single mode
-                    .start(this, REQUEST_IMAGE);
-        }
-    }
 
 
     @Override
