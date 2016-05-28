@@ -2,4 +2,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <dimen name="title_size">28sp</dimen>
+
+    <dimen name="avatar_size">60dp</dimen>
+    <dimen name="story_description_size">23sp</dimen>
+    <dimen name="date_time_size">15sp</dimen>
+    <dimen name="location_size">15sp</dimen>
+    <dimen name="like_size">15sp</dimen>
+
 </resources>

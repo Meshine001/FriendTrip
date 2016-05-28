@@ -1,16 +1,19 @@
 package com.xjtu.friendtrip.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.activity.StoryDetailsActivity;
 import com.xjtu.friendtrip.adapter.DiscoveryGridAdapter;
 import com.xjtu.friendtrip.adapter.SiteListAdapter;
 import com.xjtu.friendtrip.bean.Cover;
@@ -133,6 +136,13 @@ public class HomeFragment extends Fragment {
     private void initFriendGrid() {
         friendGridAdaper = new DiscoveryGridAdapter(friendCovers, getContext());
         friendGrid.setAdapter(friendGridAdaper);
+        friendGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), StoryDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
         initFriendGridData();
     }
 

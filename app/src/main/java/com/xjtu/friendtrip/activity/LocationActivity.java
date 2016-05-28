@@ -21,7 +21,6 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.xjtu.friendtrip.R;
-import com.xjtu.friendtrip.baidu.MyLocationListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,12 +38,12 @@ public class LocationActivity extends BaseActivity{
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MyLocationListener.REQUEST_LOCATION_OK:
-
-                    BDLocation location = (BDLocation) msg.obj;
-                    drawMyLocation(location);
-                    locationClient.stop();
-                    break;
+//                case MyLocationListener.REQUEST_LOCATION_OK:
+//
+//                    BDLocation location = (BDLocation) msg.obj;
+//                    drawMyLocation(location);
+//                    locationClient.stop();
+//                    break;
             }
         }
     };
@@ -86,7 +85,7 @@ public class LocationActivity extends BaseActivity{
         map = mapView.getMap();
 
         locationClient = new LocationClient(this);     //声明LocationClient类
-        myListener = new MyLocationListener(handler);
+//        myListener = new MyLocationListener(handler);
         locationClient.registerLocationListener(myListener);    //注册监听函数
         initLocation();
         locationClient.start();

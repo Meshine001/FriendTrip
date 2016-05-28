@@ -47,6 +47,7 @@ public class StoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
+        initToolbar("新心情");
         ButterKnife.bind(this);
         initImageList();
     }
