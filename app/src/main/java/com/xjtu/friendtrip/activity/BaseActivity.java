@@ -18,6 +18,7 @@ import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.util.AppManager;
 
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by Ming on 2016/5/24.
@@ -25,10 +26,13 @@ import butterknife.ButterKnife;
 public class BaseActivity extends AppCompatActivity {
     ActionBar actionBar;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
     }
+
+
 
     protected void initToolbar(String title) {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);

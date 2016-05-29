@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Cover;
 
@@ -80,7 +81,8 @@ public class DiscoveryGridAdapter extends BaseAdapter {
     }
 
     static class ViewHolder{
-        @BindView(R.id.cover) ImageView cover;
+        @BindView(R.id.cover)
+        RoundedImageView cover;
         @BindView(R.id.summary) TextView summary;
         @BindView(R.id.avatar)CircleImageView avatar;
         @BindView(R.id.nick)TextView nick;

@@ -22,9 +22,13 @@
 
     </RelativeLayout>
     <EditText
+        android:layout_margin="10dp"
+        android:textColorHint="@android:color/darker_gray"
+        android:background="@drawable/shape_image_summary_edit"
         android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="12sp"
         android:hint="添加图片描述"/>
 
 </LinearLayout>

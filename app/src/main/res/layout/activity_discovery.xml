@@ -14,7 +14,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -22,6 +22,7 @@
                 app:titleTextColor="@android:color/white"/>
 
             <LinearLayout
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -45,34 +46,42 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:text="2016.05.27 09:22"/>
+                        android:text="2016-05-27 09:22"/>
                 </LinearLayout>
             </LinearLayout>
             <EditText
+                android:layout_margin="10dp"
+                android:background="@drawable/shape_image_summary_edit"
+                android:padding="10dp"
                 android:minHeight="100dp"
                 android:id="@+id/discovery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="在这输入你的新发现"/>
+                android:textColorHint="@android:color/darker_gray"
+                android:hint="在这里填写你的新发现..."/>
             <com.xjtu.friendtrip.widget.ExpandListView
                 android:id="@+id/image_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.xjtu.friendtrip.widget.ExpandListView>
             <ImageView
+                android:layout_margin="10dp"
                 android:id="@+id/add_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_plus"/>
             <RelativeLayout
-                android:background="@color/dialogplus_card_shadow"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="120dp">
                 <Button
+                    android:background="@drawable/shape_corner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
                     android:text="分享新发现"/>
             </RelativeLayout>
         </LinearLayout>

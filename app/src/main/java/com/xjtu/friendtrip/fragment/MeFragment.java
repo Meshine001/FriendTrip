@@ -1,5 +1,6 @@
 package com.xjtu.friendtrip.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.activity.LoginActivity;
 
 import butterknife.ButterKnife;
 
@@ -22,6 +24,10 @@ public class MeFragment extends Fragment {
     {
         View view = inflater.inflate(R.layout.fragment_me,container,false);
         ButterKnife.bind(this,view);
+
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+
         return view;
     }
 
