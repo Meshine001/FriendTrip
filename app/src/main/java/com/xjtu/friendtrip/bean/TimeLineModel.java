@@ -7,22 +7,40 @@ import java.io.Serializable;
  */
 public class TimeLineModel implements Serializable{
 
-    private String name;
-    private int age;
+   private String textContent;
+    private String time;
+    private String location;
 
-    public String getName() {
-        return name;
+    public TimeLineModel() {
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public TimeLineModel(String location, String textContent, String time) {
+        this.location = location;
+        this.textContent = textContent;
+        this.time = time;
     }
 
-    public int getAge() {
-        return age;
+    public String getLocation() {
+        return location;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTextContent() {
+        return textContent;
+    }
+
+    public void setTextContent(String textContent) {
+        this.textContent = textContent;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

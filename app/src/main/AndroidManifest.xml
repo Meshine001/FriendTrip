@@ -36,6 +36,7 @@
         android:smallScreens="true" />
 
     <application
+        android:hardwareAccelerated="false"
         android:name=".application.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

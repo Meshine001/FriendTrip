@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baidu.mapapi.map.MapView;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
@@ -41,6 +42,7 @@ public class TraceActivity extends Activity {
     @BindView(R.id.boom)
     BoomMenuButton boom;
 
+    MapView mapView;
 
     RecyclerView timeLineRecyclerView;
     TimeLineAdapter timeLineAdapter;
@@ -53,6 +55,25 @@ public class TraceActivity extends Activity {
         ButterKnife.bind(this);
 
         initPullToZoomScrollView();
+        initBoom();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
     private void initPullToZoomScrollView() {
@@ -73,15 +94,32 @@ public class TraceActivity extends Activity {
         ptzScrollView.setZoomEnabled(true);
         ptzScrollView.setParallax(true);
 
-        initBoom();
+
 
         initTimeLine();
 
+        initBaiduMap();
+    }
+
+    private void initBaiduMap() {
+        mapView = (MapView) ptzScrollView.getRootView().findViewById(R.id.map);
     }
 
     private void initTimeLine() {
         timeLineRecyclerView = (RecyclerView) ptzScrollView.getRootView().findViewById(R.id.time_line_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        timeLineRecyclerView.setLayoutManager(linearLayoutManager);
+
+        for(int i = 0;i < 3;i++) {
+            TimeLineModel model = new TimeLineModel();
+            model.setTextContent("Random"+i);
+            model.setTime("2016-05-22 22:11");
+            model.setLocation("西安");
+            timeLineItems.add(model);
+        }
+
+        timeLineAdapter = new TimeLineAdapter(timeLineItems);
+        timeLineRecyclerView.setAdapter(timeLineAdapter);
     }
 
     boolean isBoomInit = false;

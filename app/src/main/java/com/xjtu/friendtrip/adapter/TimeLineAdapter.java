@@ -3,6 +3,7 @@ package com.xjtu.friendtrip.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.vipul.hp_hp.timelineview.TimelineView;
 import com.xjtu.friendtrip.R;
@@ -23,13 +24,13 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return TimelineView.getTimeLineViewType(position,getItemCount());
+        return TimelineView.getTimeLineViewType(position, getItemCount());
     }
 
     @Override
-    public TimeLineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TimeLineViewHolder onCreateViewHolder(ViewGroup parent, int position) {
         View view = View.inflate(parent.getContext(), R.layout.item_time_line_list, null);
-        return new TimeLineViewHolder(view, viewType);
+        return new TimeLineViewHolder(view, position);
     }
 
     @Override
@@ -37,13 +38,35 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
         TimeLineModel timeLineModel = mFeedList.get(position);
 
-        holder.name.setText("name：" + timeLineModel.getName() + "    age：" + timeLineModel.getAge());
+        holder.textContent.setText(timeLineModel.getTextContent());
+        holder.time.setText(timeLineModel.getTime());
+        holder.location.setText(timeLineModel.getLocation());
 
     }
 
     @Override
     public int getItemCount() {
-        return (mFeedList!=null? mFeedList.size():0);
+        return (mFeedList != null ? mFeedList.size() : 0);
+    }
+
+}
+
+class TimeLineViewHolder extends RecyclerView.ViewHolder {
+
+    public TextView textContent;
+    public TextView time;
+    public TextView location;
+
+    public TimelineView mTimelineView;
+
+    public TimeLineViewHolder(View itemView, int viewType) {
+        super(itemView);
+        textContent = (TextView) itemView.findViewById(R.id.text_content);
+        time = (TextView) itemView.findViewById(R.id.time);
+        location = (TextView) itemView.findViewById(R.id.location);
+
+        mTimelineView = (TimelineView) itemView.findViewById(R.id.time_marker);
+        mTimelineView.initLine(viewType);
     }
 
 }
