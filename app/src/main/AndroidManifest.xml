@@ -79,6 +79,7 @@
         </activity>
         <activity android:name=".activity.LocationActivity" />
         <activity android:name=".activity.LoginActivity"></activity>
+        <activity android:name=".activity.TraceActivity"/>
 
         <!-- Image Selector Entry -->
         <activity

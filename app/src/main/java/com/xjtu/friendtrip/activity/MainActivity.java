@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
         controller.addTabItemClickListener(tabItemListener);
     }
 
-    Class[] shareItems = {DiscoveryActivity.class,StoryActivity.class,StoryActivity.class};
+    Class[] shareItems = {DiscoveryActivity.class,StoryActivity.class,TraceActivity.class};
 
     void showShareDialog(){
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
