@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
     tools:context="com.xjtu.friendtrip.activity.LoginActivity">
 
     <android.support.v7.widget.Toolbar
@@ -16,81 +18,229 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@android:color/white" />
 
-    <LinearLayout
-        android:layout_margin="10dp"
-        android:id="@+id/input_layout"
+    <ScrollView
+        android:id="@+id/login_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
+        android:visibility="visible">
 
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="友行号/手机号" />
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="密码" />
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/register_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <EditText
-                android:id="@+id/password_validate"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="再次输入密码" />
-            <TextView
-                android:id="@+id/register_submit"
-                android:layout_marginTop="25dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="注册"
-                android:textColor="@android:color/holo_blue_bright"
-                android:textSize="20sp" />
-        </LinearLayout>
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/shape_editext_normal"
+                    android:hint="友行号/手机号"
+                    android:textColorHint="@android:color/darker_gray" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/shape_editext_normal"
+                    android:hint="密码"
+                    android:textColorHint="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/shape_corner"
+                    android:gravity="center"
+                    android:text="登录"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/forget_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_margin="10dp"
+                        android:text="忘记密码？" />
+
+                    <TextView
+                        android:id="@+id/register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="10dp"
+                        android:text="注册"
+                        android:textColor="@android:color/holo_blue_light" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/darker_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/white"
+                    android:text="第三方登录"
+                    android:textColor="@android:color/darker_gray" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/qq"
+                        android:layout_width="@dimen/third_platform_size"
+                        android:layout_height="@dimen/third_platform_size"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_qq" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/qq"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="QQ"
+                        android:textColor="@android:color/darker_gray" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/wechat"
+                        android:layout_width="@dimen/third_platform_size"
+                        android:layout_height="@dimen/third_platform_size"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_wechat" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/wechat"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="微信"
+                        android:textColor="@android:color/darker_gray" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/weibo"
+                        android:layout_width="@dimen/third_platform_size"
+                        android:layout_height="@dimen/third_platform_size"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_weibo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/weibo"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="QQ"
+                        android:textColor="@android:color/darker_gray" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
-        android:id="@+id/login_register_layout"
+        android:visibility="gone"
+        android:id="@+id/register_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/input_layout"
-        android:layout_marginTop="30dp"
-        android:gravity="center_horizontal"
+        android:layout_margin="10dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="登录"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
-
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/shape_editext_normal"
+                android:hint="手机号"
+                android:textColorHint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_corner"
+                android:text="获取验证码"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+
+
+        <EditText
+            android:id="@+id/validate_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/shape_editext_normal"
+            android:hint="验证码"
+            android:textColorHint="@android:color/darker_gray" />
 
         <TextView
-            android:id="@+id/register"
-            android:layout_width="wrap_content"
+            android:id="@+id/register_submit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:background="@drawable/shape_corner"
+            android:gravity="center"
             android:text="注册"
-            android:textColor="@android:color/holo_blue_bright"
+            android:textColor="@android:color/white"
             android:textSize="20sp" />
+
+
     </LinearLayout>
-
-
-</RelativeLayout>
+</LinearLayout>

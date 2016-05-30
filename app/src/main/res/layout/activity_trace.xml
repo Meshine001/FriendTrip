@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="20dp"
-        app:boom_button_color="@color/colorPrimary"
+        app:boom_button_color="#1abc9c"
         app:boom_button_pressed_color="@color/colorPrimary"
         app:boom_inActionBar="false" />
 </RelativeLayout>

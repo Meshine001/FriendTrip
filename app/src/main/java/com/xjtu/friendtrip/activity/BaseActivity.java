@@ -59,5 +59,11 @@ public class BaseActivity extends AppCompatActivity {
         actionBar.setCustomView(view, params);
     }
 
+    protected void setActionBarRightView(View view){
+        RelativeLayout right = (RelativeLayout) actionBar.getCustomView().findViewById(R.id.right_view);
+      //  view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.MATCH_PARENT));
+        right.addView(view);
+    }
+
 
 }

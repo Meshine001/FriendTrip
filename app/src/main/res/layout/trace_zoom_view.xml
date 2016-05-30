@@ -3,7 +3,7 @@
     android:id="@+id/zoom"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:src="@drawable/test"
+    android:src="@drawable/shape_trace_head_bg"
     android:scaleType="centerCrop"
     android:layout_gravity="center_horizontal">
 

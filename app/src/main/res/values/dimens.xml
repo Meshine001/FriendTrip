@@ -17,4 +17,8 @@
     <dimen name="cover_summary_size">12sp</dimen>
     <dimen name="actionBarSize">45dp</dimen>
 
+    <dimen name="me_icon_size">15dp</dimen>
+    <dimen name="me_icon_size_big">20dp</dimen>
+
+    <dimen name="third_platform_size">60dp</dimen>
 </resources>

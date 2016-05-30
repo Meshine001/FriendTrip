@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="@dimen/actionBarSize"
     android:background="@color/colorPrimary">
-
-    <ImageView
+    <RelativeLayout
         android:layout_alignParentStart="true"
-        android:paddingStart="0dp"
-        android:paddingTop="15dp"
-        android:paddingEnd="15dp"
-        android:paddingBottom="15dp"
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_back" />
+        android:id="@+id/left_view"
+        android:layout_width="20dp"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+    </RelativeLayout>
 
-    <TextView
-        android:layout_toEndOf="@id/back"
-        android:id="@+id/left_text"
+    <RelativeLayout
+        android:layout_toEndOf="@id/left_view"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="18sp" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/left_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+
 
     <TextView
         android:layout_centerInParent="true"
@@ -34,16 +41,22 @@
         android:textColor="@android:color/white"
         android:text="title" />
 
-    <View
+    <RelativeLayout
         android:layout_alignParentEnd="true"
         android:id="@+id/right_view"
-        android:layout_width="wrap_content"
+        android:layout_width="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_height="match_parent"
-        android:gravity="center" />
-    <View
+        android:gravity="center" >
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_toStartOf="@id/right_view"
+
         android:id="@+id/right_sub_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center" />
+        android:gravity="center" >
+
+    </RelativeLayout>
+
 </RelativeLayout>

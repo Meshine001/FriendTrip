@@ -3,4 +3,7 @@
     <color name="colorPrimary">#5fdad3</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">@color/colorPrimary</color>
+
+    <color name="card_view_color">#f9f5dc</color>
+    <color name="time_line_bg_color">#f9f5dc</color>
 </resources>

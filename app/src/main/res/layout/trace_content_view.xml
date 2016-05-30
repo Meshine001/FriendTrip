@@ -2,15 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_margin="10dp"
         android:id="@+id/map_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:background="@drawable/shape_rec_corner">
+
         <com.baidu.mapapi.map.MapView
             android:id="@+id/map"
             android:layout_width="match_parent"
@@ -21,11 +21,13 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/map_layout"
-        android:layout_margin="10dp"
+        android:clipToPadding="false"
         android:id="@+id/time_line_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/map_layout"
+        android:layout_margin="10dp"
+        android:paddingBottom="30dp" />
 
 
 </RelativeLayout>

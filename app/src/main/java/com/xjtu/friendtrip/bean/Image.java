@@ -1,9 +1,12 @@
 package com.xjtu.friendtrip.bean;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by Meshine on 16/5/27.
  */
-public class Image {
+public class Image implements Serializable{
     private String imagePath;
     private String summary;
 
@@ -35,4 +38,11 @@ public class Image {
         this.summary = summary;
     }
 
+    @Override
+    public String toString() {
+        return "Image{" +
+                "imagePath='" + imagePath + '\'' +
+                ", summary='" + summary + '\'' +
+                '}';
+    }
 }

@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
+import com.easyandroidanimations.library.BounceAnimation;
 import com.xjtu.friendtrip.Net.Mob;
 import com.xjtu.friendtrip.R;
 
@@ -34,11 +36,10 @@ public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.register_layout)
     LinearLayout registerLayout;
-    @BindView(R.id.password_validate)
-    EditText passwordValidate;
 
-    @BindView(R.id.login_register_layout)
-    LinearLayout loginRegisterLayout;
+
+    @BindView(R.id.login_scroll_view)
+    ScrollView loginScrollView;
 
     boolean isRegitering = false;
 
@@ -68,16 +69,14 @@ public class LoginActivity extends BaseActivity {
 
     void showRegister(boolean flag){
         if (flag){
-            username.setHint("请输入用户名");
-            password.setHint("请输入密码");
-            loginRegisterLayout.setVisibility(View.GONE);
+            loginScrollView.setVisibility(View.GONE);
             registerLayout.setVisibility(View.VISIBLE);
+            new BounceAnimation(registerLayout).animate();
             isRegitering = true;
         }else {
-            username.setHint("有行号/手机号");
-            password.setHint("密码");
-            loginRegisterLayout.setVisibility(View.VISIBLE);
+            loginScrollView.setVisibility(View.VISIBLE);
             registerLayout.setVisibility(View.GONE);
+            new BounceAnimation(loginScrollView).animate();
             isRegitering = false;
         }
     }
@@ -104,11 +103,7 @@ public class LoginActivity extends BaseActivity {
             dialog.show();
             return false;
         }
-        if (passwordValidate.getText().length() == 0 || !password.getText().toString().trim().equals(passwordValidate.getText().toString().trim())){
-            dialog.setContentText("两次密码输入不一致");
-            dialog.show();
-            return false;
-        }
+
 
         return true;
     }

@@ -55,7 +55,7 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -79,8 +79,9 @@
                 android:value=".activity.MainActivity" />
         </activity>
         <activity android:name=".activity.LocationActivity" />
-        <activity android:name=".activity.LoginActivity"></activity>
+        <activity android:name=".activity.MainActivity"></activity>
         <activity android:name=".activity.TraceActivity"/>
+        <activity android:name=".activity.TraceItemActivity"/>
 
         <!-- Image Selector Entry -->
         <activity

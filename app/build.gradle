@@ -28,7 +28,7 @@ android {
 }
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
+    maven { url "https://jitpack.io"}
     /**
      * SMSSDK
      */
@@ -48,7 +48,6 @@ dependencies {
      */
     compile 'com.orhanobut:dialogplus:1.11@aar'
     compile 'cn.pedant.sweetalert:library:1.3'
-
     /**
      * 注入
      */
@@ -88,20 +87,31 @@ dependencies {
      */
     compile name: 'SMSSDK-2.0.2', ext: 'aar'
     compile name: 'SMSSDKGUI-2.0.2', ext: 'aar'
-
     /**
      * Pull zoom
      */
-
     compile 'com.github.frank-zhu:pullzoomview:1.0.0'
-
     /**
      * Boom menu
      */
     compile 'com.nightonke:boommenu:1.0.9'
-
     /**
      * Time Line
      */
     compile 'com.github.vipulasri:timelineview:1.0.2'
+
+    /**
+    *百度地图
+    */
+    compile files('libs/BaiduLBS_Android.jar')
+
+    /**
+     * json
+     */
+    compile files('libs/gson-2.2.4.jar')
+
+    /**
+     * Animation
+     */
+    compile 'com.github.2359media:EasyAndroidAnimations:0.8'
 }
