@@ -218,7 +218,7 @@ public class FriendFragment extends Fragment {
                         .target(ll).zoom(18).build();
                 MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(status);
                 map.setMapStatus(update);
-                //getFriendLocations(location);
+                getFriendLocations(location);
             }
         }
 

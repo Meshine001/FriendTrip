@@ -11,12 +11,17 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textAlignment="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="西安" />
 
         <EditText
+            android:padding="5dp"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:textColorHint="@android:color/darker_gray"
             android:hint="搜索目的地,用户"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
