@@ -1,5 +1,6 @@
 package com.xjtu.friendtrip.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,9 @@ import com.easyandroidanimations.library.FoldAnimation;
 import com.xjtu.friendtrip.Net.Mob;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Text;
+import com.xjtu.friendtrip.util.MyStringRandomGen;
+import com.xjtu.friendtrip.util.PrefUtils;
+import com.xjtu.friendtrip.util.StoreBox;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -35,7 +39,13 @@ public class LoginActivity extends BaseActivity {
 
 
     private static final String TAG = LoginActivity.class.getName();
-    private static final int VALIDATE_COUNT_DOWN = 0;
+
+    public static final int REQUEST_LOGIN = 0;
+    public static final boolean LOGIN_SUCCESS = true;
+
+
+    private static final int VALIDATE_COUNT_DOWN = 1;
+
 
     @BindView(R.id.username)
     EditText username;
@@ -76,6 +86,8 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         initToolbar("登录");
+        initDialog(this);
+        username.setText(PrefUtils.getStringPreference(this,"username"));
     }
 
 
@@ -110,10 +122,18 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void login(String username, String password) {
-        dialog = new SweetAlertDialog(this,SweetAlertDialog.SUCCESS_TYPE);
-        dialog.setTitleText("提示");
-        dialog.setContentText("登陆成功");
-        dialog.show();
+        showProgressDialog();
+        StoreBox.clearUserInfo(this);
+        StoreBox.setUserNameAndPsd(this,username,password);
+        dismissProgressDialog();
+        setResult2Main();
+        finish();
+    }
+
+    private void setResult2Main() {
+        Intent data = new Intent();
+        data.putExtra("result",LOGIN_SUCCESS);
+        setResult(REQUEST_LOGIN);
     }
 
 
@@ -180,32 +200,27 @@ public class LoginActivity extends BaseActivity {
     }
 
     boolean validate() {
-            dialog = new SweetAlertDialog(this,SweetAlertDialog.ERROR_TYPE);
-            dialog.setTitleText("错误！");
+
 
         if (isRegitering) {
             if (!validatePhone()) {
-                dialog.setContentText("手机格式有误");
-                dialog.show();
+                showErrDialog("手机格式有误");
                 return false;
             }
 
             if (!validateValidateCode()) {
-                dialog.setContentText("验证码错误");
-                dialog.show();
+                showErrDialog("验证码错误");
                 return false;
             }
 
             if (setPasswordLayout.getVisibility() == View.VISIBLE){
                 if (setPassword.getText().length() == 0){
-                    dialog.setContentText("密码不能为空");
-                    dialog.show();
+                    showErrDialog("密码不能为空");
                     return false;
                 }
 
                 if (!setPassword.getText().toString().trim().equals(setPasswordAgain.getText().toString().trim())){
-                    dialog.setContentText("两次密码输入不一致");
-                    dialog.show();
+                    showErrDialog("两次密码输入不一致");
                     return false;
                 }
             }
@@ -214,13 +229,11 @@ public class LoginActivity extends BaseActivity {
 
         } else {
             if (username.getText().length() == 0) {
-                dialog.setContentText("请输入用户名");
-                dialog.show();
+                showErrDialog("请输入用户名");
                 return false;
             }
             if (password.getText().length() == 0) {
-                dialog.setContentText("请输入密码");
-                dialog.show();
+                showErrDialog("请输入密码");
                 return false;
             }
         }
@@ -259,13 +272,18 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void registerUser(String username,String password) {
-        dialog = new SweetAlertDialog(this,SweetAlertDialog.PROGRESS_TYPE);
-        dialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        dialog.setTitleText("处理中,请稍后...");
-        dialog.setCancelable(false);
-        dialog.show();
+        Log.i(TAG,"注册新用户:["+username+","+password+"]");
 
-        //TODO
-        //dialog.cancel();
+        showProgressDialog();
+
+
+        String nick = "u_"+MyStringRandomGen.generateRandomString();
+        StoreBox.clearUserInfo(this);
+        StoreBox.setUserNameAndPsd(this,username,password);
+        StoreBox.setUserNick(this,nick);
+        dismissProgressDialog();
+        setResult2Main();
+        finish();
+
     }
 }

@@ -47,7 +47,10 @@ dependencies {
      * Dialog
      */
     compile 'com.orhanobut:dialogplus:1.11@aar'
+
     compile 'cn.pedant.sweetalert:library:1.3'
+
+    compile 'com.flyco.dialog:FlycoDialog_Lib:1.3.0@aar'
     /**
      * 注入
      */
@@ -114,4 +117,6 @@ dependencies {
      * Animation
      */
     compile 'com.github.2359media:EasyAndroidAnimations:0.8'
+
+
 }

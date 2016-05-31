@@ -2,16 +2,22 @@ package com.xjtu.friendtrip.activity;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import com.flyco.dialog.listener.OnOperItemClickL;
+import com.flyco.dialog.widget.ActionSheetDialog;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -38,8 +44,10 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.bottom)
     PagerBottomTabLayout bottomTabLayout;
     Controller controller;
-    List<Fragment> mFragments;
 
+    HomeFragment homeFragment;
+    FriendFragment friendFragment;
+    MeFragment meFragment;
 
 
     @Override
@@ -52,19 +60,10 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
-
-
-
     /**
      * 初始化底部TAB
      */
     private void initBottom() {
-        mFragments = new ArrayList<>();
-        mFragments.add(new HomeFragment());
-        mFragments.add(new FriendFragment());
-        mFragments.add(new ShareFragment());
-        mFragments.add(new MeFragment());
 
         controller = bottomTabLayout.builder()
                 .addTabItem(android.R.drawable.ic_menu_camera, "首页")
@@ -75,41 +74,38 @@ public class MainActivity extends BaseActivity {
         controller.addTabItemClickListener(tabItemListener);
     }
 
-    Class[] shareItems = {DiscoveryActivity.class,StoryActivity.class,TraceActivity.class};
+    Class[] shareItems = {DiscoveryActivity.class, StoryActivity.class, TraceActivity.class};
 
-    void showShareDialog(){
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
-        arrayAdapter.add("新发现");
-        arrayAdapter.add("新心情");
-        arrayAdapter.add("新游记");
-        DialogPlus dialog = DialogPlus.newDialog(this)
-                .setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-                        Log.i(TAG,"position:"+position);
-                        //Toast.makeText(MainActivity.this,position+"",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this,shareItems[position]);
-                        startActivity(intent);
-                    }
-                })
-                .setAdapter(arrayAdapter)
-                .setGravity(Gravity.BOTTOM)
-                .setExpanded(true)  // This will enable the expand feature, (similar to android L share dialog)
-                .create();
-        dialog.show();
+    void showShareDialog() {
+
+        final String[] stringItems = {"新发现", "新心情", "新游记"};
+
+        final ActionSheetDialog dialog = new ActionSheetDialog(this, stringItems, null);
+        dialog.isTitleShow(false).show();
+
+
+        dialog.setOnOperItemClickL(new OnOperItemClickL() {
+            @Override
+            public void onOperItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(TAG, "position:" + position);
+                Intent intent = new Intent(MainActivity.this, shareItems[position]);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
     }
+
+    int currTab = 0;
 
     OnTabItemSelectListener tabItemListener = new OnTabItemSelectListener() {
         @Override
         public void onSelected(int index, Object tag) {
             Log.i(TAG, "onSelected:" + index + "   TAG: " + tag.toString());
-            if (index == 2){
+            if (index == 2) {
                 showShareDialog();
-            }else {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.push_up_in, R.anim.push_up_out);
-                transaction.replace(R.id.frameLayout, mFragments.get(index));
-                transaction.commit();
+            } else {
+                showTab(index);
             }
 
         }
@@ -117,17 +113,44 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onRepeatClick(int index, Object tag) {
             Log.i(TAG, "onRepeatClick:" + index + "   TAG: " + tag.toString());
-            if (index == 2){
+            if (index == 2) {
                 showShareDialog();
             }
         }
     };
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            mFragments.get(2).onActivityResult(requestCode, resultCode, data);
+    void showTab(int postion) {
+       // recycleFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.push_up_in, R.anim.push_up_out);
+        switch (postion) {
+            case 0:
+                homeFragment = new HomeFragment();
+                transaction.replace(R.id.frameLayout, homeFragment);
+                break;
+            case 1:
+                friendFragment = new FriendFragment();
+                transaction.replace(R.id.frameLayout, friendFragment);
+                break;
+            case 2:
+                break;
+            case 3:
+                meFragment = new MeFragment();
+                transaction.replace(R.id.frameLayout, meFragment);
+                break;
         }
+
+        transaction.commit();
     }
+
+    void recycleFragment() {
+        if (homeFragment != null)
+            homeFragment.onDestroy();
+        if (friendFragment != null)
+            friendFragment.onDestroy();
+        if (meFragment != null)
+            meFragment.onDestroy();
+    }
+
+
 }

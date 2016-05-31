@@ -1,7 +1,9 @@
 package com.xjtu.friendtrip.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
@@ -26,10 +28,42 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class BaseActivity extends AppCompatActivity {
     ActionBar actionBar;
 
+    SweetAlertDialog progressDialog;
+    SweetAlertDialog errDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+
+    }
+
+    protected void initDialog(Context context){
+        progressDialog = new SweetAlertDialog(context,SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        progressDialog.setTitleText("处理中,请稍后...");
+        progressDialog.setCancelable(false);
+
+        errDialog = new SweetAlertDialog(context,SweetAlertDialog.ERROR_TYPE);
+        errDialog.setTitleText("错误！");
+
+    }
+
+    protected void showErrDialog(String message){
+        errDialog.setContentText(message);
+        errDialog.show();
+    }
+
+    protected void dismissErrDialog(){
+        errDialog.dismiss();
+    }
+
+
+    protected void showProgressDialog(){
+        progressDialog.show();
+    }
+
+    protected void dismissProgressDialog(){
+        progressDialog.dismiss();
     }
 
 
