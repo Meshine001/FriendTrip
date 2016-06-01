@@ -188,6 +188,12 @@ public class TraceItemActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        setResult(TIME_LINE_ITEM_EDIT);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //选择图片返回
