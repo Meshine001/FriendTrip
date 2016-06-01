@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.activity.LoginActivity;
 import com.xjtu.friendtrip.activity.MessageActivity;
@@ -70,6 +71,20 @@ public class MeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, container, false);
         ButterKnife.bind(this, view);
+
+        Glide.with(this)
+                .load("http://img5.imgtn.bdimg.com/it/u=1433715376,2872205171&fm=21&gp=0.jpg")
+                .placeholder(R.drawable.ic_loading)
+                .dontAnimate()
+                .dontTransform()
+                .into(storiesBg);
+        Glide.with(this)
+                .load("http://e.hiphotos.baidu.com/zhidao/pic/item/0b7b02087bf40ad1b660bcb9552c11dfa8eccee0.jpg")
+                .placeholder(R.drawable.ic_loading)
+                .dontAnimate()
+                .dontTransform()
+                .into(tracesBg);
+
         initUserInfo();
 
         return view;
