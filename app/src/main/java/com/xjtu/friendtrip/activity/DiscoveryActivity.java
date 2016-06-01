@@ -5,19 +5,24 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.ImageListAdapter;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +83,7 @@ public class DiscoveryActivity extends BaseActivity {
             // Multi image selector form an Activity
             MultiImageSelector.create(this)
                     .showCamera(true) // show camera or not. true by default
-                    .count(9) // max select image size, 9 by default. used width #.multi()
-                    .multi()
+                    .single()
                     .start(this, REQUEST_IMAGE);
         }
     }
@@ -123,13 +127,33 @@ public class DiscoveryActivity extends BaseActivity {
                 List<String> paths = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
                 // do your logic ....
                 for (String path:paths){
-                    Image img = new Image(path);
-                    images.add(img);
+                    startCropImageActivity(Uri.fromFile(new File(path)));
                 }
 
-                imageAdapter.notifyDataSetChanged();
 
             }
         }
+
+        // handle the crop image uri
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == Activity.RESULT_OK) {
+                Uri resultUri = result.getUri();
+                Image img = new Image(resultUri.getPath());
+                images.add(img);
+                imageAdapter.notifyDataSetChanged();
+                Log.i(TAG, resultUri.toString());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Log.i(TAG, error.toString());
+            }
+        }
     }
+
+
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .start(this);
+    }
+
 }

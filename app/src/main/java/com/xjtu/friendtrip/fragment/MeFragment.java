@@ -2,6 +2,7 @@ package com.xjtu.friendtrip.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -54,30 +55,37 @@ public class MeFragment extends Fragment {
     @BindView(R.id.traces)
     RelativeLayout traces;
 
+    @BindView(R.id.stories_bg)
+    ImageView storiesBg;
+    @BindView(R.id.traces_bg)
+    ImageView tracesBg;
+
+
+
+
     boolean isLogedIn = false;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.fragment_me,container,false);
-        ButterKnife.bind(this,view);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_me, container, false);
+        ButterKnife.bind(this, view);
         initUserInfo();
 
         return view;
     }
 
-    @OnClick({R.id.message,R.id.settings,R.id.avatar,R.id.nick,R.id.stories,R.id.traces})
-    void onClick(View view){
+    @OnClick({R.id.message, R.id.settings, R.id.avatar, R.id.nick, R.id.stories, R.id.traces})
+    void onClick(View view) {
 
-        if (!isLogedIn){
+        if (!isLogedIn) {
             gotoLogin();
             return;
         }
 
         Intent intent = new Intent();
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.message:
                 intent.setClass(getContext(), MessageActivity.class);
             case R.id.settings:
@@ -99,10 +107,10 @@ public class MeFragment extends Fragment {
     }
 
     private void initUserInfo() {
-        String username = PrefUtils.getStringPreference(getContext(),"username");
-        if (username == null){
+        String username = PrefUtils.getStringPreference(getContext(), "username");
+        if (username == null) {
             nick.setText("现在登陆");
-        }else {
+        } else {
             isLogedIn = true;
             updateUserInfo();
         }
@@ -119,7 +127,7 @@ public class MeFragment extends Fragment {
         friends.setText("好友:2");
     }
 
-    private void gotoLogin(){
+    private void gotoLogin() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
         startActivity(intent);
     }

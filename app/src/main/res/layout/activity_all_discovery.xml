@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xjtu.friendtrip.activity.AllDiscoveryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@android:color/white" />
+
+        <in.srain.cube.views.ptr.PtrFrameLayout
+            android:id="@+id/ptr_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:ptr_duration_to_close="300"
+            app:ptr_duration_to_close_header="2000"
+            app:ptr_keep_header_when_refresh="true"
+            app:ptr_pull_to_fresh="true"
+            app:ptr_ratio_of_header_height_to_refresh="1.2"
+            app:ptr_resistance="1.7">
+
+            <GridView
+                android:id="@+id/discovery_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:columnWidth="100dp"
+                android:horizontalSpacing="5dp"
+                android:numColumns="2"
+                android:scrollbars="none"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="5dp" />
+        </in.srain.cube.views.ptr.PtrFrameLayout>
+
+    </LinearLayout>
+
+
+    <include layout="@layout/pull_up_bottom" />
+</RelativeLayout>

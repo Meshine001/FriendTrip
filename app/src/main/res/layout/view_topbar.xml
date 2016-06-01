@@ -48,12 +48,13 @@
         android:layout_marginEnd="20dp"
         android:layout_height="match_parent"
         android:gravity="center" >
+
     </RelativeLayout>
     <RelativeLayout
         android:layout_toStartOf="@id/right_view"
-
         android:id="@+id/right_sub_view"
-        android:layout_width="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_width="25dp"
         android:layout_height="match_parent"
         android:gravity="center" >
 

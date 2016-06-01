@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ScrollView
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -146,10 +147,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="120dp">
                     <ImageView
+                        android:id="@+id/stories_bg"
                         android:scaleType="centerCrop"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/me_story_bg"/>
+                        android:layout_height="match_parent" />
                     <LinearLayout
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"
@@ -180,10 +181,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="120dp">
                     <ImageView
+                        android:id="@+id/traces_bg"
                         android:scaleType="centerCrop"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/me_trace_bg"/>
+                        android:layout_height="match_parent" />
                     <LinearLayout
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"

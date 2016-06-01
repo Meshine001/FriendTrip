@@ -1,7 +1,9 @@
 package com.xjtu.friendtrip.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Story;
+import com.xjtu.friendtrip.util.CommonUtil;
 
 import java.io.File;
 import java.util.List;
@@ -26,10 +29,15 @@ public class ImageListAdapter extends BaseAdapter {
 
     private List<Image> images;
     private Context context;
+    private int width;
 
-    public ImageListAdapter(List<Image> images, Context context) {
+    public ImageListAdapter(List<Image> images, Activity context) {
         this.images = images;
         this.context = context;
+        DisplayMetrics dm = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        width = dm.widthPixels;
     }
 
     @Override
@@ -53,10 +61,23 @@ public class ImageListAdapter extends BaseAdapter {
         if (convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.item_image_list,parent,false);
             holder = new ViewHolder(convertView);
+            int screenWidth = width;
+
+            ViewGroup.LayoutParams lp = holder.image.getLayoutParams();
+            lp.width = screenWidth;
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+            holder.image.setLayoutParams(lp);
+
+            holder.image.setMaxWidth(screenWidth);
+            holder.image.setMaxHeight(screenWidth*5);
+
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+
 
         holder.image.setImageURI(Uri.fromFile(new File(images.get(position).getImagePath())));
         holder.summary.setText(images.get(position).getSummary());

@@ -9,10 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.activity.AllDiscoveryActivity;
+import com.xjtu.friendtrip.activity.AllFriendItemsActivity;
+import com.xjtu.friendtrip.activity.DiscoveryDetailsActivity;
 import com.xjtu.friendtrip.activity.StoryDetailsActivity;
 import com.xjtu.friendtrip.adapter.DiscoveryGridAdapter;
 import com.xjtu.friendtrip.adapter.SiteListAdapter;
@@ -27,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -69,6 +74,21 @@ public class HomeFragment extends Fragment {
         init();
 
         return view;
+    }
+
+    @OnClick({R.id.discovery_all,R.id.friend_all})
+    void onClick(View view){
+        Intent intent = new Intent();
+        switch (view.getId()){
+            case R.id.discovery_all:
+                intent.setClass(getContext(), AllDiscoveryActivity.class);
+                break;
+            case R.id.friend_all:
+                intent.setClass(getContext(), AllFriendItemsActivity.class);
+                break;
+        }
+        startActivity(intent);
+
     }
 
     private void init() {
@@ -183,6 +203,13 @@ public class HomeFragment extends Fragment {
      */
     private void initDiscoveryGrid() {
         discoveryGridAdaper = new DiscoveryGridAdapter(discoveryCovers, getContext());
+        discoveryGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), DiscoveryDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
         discoveryGrid.setAdapter(discoveryGridAdaper);
         initDiscoveryGridData();
     }

@@ -7,6 +7,7 @@
     <dimen name="title_size">20sp</dimen>
 
     <dimen name="avatar_size">60dp</dimen>
+    <dimen name="nick_size">18sp</dimen>
     <dimen name="story_description_size">23sp</dimen>
     <dimen name="date_time_size">15sp</dimen>
     <dimen name="location_size">15sp</dimen>
@@ -21,4 +22,6 @@
     <dimen name="me_icon_size_big">20dp</dimen>
 
     <dimen name="third_platform_size">60dp</dimen>
+
+
 </resources>

@@ -38,7 +38,6 @@
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
         android:icon="@drawable/ic_launcher"
         android:label="友行"
         android:supportsRtl="true"
@@ -102,7 +101,10 @@
         <activity android:name=".activity.MessageActivity" />
         <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.MyStoriesActivity" />
-        <activity android:name=".activity.MyTracesActivity"></activity>
+        <activity android:name=".activity.MyTracesActivity" />
+        <activity android:name=".activity.AllDiscoveryActivity" />
+        <activity android:name=".activity.AllFriendItemsActivity" />
+        <activity android:name=".activity.DiscoveryDetailsActivity"></activity>
     </application>
 
 </manifest>

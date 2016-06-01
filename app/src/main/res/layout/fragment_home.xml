@@ -62,7 +62,11 @@
                     android:layout_height="200dp">
                 </com.xjtu.friendtrip.widget.AdBannerView>
                 <RelativeLayout
-                    android:layout_margin="5dp"
+                    android:id="@+id/discovery_all"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
@@ -90,7 +94,11 @@
 
                 </com.xjtu.friendtrip.widget.ExpandGridView>
                 <RelativeLayout
-                    android:layout_margin="5dp"
+                    android:id="@+id/friend_all"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
@@ -118,7 +126,10 @@
 
                 </com.xjtu.friendtrip.widget.ExpandGridView>
                 <RelativeLayout
-                    android:layout_margin="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
