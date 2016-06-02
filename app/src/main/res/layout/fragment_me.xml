@@ -12,7 +12,7 @@
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="230dp"
                 android:background="@color/colorPrimary">
                 <RelativeLayout
                     android:id="@+id/message"
@@ -82,7 +82,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
-                            android:text="粉丝:"/>
+                            android:text="粉丝:2"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
-                            android:text="关注:"/>
+                            android:text="关注:10"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -118,7 +118,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
-                            android:text="好友:"/>
+                            android:text="好友:2"/>
 
                     </LinearLayout>
 

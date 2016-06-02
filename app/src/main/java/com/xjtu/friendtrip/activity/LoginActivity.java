@@ -23,9 +23,12 @@ import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.LoginJson;
 import com.xjtu.friendtrip.Net.Mob;
 import com.xjtu.friendtrip.Net.RegistJson;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Text;
+import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.JSONUtil;
 import com.xjtu.friendtrip.util.MyStringRandomGen;
 import com.xjtu.friendtrip.util.PrefUtils;
 import com.xjtu.friendtrip.util.StoreBox;
@@ -161,15 +164,10 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onCompleted(Exception e, String result) {
                 Log.i(TAG,"登录完成:"+result);
-                try {
-                    JSONObject jo = new JSONObject(result);
-                    if (1 == jo.getInt("code")){
-                        LoginSuccess(username,password);
-                    }else {
-                        LoginFailed(result);
-                    }
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
+                if(RequestUtil.isRequestSuccess(result)){
+                    loginSuccess(result);
+                }else {
+                   loginFailed(result);
                 }
             }
         });
@@ -177,22 +175,23 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    private void LoginFailed(String result) {
+    private void loginFailed(String result) {
         showErrDialog(result);
     }
 
-    private void LoginSuccess(String username, String password) {
-        StoreBox.clearUserInfo(this);
-        StoreBox.setUserNameAndPsd(this, username, password);
-        dismissProgressDialog();
-        setResult2Main();
-        finish();
+    private void loginSuccess(String result) {
+            User u = RequestUtil.requestToUser(result);
+            StoreBox.clearUserInfo(this);
+            StoreBox.saveUserInfo(this,u);
+            dismissProgressDialog();
+            setResult2Main();
+            finish();
     }
 
     private void setResult2Main() {
         Intent data = new Intent();
         data.putExtra("result", LOGIN_SUCCESS);
-        setResult(REQUEST_LOGIN);
+        setResult(REQUEST_LOGIN,data);
     }
 
 
@@ -369,17 +368,10 @@ public class LoginActivity extends BaseActivity {
         Ion.with(this).load("POST",Config.REGIST).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                try {
-                    Log.i(TAG,"注册完成:"+result);
-                    //TODO
-                    JSONObject jo = new JSONObject(result);
-                    if (1 == jo.getInt("code")){
-                        registSuccess(jo);
-                    }else {
-                        showErrDialog(result);
-                    }
-                } catch (JSONException e1) {
-//                    e1.printStackTrace();
+                Log.i(TAG,"注册完成:"+result);
+                if (RequestUtil.isRequestSuccess(result)){
+                    registSuccess(result);
+                }else {
                     registFailed(result);
                 }
             }
@@ -391,13 +383,8 @@ public class LoginActivity extends BaseActivity {
         showErrDialog(result);
     }
 
-    private void registSuccess(JSONObject jo) {
-//        StoreBox.clearUserInfo(this);
-//        StoreBox.setUserNameAndPsd(this, username, password);
-//        StoreBox.setUserNick(this, nick);
-        dismissProgressDialog();
-        setResult2Main();
-        finish();
+    private void registSuccess(String result) {
+        loginSuccess(result);
     }
 
 }

@@ -177,28 +177,28 @@ public class HomeFragment extends Fragment {
         friendCovers.clear();
         //TODO
         friendCovers.add(new Cover(
-                "http://pic1.nipic.com/2008-12-01/2008121221714934_2.jpg",
-                "发现一处美景,曲江景园",
-                "http://img5.imgtn.bdimg.com/it/u=2593135614,3870081477&fm=21&gp=0.jpg",
-                "小明", "曲江区"
+                "http://pic41.nipic.com/20140531/18107775_134019262173_2.jpg",
+                "巴厘岛乐园之旅",
+                "http://www.qqpk.cn/Article/UploadFiles/201202/20120208134912759.jpg",
+                "小小", "巴厘岛"
         ));
         friendCovers.add(new Cover(
                 "http://img1.qunarzz.com/sight/p0/201403/07/e52053cbc7468d9ac4c19401b21dad34.jpg_1190x550_0344d9a4.jpg",
                 "lalalala。这是个好地方",
-                "http://img5.duitang.com/uploads/item/201509/12/20150912081740_nkuFA.jpeg",
-                "小亚茹", "雁塔区"
+                "http://v1.qzone.cc/avatar/201408/21/13/32/53f5845197327705.jpg!200x200.jpg",
+                "Sla", "雁塔区"
         ));
         friendCovers.add(new Cover(
-                "http://pic19.nipic.com/20120207/9201992_183203277000_2.jpg",
-                "还是要善于发现美",
-                "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
-                "小思思", "雁塔区"
+                "http://img1.imgtn.bdimg.com/it/u=4081927646,1723414767&fm=21&gp=0.jpg",
+                "华山之巅，我愿飞翔",
+                "http://v1.qzone.cc/avatar/201507/19/15/30/55ab520054839972.jpg!200x200.jpg",
+                "帅到爆", "渭南"
         ));
         friendCovers.add(new Cover(
-                "http://e.hiphotos.baidu.com/zhidao/pic/item/d0c8a786c9177f3e53a94fd872cf3bc79e3d5641.jpg",
-                "景色不错.在那个神马神马地方",
-                "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
-                "小波波熊", "碑林区"
+                "http://img3.fengniao.com/forum/attachpics/787/138/31467492_1024.jpg",
+                "夜色摩尼",
+                "http://www.feizl.com/upload2007/2011_04/110403170151167.jpg",
+                "HuLaha", "雁塔区"
         ));
         friendGridAdaper.notifyDataSetChanged();
     }
@@ -241,31 +241,31 @@ public class HomeFragment extends Fragment {
             }
         });
 
-//        //TODO
+        //TODO
         discoveryCovers.add(new Cover(
-                "http://pic1.nipic.com/2008-12-01/2008121221714934_2.jpg",
-                "发现一处美景,曲江景园",
+                "http://i0.sinaimg.cn/travel/2013/0403/U7118P704DT20130403134240.jpg",
+                "在大街的那条巷子里",
                 "http://img5.imgtn.bdimg.com/it/u=2593135614,3870081477&fm=21&gp=0.jpg",
                 "小明", "曲江区"
         ));
-//        discoveryCovers.add(new Cover(
-//                "http://img1.qunarzz.com/sight/p0/201403/07/e52053cbc7468d9ac4c19401b21dad34.jpg_1190x550_0344d9a4.jpg",
-//                "lalalala。这是个好地方",
-//                "http://img5.duitang.com/uploads/item/201509/12/20150912081740_nkuFA.jpeg",
-//                "小亚茹", "雁塔区"
-//        ));
-//        discoveryCovers.add(new Cover(
-//                "http://pic19.nipic.com/20120207/9201992_183203277000_2.jpg",
-//                "还是要善于发现美",
-//                "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
-//                "小思思", "雁塔区"
-//        ));
-//        discoveryCovers.add(new Cover(
-//                "http://e.hiphotos.baidu.com/zhidao/pic/item/d0c8a786c9177f3e53a94fd872cf3bc79e3d5641.jpg",
-//                "景色不错.在那个神马神马地方",
-//                "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
-//                "小波波熊", "碑林区"
-//        ));
+        discoveryCovers.add(new Cover(
+                "http://pic3.nipic.com/20090623/2743956_192919027_2.jpg",
+                "身边的美食，你只是没发现而已",
+                "http://h.hiphotos.baidu.com/image/h%3D200/sign=71cd4229be014a909e3e41bd99763971/472309f7905298221dd4c458d0ca7bcb0b46d442.jpg",
+                "小亚茹", "雁塔区"
+        ));
+        discoveryCovers.add(new Cover(
+                "http://img.bendibao.com/tour/201210/15/2012101594223628.JPG",
+                "还是要善于发现美",
+                "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
+                "小思", "我的雁塔"
+        ));
+        discoveryCovers.add(new Cover(
+                "http://liaoning.sinaimg.cn/2013/0331/U8386P1195DT20130331212520.jpg",
+                "古城也有江南风味",
+                "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
+                "小波波熊", "古城江南"
+        ));
         discoveryGridAdaper.notifyDataSetChanged();
     }
 

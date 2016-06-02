@@ -3,6 +3,7 @@ package com.xjtu.friendtrip.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
@@ -26,6 +28,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -37,6 +40,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.SupportMapFragment;
 import com.baidu.mapapi.model.LatLng;
+import com.bumptech.glide.Glide;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 import com.google.gson.Gson;
@@ -48,6 +52,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.FriendNotesByLocationJson;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.fragment.FriendFragment;
 import com.xjtu.friendtrip.fragment.HomeFragment;
 import com.xjtu.friendtrip.fragment.MeFragment;
@@ -59,6 +64,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -132,6 +138,20 @@ public class MainActivity extends BaseActivity {
         getFriendLocations(location);
     }
 
+    @BindDrawable(R.drawable.test_u)
+    Drawable d;
+//    @BindDrawable(R.drawable.test_u5)
+//    Drawable d1;
+//    @BindDrawable(R.drawable.test_u1)
+//    Drawable d2;
+//    @BindDrawable(R.drawable.test_u2)
+//    Drawable d3;
+//    @BindDrawable(R.drawable.test_u3)
+//    Drawable d4;
+//    @BindDrawable(R.drawable.test_u4)
+//    Drawable d5;
+
+//    Drawable[] ds = {d,d1,d2,d3,d4,d5};
 
     /**
      * 获取朋友的位置
@@ -147,62 +167,60 @@ public class MainActivity extends BaseActivity {
                 Log.i(TAG,"请求周边朋友结果:"+result);
             }
         });
-//        //构建Marker图标
-//        BitmapDescriptor bitmap = BitmapDescriptorFactory
-//                .fromResource(R.drawable.ic_flag);
-//
-//        // 通过marker的icons设置一组图片，再通过period设置多少帧刷新一次图片资源
-//        ArrayList<BitmapDescriptor> giflist = new ArrayList<BitmapDescriptor>();
-//        giflist.add(bitmap);
-//        giflist.add(bitmap);
-//        giflist.add(bitmap);
-//        giflist.add(bitmap);
-//
-//
-//        for (Marker m : markers) {
-//            m.remove();
-//        }
-//        markers.clear();
-//
-//
-//        List<OverlayOptions> options = new ArrayList<>();
-//
-//
-//        //TODO
-//        for (int i = 0; i < 10; i++) {
-//            Double x = Math.random() % 10;
-//            while (x == 0) {
-//                x = Math.random() % 10;
-//            }
-//
-//            x = x / 100;
-//
-//            LatLng point = null;
-//            if (i % 4 == 0)
-//                //定义Maker坐标点
-//                point = new LatLng(location.getLatitude() + x, location.getLongitude() + x);
-//            else if (i % 4 == 1)
-//                point = new LatLng(location.getLatitude() + x, location.getLongitude() - x);
-//            else if (i % 4 == 2)
-//                point = new LatLng(location.getLatitude() - x, location.getLongitude() - x);
-//            else if (i % 4 == 3)
-//                point = new LatLng(location.getLatitude() - x, location.getLongitude() + x);
-//
-//
-//            //构建MarkerOption，用于在地图上添加Marker
-//            OverlayOptions option = new MarkerOptions()
-//                    .position(point)
-//                    .icons(giflist)
-//                    .zIndex(9).period(10);
-//            //在地图上添加Marker，并显示
-//            options.add(option);
-//        }
-//
-//        for (OverlayOptions o : options) {
-//            Marker marker = (Marker) map.addOverlay(o);
-//            marker.setTitle("HAHA");
-//            markers.add(marker);
-//        }
+
+
+
+        for (Marker m : markers) {
+            m.remove();
+        }
+        markers.clear();
+
+
+        List<OverlayOptions> options = new ArrayList<>();
+
+
+        //TODO
+        for (int i = 0; i < 6; i++) {
+            Double x = Math.random() % 10;
+            while (x == 0) {
+                x = Math.random() % 10;
+            }
+
+            x = x / 100;
+
+            LatLng point = null;
+            if (i % 4 == 0)
+                //定义Maker坐标点
+                point = new LatLng(location.getLatitude() + x, location.getLongitude() + x);
+            else if (i % 4 == 1)
+                point = new LatLng(location.getLatitude() + x, location.getLongitude() - x);
+            else if (i % 4 == 2)
+                point = new LatLng(location.getLatitude() - x, location.getLongitude() - x);
+            else if (i % 4 == 3)
+                point = new LatLng(location.getLatitude() - x, location.getLongitude() + x);
+
+
+            ImageView img = new ImageView(this);
+            img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            img.setMaxHeight(30);
+            img.setMaxWidth(30);
+            img.setImageDrawable(d);
+            //构建Marker图标
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromView(img);
+            //构建MarkerOption，用于在地图上添加Marker
+            OverlayOptions option = new MarkerOptions()
+                    .position(point)
+                    .icon(icon)
+                    .zIndex(9).period(10);
+            //在地图上添加Marker，并显示
+            options.add(option);
+        }
+
+        for (OverlayOptions o : options) {
+            Marker marker = (Marker) map.addOverlay(o);
+            marker.setTitle("HAHA");
+            markers.add(marker);
+        }
 
 
     }

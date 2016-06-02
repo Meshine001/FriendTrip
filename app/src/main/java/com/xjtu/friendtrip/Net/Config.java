@@ -47,4 +47,9 @@ public class Config {
      */
     public static final String ADD_DISCOVERY = BASE_URL +"/newscenicspots/addSpots";
 
+
+
+    public static final String ME_STORIES_BG_URL = "http://pic29.nipic.com/20130523/9908282_160306298113_2.jpg";
+    public static final String ME_TRACES_BG_URL = "http://e.hiphotos.baidu.com/zhidao/pic/item/0b7b02087bf40ad1b660bcb9552c11dfa8eccee0.jpg";
+
 }

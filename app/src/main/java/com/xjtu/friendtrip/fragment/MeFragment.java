@@ -13,13 +13,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.activity.LoginActivity;
 import com.xjtu.friendtrip.activity.MessageActivity;
 import com.xjtu.friendtrip.activity.MyStoriesActivity;
 import com.xjtu.friendtrip.activity.MyTracesActivity;
 import com.xjtu.friendtrip.activity.SettingsActivity;
+import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.PrefUtils;
+import com.xjtu.friendtrip.util.StoreBox;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,6 +65,8 @@ public class MeFragment extends Fragment {
     ImageView tracesBg;
 
 
+    User me;
+
 
 
     boolean isLogedIn = false;
@@ -71,23 +76,24 @@ public class MeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, container, false);
         ButterKnife.bind(this, view);
+        initUI();
+        initUserInfo();
+        return view;
+    }
 
+    private void initUI() {
         Glide.with(this)
-                .load("http://img5.imgtn.bdimg.com/it/u=1433715376,2872205171&fm=21&gp=0.jpg")
+                .load(Config.ME_STORIES_BG_URL)
                 .placeholder(R.drawable.ic_loading)
                 .dontAnimate()
                 .dontTransform()
                 .into(storiesBg);
         Glide.with(this)
-                .load("http://e.hiphotos.baidu.com/zhidao/pic/item/0b7b02087bf40ad1b660bcb9552c11dfa8eccee0.jpg")
+                .load(Config.ME_TRACES_BG_URL)
                 .placeholder(R.drawable.ic_loading)
                 .dontAnimate()
                 .dontTransform()
                 .into(tracesBg);
-
-        initUserInfo();
-
-        return view;
     }
 
     @OnClick({R.id.message, R.id.settings, R.id.avatar, R.id.nick, R.id.stories, R.id.traces})
@@ -135,16 +141,38 @@ public class MeFragment extends Fragment {
      * 网络获取最新用户信息
      */
     private void updateUserInfo() {
-        //TODO
-        nick.setText("帅帅");
-        fans.setText("粉丝:20");
-        follows.setText("关注:10");
-        friends.setText("好友:2");
+        me = StoreBox.getUserInfo(getContext());
+        Glide.with(this).load(me.getProfilePhoto())
+                .placeholder(R.drawable.ic_loading)
+                .dontAnimate()
+                .dontTransform().into(avatar);
+        nick.setText(me.getNickname());
+        fans.setText("粉丝:"+me.getIsFocusCount());
+        follows.setText("关注:"+me.getFocusCount());
+        friends.setText("好友:"+me.getFriendsCount());
+
+        updateFromCloud();
+    }
+
+    /**
+     * 从云端更新
+     */
+    private void updateFromCloud() {
+
     }
 
     private void gotoLogin() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,LoginActivity.REQUEST_LOGIN);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LoginActivity.REQUEST_LOGIN){
+            if (data.getBooleanExtra("result",false)){
+                updateUserInfo();
+            }
+        }
+    }
 }
