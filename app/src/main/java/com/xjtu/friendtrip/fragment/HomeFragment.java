@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.activity.AllDiscoveryActivity;
 import com.xjtu.friendtrip.activity.AllFriendItemsActivity;
@@ -41,6 +45,8 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class HomeFragment extends Fragment {
 
+
+    private static final String TAG =  HomeFragment.class.getName();
 
     @BindView(R.id.ptr_frame_layout)
     PtrFrameLayout ptrFrameLayout;
@@ -216,31 +222,50 @@ public class HomeFragment extends Fragment {
 
     private void initDiscoveryGridData() {
         discoveryCovers.clear();
-        //TODO
+        int offset = 0;
+        int limit = 3;
+        String url = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG,"请求新发现结果:"+result);
+            }
+        });
+
+        offset = 4;
+        String url1 = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
+        Ion.with(this).load("GET",url1).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG,"请求新发现1结果:"+result);
+            }
+        });
+
+//        //TODO
         discoveryCovers.add(new Cover(
                 "http://pic1.nipic.com/2008-12-01/2008121221714934_2.jpg",
                 "发现一处美景,曲江景园",
                 "http://img5.imgtn.bdimg.com/it/u=2593135614,3870081477&fm=21&gp=0.jpg",
                 "小明", "曲江区"
         ));
-        discoveryCovers.add(new Cover(
-                "http://img1.qunarzz.com/sight/p0/201403/07/e52053cbc7468d9ac4c19401b21dad34.jpg_1190x550_0344d9a4.jpg",
-                "lalalala。这是个好地方",
-                "http://img5.duitang.com/uploads/item/201509/12/20150912081740_nkuFA.jpeg",
-                "小亚茹", "雁塔区"
-        ));
-        discoveryCovers.add(new Cover(
-                "http://pic19.nipic.com/20120207/9201992_183203277000_2.jpg",
-                "还是要善于发现美",
-                "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
-                "小思思", "雁塔区"
-        ));
-        discoveryCovers.add(new Cover(
-                "http://e.hiphotos.baidu.com/zhidao/pic/item/d0c8a786c9177f3e53a94fd872cf3bc79e3d5641.jpg",
-                "景色不错.在那个神马神马地方",
-                "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
-                "小波波熊", "碑林区"
-        ));
+//        discoveryCovers.add(new Cover(
+//                "http://img1.qunarzz.com/sight/p0/201403/07/e52053cbc7468d9ac4c19401b21dad34.jpg_1190x550_0344d9a4.jpg",
+//                "lalalala。这是个好地方",
+//                "http://img5.duitang.com/uploads/item/201509/12/20150912081740_nkuFA.jpeg",
+//                "小亚茹", "雁塔区"
+//        ));
+//        discoveryCovers.add(new Cover(
+//                "http://pic19.nipic.com/20120207/9201992_183203277000_2.jpg",
+//                "还是要善于发现美",
+//                "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
+//                "小思思", "雁塔区"
+//        ));
+//        discoveryCovers.add(new Cover(
+//                "http://e.hiphotos.baidu.com/zhidao/pic/item/d0c8a786c9177f3e53a94fd872cf3bc79e3d5641.jpg",
+//                "景色不错.在那个神马神马地方",
+//                "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
+//                "小波波熊", "碑林区"
+//        ));
         discoveryGridAdaper.notifyDataSetChanged();
     }
 

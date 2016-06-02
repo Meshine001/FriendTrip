@@ -189,7 +189,6 @@ public class TraceItemActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        setResult(TIME_LINE_ITEM_EDIT);
         super.onDestroy();
     }
 

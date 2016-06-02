@@ -1,88 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-   <RelativeLayout
-       android:visibility="gone"
-       android:id="@+id/possible_location_layout"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-       <LinearLayout
-           android:id="@+id/possible_location_bottom"
-           android:layout_alignParentBottom="true"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="vertical">
-           <TextView
-               android:textAlignment="center"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="地图上寻找"/>
-           <ImageView
-               android:src="@mipmap/ic_launcher"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_gravity="center_horizontal"/>
-       </LinearLayout>
-       <LinearLayout
-           android:layout_above="@id/possible_location_bottom"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="vertical">
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="你是在这里吗?"/>
-           <ListView
-               android:id="@+id/possible_location_list"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-           </ListView>
-       </LinearLayout>
-   </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/custom_location_layout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:id="@+id/custom_location_bottom"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:textAlignment="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="使用已有地址"/>
-            <ImageView
-                android:src="@mipmap/ic_launcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"/>
-        </LinearLayout>
+        android:layout_height="@dimen/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@android:color/white" />
+    <LinearLayout
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <EditText
-            android:layout_above="@id/custom_location_bottom"
-            android:id="@+id/custom_location_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="输入自定义地址名称"/>
-        <LinearLayout
-            android:layout_above="@id/custom_location_name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="在地图上选取你的位置"/>
-            <com.baidu.mapapi.map.MapView
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </com.baidu.mapapi.map.MapView>
-        </LinearLayout>
-    </RelativeLayout>
-</LinearLayout>
+            android:layout_height="@dimen/actionBarSize"/>
+    </LinearLayout>
+
+</RelativeLayout>

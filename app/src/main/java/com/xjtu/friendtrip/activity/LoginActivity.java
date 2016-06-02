@@ -16,12 +16,22 @@ import android.widget.TextView;
 
 import com.easyandroidanimations.library.BounceAnimation;
 import com.easyandroidanimations.library.FoldAnimation;
+import com.google.gson.Gson;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.LoginJson;
 import com.xjtu.friendtrip.Net.Mob;
+import com.xjtu.friendtrip.Net.RegistJson;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Text;
+import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.MyStringRandomGen;
 import com.xjtu.friendtrip.util.PrefUtils;
 import com.xjtu.friendtrip.util.StoreBox;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -32,6 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.smssdk.EventHandler;
+import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.RegisterPage;
 
@@ -45,6 +56,8 @@ public class LoginActivity extends BaseActivity {
 
 
     private static final int VALIDATE_COUNT_DOWN = 1;
+    private static final int VALIDATE_SUCCESS = 2;
+    private static final int VALIDATE_FAILED = 3;
 
 
     @BindView(R.id.username)
@@ -78,8 +91,6 @@ public class LoginActivity extends BaseActivity {
     EditText setPasswordAgain;
 
 
-    SweetAlertDialog dialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +98,8 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
         initToolbar("登录");
         initDialog(this);
-        username.setText(PrefUtils.getStringPreference(this,"username"));
+        username.setText(PrefUtils.getStringPreference(this, "username"));
+        initSMSSDK();
     }
 
 
@@ -102,18 +114,39 @@ public class LoginActivity extends BaseActivity {
                 showRegister(true);
                 break;
             case R.id.get_validate_code:
-                doGetValidateCode();
+                checkUserExsit();
                 break;
             case R.id.register_submit:
-                if (!validate()) return;
+                //validateSMSCode();
                 setPassword();
-                //openSMSPage();
                 break;
             case R.id.set_password_submit:
                 if (!validate()) return;
-                registerUser(phoneNumber.getText().toString().trim(),setPassword.getText().toString().trim());
+                registerUser(phoneNumber.getText().toString().trim(), setPassword.getText().toString().trim());
                 break;
         }
+    }
+
+    private void checkUserExsit() {
+        String url = Config.CHECK_EXSIT+"/"+phoneNumber.getText().toString().trim() +"/registerResult";
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG,"检查用户是否存在:"+result);
+                if (result.equals("notExits")){
+                    doGetValidateCode();
+                }else{
+                    showErrDialog("用户已存在");
+                }
+            }
+        });
+
+
+    }
+
+    private void validateSMSCode() {
+        SMSSDK.submitVerificationCode("86", phoneNumber.getText().toString().trim(), validateCode.getText().toString().trim());
+        showProgressDialog();
     }
 
     private void setPassword() {
@@ -121,10 +154,36 @@ public class LoginActivity extends BaseActivity {
         setPasswordLayout.setVisibility(View.VISIBLE);
     }
 
-    private void login(String username, String password) {
+    private void login(final String username, final String password) {
         showProgressDialog();
+        String body = new Gson().toJson(new LoginJson(username,password));
+        Ion.with(this).load("POST",Config.LOGIN).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG,"登录完成:"+result);
+                try {
+                    JSONObject jo = new JSONObject(result);
+                    if (1 == jo.getInt("code")){
+                        LoginSuccess(username,password);
+                    }else {
+                        LoginFailed(result);
+                    }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+
+    }
+
+    private void LoginFailed(String result) {
+        showErrDialog(result);
+    }
+
+    private void LoginSuccess(String username, String password) {
         StoreBox.clearUserInfo(this);
-        StoreBox.setUserNameAndPsd(this,username,password);
+        StoreBox.setUserNameAndPsd(this, username, password);
         dismissProgressDialog();
         setResult2Main();
         finish();
@@ -132,7 +191,7 @@ public class LoginActivity extends BaseActivity {
 
     private void setResult2Main() {
         Intent data = new Intent();
-        data.putExtra("result",LOGIN_SUCCESS);
+        data.putExtra("result", LOGIN_SUCCESS);
         setResult(REQUEST_LOGIN);
     }
 
@@ -155,11 +214,25 @@ public class LoginActivity extends BaseActivity {
                     }
 
                     break;
+                case VALIDATE_SUCCESS:
+                    dismissProgressDialog();
+                    setPassword();
+                    break;
+                case VALIDATE_FAILED:
+                    dismissProgressDialog();
+                    showErrDialog("验证失败");
+                    break;
             }
         }
     };
 
     private void doGetValidateCode() {
+        SMSSDK.getVerificationCode("86", phoneNumber.getText().toString().trim(), new OnSendMessageHandler() {
+            @Override
+            public boolean onSendMessage(String country, String phone) {
+                return false;
+            }
+        });
         getValidateCode.setEnabled(false);
         timer = new Timer("validate");
         timer.schedule(new TimerTask() {
@@ -201,7 +274,6 @@ public class LoginActivity extends BaseActivity {
 
     boolean validate() {
 
-
         if (isRegitering) {
             if (!validatePhone()) {
                 showErrDialog("手机格式有误");
@@ -213,18 +285,17 @@ public class LoginActivity extends BaseActivity {
                 return false;
             }
 
-            if (setPasswordLayout.getVisibility() == View.VISIBLE){
-                if (setPassword.getText().length() == 0){
+            if (setPasswordLayout.getVisibility() == View.VISIBLE) {
+                if (setPassword.getText().length() == 0) {
                     showErrDialog("密码不能为空");
                     return false;
                 }
 
-                if (!setPassword.getText().toString().trim().equals(setPasswordAgain.getText().toString().trim())){
+                if (!setPassword.getText().toString().trim().equals(setPasswordAgain.getText().toString().trim())) {
                     showErrDialog("两次密码输入不一致");
                     return false;
                 }
             }
-
 
 
         } else {
@@ -243,6 +314,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private boolean validateValidateCode() {
+
         return true;
     }
 
@@ -250,40 +322,82 @@ public class LoginActivity extends BaseActivity {
         return true;
     }
 
-    void openSMSPage() {
+    void initSMSSDK() {
         SMSSDK.initSDK(this, Mob.APP_KEY, Mob.APP_SECRET);
-        //打开注册页面
-        RegisterPage registerPage = new RegisterPage();
-        registerPage.setRegisterCallback(new EventHandler() {
+        EventHandler eh = new EventHandler() {
+            @Override
             public void afterEvent(int event, int result, Object data) {
-                // 解析注册结果
                 if (result == SMSSDK.RESULT_COMPLETE) {
-                    @SuppressWarnings("unchecked")
-                    HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
-                    String country = (String) phoneMap.get("country");
-                    String phone = (String) phoneMap.get("phone");
+                    //回调完成
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //提交验证码成功
+                        Message msg = new Message();
+                        msg.what = VALIDATE_SUCCESS;
+                        handler.sendMessage(msg);
+                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                        //获取验证码成功
+                        Log.i(TAG,data.toString());
 
-                    // 提交用户信息
-                    //  registerUser(country, phone);
+                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
+                        //返回支持发送验证码的国家列表
+                    }
+                } else {
+                    ((Throwable) data).printStackTrace();
+                    Message msg = new Message();
+                    msg.what = VALIDATE_FAILED;
+                    handler.sendMessage(msg);
                 }
             }
-        });
-        registerPage.show(this);
+        };
+        SMSSDK.registerEventHandler(eh); //注册短信回调
+
     }
 
-    private void registerUser(String username,String password) {
-        Log.i(TAG,"注册新用户:["+username+","+password+"]");
+    private void registerUser(final String username, final String password) {
+        Log.i(TAG, "注册新用户:[" + username + "," + password + "]");
 
         showProgressDialog();
 
 
-        String nick = "u_"+MyStringRandomGen.generateRandomString();
-        StoreBox.clearUserInfo(this);
-        StoreBox.setUserNameAndPsd(this,username,password);
-        StoreBox.setUserNick(this,nick);
+        final String nick = "u_" + MyStringRandomGen.generateRandomString();
+        String body = new Gson().toJson(
+                new RegistJson(
+                        username,password,nick
+                )
+        );
+        Log.i(TAG,"注册:"+Config.REGIST +"\n"+"Data:"+body);
+        Ion.with(this).load("POST",Config.REGIST).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                try {
+                    Log.i(TAG,"注册完成:"+result);
+                    //TODO
+                    JSONObject jo = new JSONObject(result);
+                    if (1 == jo.getInt("code")){
+                        registSuccess(jo);
+                    }else {
+                        showErrDialog(result);
+                    }
+                } catch (JSONException e1) {
+//                    e1.printStackTrace();
+                    registFailed(result);
+                }
+            }
+        });
+    }
+
+    private void registFailed(String result) {
+        dismissProgressDialog();
+        showErrDialog(result);
+    }
+
+    private void registSuccess(JSONObject jo) {
+//        StoreBox.clearUserInfo(this);
+//        StoreBox.setUserNameAndPsd(this, username, password);
+//        StoreBox.setUserNick(this, nick);
         dismissProgressDialog();
         setResult2Main();
         finish();
-
     }
+
 }

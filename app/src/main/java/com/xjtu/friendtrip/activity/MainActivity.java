@@ -39,9 +39,14 @@ import com.baidu.mapapi.map.SupportMapFragment;
 import com.baidu.mapapi.model.LatLng;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
+import com.google.gson.Gson;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.FriendNotesByLocationJson;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.fragment.FriendFragment;
 import com.xjtu.friendtrip.fragment.HomeFragment;
@@ -96,6 +101,7 @@ public class MainActivity extends BaseActivity {
                     break;
                 case Locationlistener.LOCATION_FAILD:
                     Toast.makeText(getBaseContext(),"获取位置失败",Toast.LENGTH_SHORT).show();
+                    locationClient.stop();
                     break;
                 case INIT_MAP:
                     initBaiduMap();
@@ -131,62 +137,72 @@ public class MainActivity extends BaseActivity {
      * 获取朋友的位置
      */
     private void getFriendLocations(BDLocation location) {
-        //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.ic_flag);
-
-        // 通过marker的icons设置一组图片，再通过period设置多少帧刷新一次图片资源
-        ArrayList<BitmapDescriptor> giflist = new ArrayList<BitmapDescriptor>();
-        giflist.add(bitmap);
-        giflist.add(bitmap);
-        giflist.add(bitmap);
-        giflist.add(bitmap);
-
-
-        for (Marker m : markers) {
-            m.remove();
-        }
-        markers.clear();
-
-
-        List<OverlayOptions> options = new ArrayList<>();
-
-
-        //TODO
-        for (int i = 0; i < 10; i++) {
-            Double x = Math.random() % 10;
-            while (x == 0) {
-                x = Math.random() % 10;
+        String body = new Gson().toJson(new FriendNotesByLocationJson(
+                109.007894,34.229714,1203,10
+        ));
+        Log.i(TAG,"请求周边朋友:"+body);
+        Ion.with(this).load("POST",Config.REQUEST_FRIENDS_NOTES_BY_LOCATION).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG,"请求周边朋友结果:"+result);
             }
-
-            x = x / 100;
-
-            LatLng point = null;
-            if (i % 4 == 0)
-                //定义Maker坐标点
-                point = new LatLng(location.getLatitude() + x, location.getLongitude() + x);
-            else if (i % 4 == 1)
-                point = new LatLng(location.getLatitude() + x, location.getLongitude() - x);
-            else if (i % 4 == 2)
-                point = new LatLng(location.getLatitude() - x, location.getLongitude() - x);
-            else if (i % 4 == 3)
-                point = new LatLng(location.getLatitude() - x, location.getLongitude() + x);
-
-
-            //构建MarkerOption，用于在地图上添加Marker
-            OverlayOptions option = new MarkerOptions()
-                    .position(point)
-                    .icons(giflist)
-                    .zIndex(9).period(10);
-            //在地图上添加Marker，并显示
-            options.add(option);
-        }
-
-        for (OverlayOptions o : options) {
-            Marker marker = (Marker) map.addOverlay(o);
-            marker.setTitle("HAHA");
-            markers.add(marker);
-        }
+        });
+//        //构建Marker图标
+//        BitmapDescriptor bitmap = BitmapDescriptorFactory
+//                .fromResource(R.drawable.ic_flag);
+//
+//        // 通过marker的icons设置一组图片，再通过period设置多少帧刷新一次图片资源
+//        ArrayList<BitmapDescriptor> giflist = new ArrayList<BitmapDescriptor>();
+//        giflist.add(bitmap);
+//        giflist.add(bitmap);
+//        giflist.add(bitmap);
+//        giflist.add(bitmap);
+//
+//
+//        for (Marker m : markers) {
+//            m.remove();
+//        }
+//        markers.clear();
+//
+//
+//        List<OverlayOptions> options = new ArrayList<>();
+//
+//
+//        //TODO
+//        for (int i = 0; i < 10; i++) {
+//            Double x = Math.random() % 10;
+//            while (x == 0) {
+//                x = Math.random() % 10;
+//            }
+//
+//            x = x / 100;
+//
+//            LatLng point = null;
+//            if (i % 4 == 0)
+//                //定义Maker坐标点
+//                point = new LatLng(location.getLatitude() + x, location.getLongitude() + x);
+//            else if (i % 4 == 1)
+//                point = new LatLng(location.getLatitude() + x, location.getLongitude() - x);
+//            else if (i % 4 == 2)
+//                point = new LatLng(location.getLatitude() - x, location.getLongitude() - x);
+//            else if (i % 4 == 3)
+//                point = new LatLng(location.getLatitude() - x, location.getLongitude() + x);
+//
+//
+//            //构建MarkerOption，用于在地图上添加Marker
+//            OverlayOptions option = new MarkerOptions()
+//                    .position(point)
+//                    .icons(giflist)
+//                    .zIndex(9).period(10);
+//            //在地图上添加Marker，并显示
+//            options.add(option);
+//        }
+//
+//        for (OverlayOptions o : options) {
+//            Marker marker = (Marker) map.addOverlay(o);
+//            marker.setTitle("HAHA");
+//            markers.add(marker);
+//        }
 
 
     }
@@ -265,10 +281,10 @@ public class MainActivity extends BaseActivity {
         showTab(0);
 
         controller = bottomTabLayout.builder()
-                .addTabItem(android.R.drawable.ic_menu_camera, "首页")
-                .addTabItem(android.R.drawable.ic_menu_compass, "驴圈")
-                .addTabItem(android.R.drawable.ic_menu_search, "分享")
-                .addTabItem(android.R.drawable.ic_menu_help, "我")
+                .addTabItem(R.drawable.ic_home, "首页")
+                .addTabItem(R.drawable.ic_earth, "驴圈")
+                .addTabItem(R.drawable.ic_share_50, "分享")
+                .addTabItem(R.drawable.ic_user_50, "我")
                 .build();
         controller.addTabItemClickListener(tabItemListener);
     }
