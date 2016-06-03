@@ -1,5 +1,6 @@
 package com.xjtu.friendtrip.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class StoryDetailsActivity extends BaseActivity {
 
@@ -28,6 +30,16 @@ public class StoryDetailsActivity extends BaseActivity {
     StoryImageAdapter imageAdapter;
     List<Image> images = new ArrayList<>();
 
+
+    @OnClick({R.id.avatar})
+    void onClick(View view){
+        switch (view.getId()){
+            case R.id.avatar:
+                Intent userInfoIntent = new Intent(StoryDetailsActivity.this,UserInfoActivity.class);
+                startActivity(userInfoIntent);
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

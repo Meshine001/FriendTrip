@@ -2,8 +2,10 @@ package com.xjtu.friendtrip.activity;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +43,10 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.SupportMapFragment;
 import com.baidu.mapapi.model.LatLng;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 import com.google.gson.Gson;
@@ -97,16 +103,16 @@ public class MainActivity extends BaseActivity {
 
     List<Marker> markers = new ArrayList<>();
 
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case Locationlistener.LOCATION_SUCCESS:
                     BDLocation location = (BDLocation) msg.obj;
                     updateMyLocation(location);
                     break;
                 case Locationlistener.LOCATION_FAILD:
-                    Toast.makeText(getBaseContext(),"获取位置失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "获取位置失败", Toast.LENGTH_SHORT).show();
                     locationClient.stop();
                     break;
                 case INIT_MAP:
@@ -118,6 +124,7 @@ public class MainActivity extends BaseActivity {
 
     /**
      * 更新位置
+     *
      * @param location
      */
     private void updateMyLocation(BDLocation location) {
@@ -138,36 +145,27 @@ public class MainActivity extends BaseActivity {
         getFriendLocations(location);
     }
 
-    @BindDrawable(R.drawable.test_u)
-    Drawable d;
-//    @BindDrawable(R.drawable.test_u5)
-//    Drawable d1;
-//    @BindDrawable(R.drawable.test_u1)
-//    Drawable d2;
-//    @BindDrawable(R.drawable.test_u2)
-//    Drawable d3;
-//    @BindDrawable(R.drawable.test_u3)
-//    Drawable d4;
-//    @BindDrawable(R.drawable.test_u4)
-//    Drawable d5;
-
-//    Drawable[] ds = {d,d1,d2,d3,d4,d5};
-
+    String[] urls = {
+            "http://hdn.xnimg.cn/photos/hdn321/20130612/2235/h_main_NNN4_e80a000007df111a.jpg",
+            "http://h.hiphotos.baidu.com/image/h%3D200/sign=71cd4229be014a909e3e41bd99763971/472309f7905298221dd4c458d0ca7bcb0b46d442.jpg",
+            "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
+            "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
+            "http://img5.imgtn.bdimg.com/it/u=2593135614,3870081477&fm=21&gp=0.jpg"
+    };
     /**
      * 获取朋友的位置
      */
     private void getFriendLocations(BDLocation location) {
         String body = new Gson().toJson(new FriendNotesByLocationJson(
-                109.007894,34.229714,1203,10
+                109.007894, 34.229714, 1203, 10
         ));
-        Log.i(TAG,"请求周边朋友:"+body);
-        Ion.with(this).load("POST",Config.REQUEST_FRIENDS_NOTES_BY_LOCATION).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+        Log.i(TAG, "请求周边朋友:" + body);
+        Ion.with(this).load("POST", Config.REQUEST_FRIENDS_NOTES_BY_LOCATION).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"请求周边朋友结果:"+result);
+                Log.i(TAG, "请求周边朋友结果:" + result);
             }
         });
-
 
 
         for (Marker m : markers) {
@@ -176,17 +174,18 @@ public class MainActivity extends BaseActivity {
         markers.clear();
 
 
-        List<OverlayOptions> options = new ArrayList<>();
+        final List<OverlayOptions> options = new ArrayList<>();
 
 
         //TODO
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
             Double x = Math.random() % 10;
             while (x == 0) {
                 x = Math.random() % 10;
             }
 
             x = x / 100;
+
 
             LatLng point = null;
             if (i % 4 == 0)
@@ -200,27 +199,34 @@ public class MainActivity extends BaseActivity {
                 point = new LatLng(location.getLatitude() - x, location.getLongitude() + x);
 
 
-            ImageView img = new ImageView(this);
-            img.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            img.setMaxHeight(30);
-            img.setMaxWidth(30);
-            img.setImageDrawable(d);
-            //构建Marker图标
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromView(img);
-            //构建MarkerOption，用于在地图上添加Marker
-            OverlayOptions option = new MarkerOptions()
-                    .position(point)
-                    .icon(icon)
-                    .zIndex(9).period(10);
-            //在地图上添加Marker，并显示
-            options.add(option);
+            final LatLng finalPoint = point;
+
+            Glide.with(this).load(urls[i]).asBitmap().into(new SimpleTarget<Bitmap>(60,60) {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    Log.i(TAG,"图片下载成功");
+                    //构建Marker图标
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resource);
+                    //构建MarkerOption，用于在地图上添加Marker
+                    OverlayOptions option = new MarkerOptions()
+                            .position(finalPoint)
+                            .icon(icon)
+                            .zIndex(9).period(10);
+                    //在地图上添加Marker，并显示
+                    options.add(option);
+                    Marker marker = (Marker) map.addOverlay(option);
+                    marker.setTitle("HAHA");
+                    markers.add(marker);
+                }
+            });
+
         }
 
-        for (OverlayOptions o : options) {
-            Marker marker = (Marker) map.addOverlay(o);
-            marker.setTitle("HAHA");
-            markers.add(marker);
-        }
+//        for (OverlayOptions o : options) {
+//            Marker marker = (Marker) map.addOverlay(o);
+//            marker.setTitle("HAHA");
+//            markers.add(marker);
+//        }
 
 
     }
@@ -235,13 +241,14 @@ public class MainActivity extends BaseActivity {
     }
 
     @OnClick({R.id.request_location})
-    void onClick(View view){
-        switch (view.getId()){
+    void onClick(View view) {
+        switch (view.getId()) {
             case R.id.request_location:
                 locationClient.start();
                 break;
         }
     }
+
     private void initBaiduMap() {
 
         requestLoction.setVisibility(View.VISIBLE);
@@ -267,12 +274,12 @@ public class MainActivity extends BaseActivity {
         locationClient.start();
     }
 
-    private void initLocation(){
+    private void initLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
-        int span=1000;
+        int span = 1000;
         option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
@@ -357,38 +364,36 @@ public class MainActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.push_up_in, R.anim.push_up_out);
 
-        if ( 1 == postion){
+        if (1 == postion) {
             requestLoction.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             requestLoction.setVisibility(View.GONE);
         }
 
-        for (int i=0;i<fragments.size();i++){
+        for (int i = 0; i < fragments.size(); i++) {
             if (i != postion)
                 transaction.hide(fragments.get(i));
         }
-        if (fragments.get(postion).isAdded()){
-           transaction.show(fragments.get(postion)).commit();
-        }else {
-            transaction.add(R.id.frameLayout,fragments.get(postion)).show(fragments.get(postion)).commit();
+        if (fragments.get(postion).isAdded()) {
+            transaction.show(fragments.get(postion)).commit();
+        } else {
+            transaction.add(R.id.frameLayout, fragments.get(postion)).show(fragments.get(postion)).commit();
 
-            if (postion == 1 ){
+            if (postion == 1) {
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                       Message msg = new Message();
+                        Message msg = new Message();
                         msg.what = INIT_MAP;
                         handler.sendMessage(msg);
                     }
-                },2000);
+                }, 2000);
             }
         }
 
 
     }
-
-
 
 
 }

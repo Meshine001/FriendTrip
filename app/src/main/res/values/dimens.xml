@@ -23,5 +23,13 @@
 
     <dimen name="third_platform_size">60dp</dimen>
 
+    <dimen name="my_location_icon_size">50dp</dimen>
 
+    <dimen name="settings_title_size">12sp</dimen>
+    <dimen name="settings_item_size">15sp</dimen>
+
+    <dimen name="msg_avatar_size">55dp</dimen>
+
+    <dimen name="info_title_size">15sp</dimen>
+    <dimen name="info_content_size">12sp</dimen>
 </resources>

@@ -1,14 +1,19 @@
 package com.xjtu.friendtrip.activity;
 
+import android.content.Intent;
 import android.nfc.Tag;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.SupportMapFragment;
 import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -29,6 +34,10 @@ public class DiscoveryDetailsActivity extends BaseActivity {
     ImageView topSubRight;
     boolean likeFlag = false;
 
+    @BindView(R.id.map_frame)
+    FrameLayout mapFrame;
+    SupportMapFragment mapFragment;
+    BaiduMap map;
 
     @BindView(R.id.comment)
     EditText comment;
@@ -41,11 +50,15 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         initUI();
     }
 
-    @OnClick({R.id.comment_submit})
+    @OnClick({R.id.comment_submit,R.id.avatar})
     void onClick(View view){
         switch (view.getId()){
             case R.id.comment_submit:
                 commentDiscovery();
+                break;
+            case R.id.avatar:
+                Intent userInfoIntent = new Intent(DiscoveryDetailsActivity.this,UserInfoActivity.class);
+                startActivity(userInfoIntent);
                 break;
         }
     }
@@ -53,6 +66,27 @@ public class DiscoveryDetailsActivity extends BaseActivity {
 
 
     private void initUI() {
+        initTop();
+
+        initMap();
+
+
+    }
+
+    private void initMap() {
+        mapFragment = new SupportMapFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.map_frame,mapFragment).commit();
+        new Handler().postDelayed(new Runnable(){
+            public void run() {
+                //execute the task
+                map = mapFragment.getBaiduMap();
+            }
+        }, 2000);
+
+
+    }
+
+    private void initTop() {
         initToolbar("发现详情");
         topRight = new ImageView(this);
         topRight.setImageResource(R.drawable.ic_share);

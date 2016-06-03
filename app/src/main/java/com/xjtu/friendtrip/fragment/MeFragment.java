@@ -169,7 +169,7 @@ public class MeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LoginActivity.REQUEST_LOGIN){
+        if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode >1){
             if (data.getBooleanExtra("result",false)){
                 updateUserInfo();
             }

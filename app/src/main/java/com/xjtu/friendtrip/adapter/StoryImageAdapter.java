@@ -1,6 +1,8 @@
 package com.xjtu.friendtrip.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +26,14 @@ public class StoryImageAdapter extends BaseAdapter {
 
     private List<Image> images;
     private Context context;
-
-    public StoryImageAdapter(List<Image> images, Context context) {
+    private int width;
+    public StoryImageAdapter(List<Image> images, Activity context) {
         this.images = images;
         this.context = context;
+        DisplayMetrics dm = new DisplayMetrics();
+        context.getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        width = dm.widthPixels;
     }
 
     @Override
@@ -51,6 +57,16 @@ public class StoryImageAdapter extends BaseAdapter {
         if (convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.item_story_image_list,parent,false);
             holder = new ViewHolder(convertView);
+            int screenWidth = width;
+
+            ViewGroup.LayoutParams lp = holder.image.getLayoutParams();
+            lp.width = screenWidth;
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+            holder.image.setLayoutParams(lp);
+
+            holder.image.setMaxWidth(screenWidth);
+            holder.image.setMaxHeight(screenWidth*5);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();

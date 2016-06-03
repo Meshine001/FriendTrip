@@ -61,26 +61,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.StoryActivity">
-            android:parentActivityName=".activity.MainActivity">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".activity.DiscoveryActivity"
-            android:parentActivityName=".activity.MainActivity">
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
+        <activity android:name=".activity.StoryActivity"/>
+        <activity android:name=".activity.DiscoveryActivity" />
         <activity android:name=".activity.LocationActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.TraceActivity" />
         <activity android:name=".activity.TraceItemActivity" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.MessageActivity" />
+        <activity android:name=".activity.MyStoriesActivity" />
+        <activity android:name=".activity.MyTracesActivity" />
+        <activity android:name=".activity.AllDiscoveryActivity" />
+        <activity android:name=".activity.AllFriendItemsActivity" />
+        <activity android:name=".activity.DiscoveryDetailsActivity" />
+        <activity android:name=".activity.UserInfoActivity" />
+        <activity android:name=".activity.UserInfoSettings"></activity>
 
         <!-- Image Selector Entry -->
         <activity
@@ -98,13 +93,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name=".activity.MessageActivity" />
-        <activity android:name=".activity.SettingsActivity" />
-        <activity android:name=".activity.MyStoriesActivity" />
-        <activity android:name=".activity.MyTracesActivity" />
-        <activity android:name=".activity.AllDiscoveryActivity" />
-        <activity android:name=".activity.AllFriendItemsActivity" />
-        <activity android:name=".activity.DiscoveryDetailsActivity"></activity>
+
     </application>
 
 </manifest>

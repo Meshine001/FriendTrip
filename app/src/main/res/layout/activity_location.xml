@@ -13,14 +13,113 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@android:color/white" />
-    <LinearLayout
-        android:layout_below="@id/toolbar"
+
+    <RelativeLayout
+        android:id="@+id/location_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/holo_purple">
+
+        <TextView
+            android:id="@+id/location_switch_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="15dp"
+            android:text="自定义位置"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/location_switch"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
-        <EditText
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="你的位置:"
+                android:textSize="@dimen/location_size" />
+
+            <TextView
+                android:id="@+id/my_custom_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="西安"
+                android:textSize="@dimen/location_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/poi_locations"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/actionBarSize"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/actionBarSize" />
+
+            <ListView
+                android:id="@+id/location_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/custom_location"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/custom_location_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="输入你的位置名称.."
+                android:textColorHint="@android:color/darker_gray" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.baidu.mapapi.map.MapView
+                    android:id="@+id/map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true" />
+                <ImageView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/my_location_marker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_map_pin"
+                    />
+
+                <ImageView
+                    android:id="@+id/my_location_icon"
+                    android:layout_width="@dimen/my_location_icon_size"
+                    android:layout_height="@dimen/my_location_icon_size"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="40dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_launcher" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -28,6 +28,7 @@ import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.ImageListAdapter;
+import com.xjtu.friendtrip.bean.CustomLocation;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.widget.ExpandListView;
@@ -54,6 +55,8 @@ public class DiscoveryActivity extends BaseActivity {
 
     @BindView(R.id.location)
     TextView location;
+
+    CustomLocation myLoc;
 
     @BindView(R.id.time)
     TextView time;
@@ -82,7 +85,7 @@ public class DiscoveryActivity extends BaseActivity {
         imageList.setAdapter(imageAdapter);
     }
 
-    @OnClick({R.id.add_image,R.id.share})
+    @OnClick({R.id.add_image,R.id.share,R.id.location})
     void onClick(View view){
         switch (view.getId()){
             case R.id.add_image:
@@ -91,7 +94,15 @@ public class DiscoveryActivity extends BaseActivity {
             case R.id.share:
                 shareDiscovery();
                 break;
+            case R.id.location:
+                getLocation();
+                break;
         }
+    }
+
+    private void getLocation() {
+        Intent intent = new Intent(DiscoveryActivity.this,LocationActivity.class);
+        startActivityForResult(intent,LocationActivity.GET_LOCATION);
     }
 
     private void shareDiscovery() {
@@ -188,6 +199,16 @@ public class DiscoveryActivity extends BaseActivity {
                 Exception error = result.getError();
                 Log.i(TAG, error.toString());
             }
+        }
+
+        if (requestCode == LocationActivity.GET_LOCATION){
+            Log.i(TAG,"ResultCode:"+resultCode);
+                if (resultCode > 0){
+                    myLoc = (CustomLocation) data.getSerializableExtra("data");
+                    location.setText(myLoc.getName());
+                    Log.i(TAG,"获得位置:"+myLoc);
+                }
+
         }
     }
 
