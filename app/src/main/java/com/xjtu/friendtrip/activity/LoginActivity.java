@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.easyandroidanimations.library.BounceAnimation;
 import com.easyandroidanimations.library.FoldAnimation;
 import com.google.gson.Gson;
@@ -25,29 +27,22 @@ import com.xjtu.friendtrip.Net.Mob;
 import com.xjtu.friendtrip.Net.RegistJson;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
-import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
-import com.xjtu.friendtrip.util.JSONUtil;
 import com.xjtu.friendtrip.util.MyStringRandomGen;
 import com.xjtu.friendtrip.util.PrefUtils;
 import com.xjtu.friendtrip.util.StoreBox;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.smssdk.EventHandler;
 import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.RegisterPage;
 
 public class LoginActivity extends BaseActivity {
 
@@ -177,12 +172,15 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginFailed(String result) {
-        showErrDialog(result);
+        dismissProgressDialog();
+        showErrDialog(RequestUtil.handRequestErr(result));
     }
 
     private void loginSuccess(String result) {
-            User u = RequestUtil.requestToUser(result);
+            JSONObject jo = JSON.parseObject(result);
+            User u = RequestUtil.requestToUser(jo.getString("data"));
             StoreBox.clearUserInfo(this);
+            Log.i(TAG,u.toString());
             StoreBox.saveUserInfo(this,u);
             dismissProgressDialog();
             setResult2Main();
@@ -381,7 +379,7 @@ public class LoginActivity extends BaseActivity {
 
     private void registFailed(String result) {
         dismissProgressDialog();
-        showErrDialog(result);
+        showErrDialog("注册失败");
     }
 
     private void registSuccess(String result) {

@@ -27,7 +27,9 @@ import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.Net.StarJson;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.adapter.CommentListAdapter;
 import com.xjtu.friendtrip.adapter.DetailsImageListAdapter;
+import com.xjtu.friendtrip.bean.Comment;
 import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Star;
@@ -35,6 +37,7 @@ import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.ActivityUtil;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
+import com.xjtu.friendtrip.util.StoreBox;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
 import java.util.List;
@@ -59,7 +62,7 @@ public class DiscoveryDetailsActivity extends BaseActivity {
     @BindView(R.id.nick)
     TextView nick;
 
-    @BindView(R.id.date_time)
+    @BindView(R.id.time)
     TextView dateTime;
     @BindView(R.id.location)
     TextView location;
@@ -92,33 +95,33 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery_details);
         ButterKnife.bind(this);
+        initDialog(this);
         initUI();
     }
 
-    @OnClick({R.id.comment_submit,R.id.avatar})
-    void onClick(View view){
-        switch (view.getId()){
+    @OnClick({R.id.comment_submit, R.id.avatar})
+    void onClick(View view) {
+        switch (view.getId()) {
             case R.id.comment_submit:
                 commentDiscovery();
                 break;
             case R.id.avatar:
-                ActivityUtil.startUserInfoActivity(this,details.getUserid());
+                ActivityUtil.startUserInfoActivity(this, details.getUserid());
                 break;
         }
     }
 
 
-
     private void initUI() {
         initTop();
-        initMap();
         initDetails();
     }
 
     private void initDetails() {
         details = (Discovery) getIntent().getSerializableExtra("discovery");
+        Log.i(TAG, details.toString());
         String url = Config.USER_INFO + details.getUserid();
-        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+        Ion.with(this).load("GET", url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 User u = RequestUtil.requestToUser(result);
@@ -135,18 +138,17 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         dateTime.setText(details.getDatetime());
         description.setText(details.getSummary());
 
-        initMapData();
+        initMap();
         initImageData();
-
         initComment();
     }
 
     private void initComment() {
-         int width = CommonUtil.getScreenWidth(this);
-         int avaterSize = width/7;
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(avaterSize,avaterSize);
-        likeCount.setText(details.getStarCount());
-        for (final Star s:details.getStarses()){
+        int width = CommonUtil.getScreenWidth(this);
+        int avaterSize = width / 7;
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(avaterSize, avaterSize);
+        likeCount.setText("" + details.getStarCount());
+        for (final Star s : details.getStarses()) {
             CircleImageView iv = new CircleImageView(this);
             iv.setLayoutParams(lp);
             Glide.with(this)
@@ -159,34 +161,41 @@ public class DiscoveryDetailsActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     //TODO
-                    ActivityUtil.startUserInfoActivity(DiscoveryDetailsActivity.this,s.getId());//s的id是userId吗？
+                    ActivityUtil.startUserInfoActivity(DiscoveryDetailsActivity.this, s.getId());//s的id是userId吗？
                 }
             });
             likeLayout.addView(iv);
         }
 
+        List<Comment> comments = details.getCommentses();
+        CommentListAdapter adapter = new CommentListAdapter(comments,this);
+        commentList.setAdapter(adapter);
+
+
 
     }
 
     private void initImageData() {
-        List<Image> images = details.getPictures();
-        DetailsImageListAdapter adapter = new DetailsImageListAdapter(images,this);
+        List<Image> images = details.getTravlenotespictures();
+        DetailsImageListAdapter adapter = new DetailsImageListAdapter(images, this);
         imageList.setAdapter(adapter);
     }
 
     private void initMapData() {
-        BitmapDescriptor   bitmap = BitmapDescriptorFactory
+        BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.drawable.ic_trace_recorder);
-        LocationUtil.addMarker(bitmap,details.getLatitude(),details.getLongitude(),map);
+        LocationUtil.addMarker(bitmap, details.getLatitude(), details.getLongitude(), map);
+        LocationUtil.changeMapCenter(details.getLatitude(), details.getLongitude(), map, 18.0f);
     }
 
     private void initMap() {
         mapFragment = new SupportMapFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.map_frame,mapFragment).commit();
-        new Handler().postDelayed(new Runnable(){
+        getSupportFragmentManager().beginTransaction().add(R.id.map_frame, mapFragment).commit();
+        new Handler().postDelayed(new Runnable() {
             public void run() {
                 //execute the task
                 map = mapFragment.getBaiduMap();
+                initMapData();
             }
         }, 2000);
 
@@ -200,7 +209,7 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         topRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(DiscoveryDetailsActivity.this,"分享",Toast.LENGTH_SHORT).show();
+                Toast.makeText(DiscoveryDetailsActivity.this, "分享", Toast.LENGTH_SHORT).show();
             }
         });
         setActionBarRightView(topRight);
@@ -211,10 +220,10 @@ public class DiscoveryDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 likeFlag = !likeFlag;
-                if (likeFlag){
+                if (likeFlag) {
                     topSubRight.setImageResource(R.drawable.ic_like_filled);
                     starDiscovery(likeFlag);
-                }else {
+                } else {
                     topSubRight.setImageResource(R.drawable.ic_like);
                     starDiscovery(likeFlag);
                 }
@@ -225,27 +234,34 @@ public class DiscoveryDetailsActivity extends BaseActivity {
     }
 
     private void starDiscovery(boolean like) {
+        User u = StoreBox.getUserInfo(this);
+        Integer tag;
+        if (like) tag = StarJson.TAG_LIKE;
+        else tag = StarJson.TAG_UN_LIKE;
         String body = new Gson().toJson(new StarJson(
-                1203,0,8
+                u.getId(), StarJson.DISCOVERY, details.getScenicid(), tag
         ));
-        Log.i(TAG,"点赞请求:"+body);
+        Log.i(TAG, "点赞请求:" + body);
         Ion.with(this).load("POST", Config.REQUEST_STAR).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"点赞请求结果:"+result);
+                Log.i(TAG, "点赞请求结果:" + result);
+//                showNormalDialog("点赞成功");
             }
         });
     }
 
     private void commentDiscovery() {
+        User u = StoreBox.getUserInfo(this);
         String body = new Gson().toJson(new CommentJson(
-                1203,1203,"写的好",0,8
+                u.getId(), null, comment.getText().toString().trim(), CommentJson.DISCOVERY, details.getScenicid(),CommonUtil.getCurrentTimeStr()
         ));
-        Log.i(TAG,"评论请求:"+body);
+        Log.i(TAG, "评论请求:" + body);
         Ion.with(this).load("POST", Config.REQUEST_COMMENT).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"评论请求结果:"+result);
+                Log.i(TAG, "评论请求结果:" + result);
+//                showNormalDialog("评论成功");
             }
         });
     }

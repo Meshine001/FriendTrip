@@ -14,33 +14,55 @@ public class CommentJson implements Serializable {
      "type":1,    // 0 1 2 0是新景点  1 是心情 2 是游记
      "travelnotesId":1 代表上面三个的ID
      */
-    private int userId;
-    private int toUserId;
-    private String content;
-    private int type;
-    private int id;
 
-    public CommentJson(int userId, int toUserId, String content, int type, int id) {
+    public static final int DISCOVERY = 0;
+    public static final int STORY = 1;
+    public static final int TRACE = 2;
+
+    private Integer userId;
+    private Integer toUserId;
+    private String content;
+    private Integer type;
+    private Integer id;
+    private String datetime;
+
+    public CommentJson() {
+    }
+
+    public CommentJson(Integer userId, Integer toUserId, String content, Integer type, Integer id, String datetime) {
         this.userId = userId;
         this.toUserId = toUserId;
         this.content = content;
         this.type = type;
         this.id = id;
+        this.datetime = datetime;
     }
 
-    public int getUserId() {
+    public static int getDISCOVERY() {
+        return DISCOVERY;
+    }
+
+    public static int getSTORY() {
+        return STORY;
+    }
+
+    public static int getTRACE() {
+        return TRACE;
+    }
+
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public int getToUserId() {
+    public Integer getToUserId() {
         return toUserId;
     }
 
-    public void setToUserId(int toUserId) {
+    public void setToUserId(Integer toUserId) {
         this.toUserId = toUserId;
     }
 
@@ -52,19 +74,39 @@ public class CommentJson implements Serializable {
         this.content = content;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentJson{" +
+                "userId=" + userId +
+                ", toUserId=" + toUserId +
+                ", content='" + content + '\'' +
+                ", type=" + type +
+                ", id=" + id +
+                ", datetime='" + datetime + '\'' +
+                '}';
     }
 }

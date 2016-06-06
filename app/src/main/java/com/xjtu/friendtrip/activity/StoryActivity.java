@@ -13,12 +13,26 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.xjtu.friendtrip.Net.AddDiscoveryJson;
+import com.xjtu.friendtrip.Net.AddSotryJson;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.ImageListAdapter;
+import com.xjtu.friendtrip.bean.CustomLocation;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Story;
+import com.xjtu.friendtrip.bean.StoryFile;
+import com.xjtu.friendtrip.bean.User;
+import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.StoreBox;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
 import java.io.File;
@@ -40,6 +54,17 @@ public class StoryActivity extends BaseActivity {
     protected static final int REQUEST_STORAGE_WRITE_ACCESS_PERMISSION = 102;
 
 
+    @BindView(R.id.location)
+    TextView location;
+
+    CustomLocation myLoc;
+
+    @BindView(R.id.time)
+    TextView time;
+
+    @BindView(R.id.discovery)
+    EditText discovery;
+
     @BindView(R.id.image_list)
     ExpandListView imageList;
     ImageListAdapter imageAdapter;
@@ -50,7 +75,7 @@ public class StoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
-        initToolbar("新心情");
+        initToolbar("新发现");
         ButterKnife.bind(this);
         initImageList();
     }
@@ -61,13 +86,55 @@ public class StoryActivity extends BaseActivity {
         imageList.setAdapter(imageAdapter);
     }
 
-    @OnClick({R.id.add_image})
+    @OnClick({R.id.add_image,R.id.share,R.id.location})
     void onClick(View view){
         switch (view.getId()){
             case R.id.add_image:
                 selectImage();
                 break;
+            case R.id.share:
+                shareDiscovery();
+                break;
+            case R.id.location:
+                getLocation();
+                break;
         }
+    }
+
+    private void getLocation() {
+        Intent intent = new Intent(StoryActivity.this,LocationActivity.class);
+        startActivityForResult(intent,LocationActivity.GET_LOCATION);
+    }
+
+    private void shareDiscovery() {
+        User u = StoreBox.getUserInfo(this);
+        List<StoryFile> storyFiles = new ArrayList<>();
+        for (Image img : images){
+            storyFiles.add(new StoryFile(img.getImagePath(),img.getSummary(),StoryFile.TYPE_IMEG));
+        }
+        String body = new Gson().toJson(new AddSotryJson(
+            discovery.getText().toString().trim(),
+                myLoc.getName(),
+                time.getText().toString().trim(),
+                u.getId(),
+                myLoc.getLat(),
+                myLoc.getLon(),storyFiles
+        )
+
+        );
+        CommonUtil.printRequest("添加新发现",body);
+        Ion.with(this).load("POST", Config.ADD_DISCOVERY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
+                if (RequestUtil.isRequestSuccess(result)){
+                    CommonUtil.showToast(StoryActivity.this,"添加成功!");
+                }else {
+                    CommonUtil.showToast(StoryActivity.this,"添加失败!");
+                }
+            }
+        });
+
     }
 
     void selectImage() {
@@ -146,6 +213,16 @@ public class StoryActivity extends BaseActivity {
                 Log.i(TAG, error.toString());
             }
         }
+
+        if (requestCode == LocationActivity.GET_LOCATION){
+            Log.i(TAG,"ResultCode:"+resultCode);
+            if (resultCode > 0){
+                myLoc = (CustomLocation) data.getSerializableExtra("data");
+                location.setText(myLoc.getName());
+                Log.i(TAG,"获得位置:"+myLoc);
+            }
+
+        }
     }
 
 
@@ -153,5 +230,6 @@ public class StoryActivity extends BaseActivity {
         CropImage.activity(imageUri)
                 .start(this);
     }
+
 
 }

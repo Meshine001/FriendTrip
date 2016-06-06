@@ -11,7 +11,7 @@ public class FriendNotesByLocationJson implements Serializable {
     private int userid;
     private int count;
 
-    public FriendNotesByLocationJson(Double longitude, Double latitude, int userid, int count) {
+    public FriendNotesByLocationJson(Double latitude, Double longitude, int userid, int count) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.userid = userid;

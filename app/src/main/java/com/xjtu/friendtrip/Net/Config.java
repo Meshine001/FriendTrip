@@ -4,7 +4,7 @@ package com.xjtu.friendtrip.Net;
  * Created by Meshine on 16/6/2.
  */
 public class Config {
-    public static final String BASE_URL = "http://192.168.0.164:8080/friendTrip";
+    public static final String BASE_URL = "http://192.168.0.146:8080/friendTrip";
 
     /**
      * Login and regist

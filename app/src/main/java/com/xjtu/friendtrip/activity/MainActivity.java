@@ -57,14 +57,20 @@ import com.orhanobut.dialogplus.OnItemClickListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.FriendNotesByLocationJson;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Image;
+import com.xjtu.friendtrip.bean.Story;
+import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.fragment.FriendFragment;
 import com.xjtu.friendtrip.fragment.HomeFragment;
 import com.xjtu.friendtrip.fragment.MeFragment;
 import com.xjtu.friendtrip.fragment.ShareFragment;
 import com.xjtu.friendtrip.listener.Locationlistener;
 import com.xjtu.friendtrip.util.LocationUtil;
+import com.xjtu.friendtrip.util.StoreBox;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,28 +141,34 @@ public class MainActivity extends BaseActivity {
         getFriendLocations(location);
     }
 
-    String[] urls = {
-            "http://hdn.xnimg.cn/photos/hdn321/20130612/2235/h_main_NNN4_e80a000007df111a.jpg",
-            "http://h.hiphotos.baidu.com/image/h%3D200/sign=71cd4229be014a909e3e41bd99763971/472309f7905298221dd4c458d0ca7bcb0b46d442.jpg",
-            "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
-            "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
-            "http://img5.imgtn.bdimg.com/it/u=2593135614,3870081477&fm=21&gp=0.jpg"
-    };
     /**
      * 获取朋友的位置
      */
+    int friendCount = 10;
     private void getFriendLocations(BDLocation location) {
+        User u = StoreBox.getUserInfo(this);
         String body = new Gson().toJson(new FriendNotesByLocationJson(
-                109.007894, 34.229714, 1203, 10
+                location.getLatitude(), location.getLongitude(), u.getId(), friendCount
         ));
+
+
         Log.i(TAG, "请求周边朋友:" + body);
         Ion.with(this).load("POST", Config.REQUEST_FRIENDS_NOTES_BY_LOCATION).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 Log.i(TAG, "请求周边朋友结果:" + result);
+                List<Story> stories = RequestUtil.requestToStories(result);
+                updateStories(stories);
             }
         });
 
+
+
+
+
+    }
+
+    private void updateStories(List<Story> stories) {
 
         for (Marker m : markers) {
             m.remove();
@@ -164,34 +176,9 @@ public class MainActivity extends BaseActivity {
         markers.clear();
 
 
-        final List<OverlayOptions> options = new ArrayList<>();
-
-
-        //TODO
-        for (int i = 0; i < 5; i++) {
-            Double x = Math.random() % 10;
-            while (x == 0) {
-                x = Math.random() % 10;
-            }
-
-            x = x / 100;
-
-
-            LatLng point = null;
-            if (i % 4 == 0)
-                //定义Maker坐标点
-                point = new LatLng(location.getLatitude() + x, location.getLongitude() + x);
-            else if (i % 4 == 1)
-                point = new LatLng(location.getLatitude() + x, location.getLongitude() - x);
-            else if (i % 4 == 2)
-                point = new LatLng(location.getLatitude() - x, location.getLongitude() - x);
-            else if (i % 4 == 3)
-                point = new LatLng(location.getLatitude() - x, location.getLongitude() + x);
-
-
-            final LatLng finalPoint = point;
-
-            Glide.with(this).load(urls[i]).asBitmap().into(new SimpleTarget<Bitmap>(60,60) {
+        for (final Story s:stories){
+            final LatLng ll = new LatLng(s.getLatitude(),s.getLongitude());
+            Glide.with(this).load(s.getTravlenotespictures().get(0)).asBitmap().into(new SimpleTarget<Bitmap>(60,60) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     Log.i(TAG,"图片下载成功");
@@ -199,24 +186,30 @@ public class MainActivity extends BaseActivity {
                     BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resource);
                     //构建MarkerOption，用于在地图上添加Marker
                     OverlayOptions option = new MarkerOptions()
-                            .position(finalPoint)
+                            .position(ll)
                             .icon(icon)
                             .zIndex(9).period(10);
                     //在地图上添加Marker，并显示
-                    options.add(option);
                     Marker marker = (Marker) map.addOverlay(option);
-                    marker.setTitle("HAHA");
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("story",s);
+                    marker.setExtraInfo(bundle);
+                    map.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            Story storyBundle = (Story) marker.getExtraInfo().get("story");
+                            Intent intent = new Intent(MainActivity.this,StoryDetailsActivity.class);
+                            intent.putExtra("story",storyBundle);
+                            startActivity(intent);
+                            return false;
+                        }
+                    });
                     markers.add(marker);
                 }
             });
-
         }
 
-//        for (OverlayOptions o : options) {
-//            Marker marker = (Marker) map.addOverlay(o);
-//            marker.setTitle("HAHA");
-//            markers.add(marker);
-//        }
+
 
 
     }
@@ -226,6 +219,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         initBottom();
     }

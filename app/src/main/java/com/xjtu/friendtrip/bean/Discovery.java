@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Ming on 2016/6/5.
  */
 public class Discovery implements Serializable {
-    private List<Image> pictures;
+    private List<Image> travlenotespictures;
     private String summary;
     private List<Comment> commentses;
     private String location;
@@ -25,8 +25,8 @@ public class Discovery implements Serializable {
     public Discovery() {
     }
 
-    public Discovery(List<Image> pictures, String summary, List<Comment> commentses, String location, Integer userid, Integer starCount, String userName, Double longitude, Double latitude, Integer scenicid, Integer commentCount, String datetime, String scenicname, List<Star> starses) {
-        this.pictures = pictures;
+    public Discovery(List<Image> travlenotespictures, String summary, List<Comment> commentses, String location, Integer userid, Integer starCount, String userName, Double longitude, Double latitude, Integer scenicid, Integer commentCount, String datetime, String scenicname, List<Star> starses) {
+        this.travlenotespictures = travlenotespictures;
         this.summary = summary;
         this.commentses = commentses;
         this.location = location;
@@ -42,12 +42,12 @@ public class Discovery implements Serializable {
         this.starses = starses;
     }
 
-    public List<Image> getPictures() {
-        return pictures;
+    public List<Image> getTravlenotespictures() {
+        return travlenotespictures;
     }
 
-    public void setPictures(List<Image> pictures) {
-        this.pictures = pictures;
+    public void setTravlenotespictures(List<Image> travlenotespictures) {
+        this.travlenotespictures = travlenotespictures;
     }
 
     public String getSummary() {
@@ -157,7 +157,7 @@ public class Discovery implements Serializable {
     @Override
     public String toString() {
         return "Discovery{" +
-                "pictures=" + pictures +
+                "pictures=" + travlenotespictures +
                 ", summary='" + summary + '\'' +
                 ", commentses=" + commentses +
                 ", location='" + location + '\'' +

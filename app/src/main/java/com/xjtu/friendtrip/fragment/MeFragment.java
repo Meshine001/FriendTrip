@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Ming on 2016/5/25.
  */
 public class MeFragment extends Fragment {
+    private static final String TAG = MeFragment.class.getName();
     @BindView(R.id.message)
     RelativeLayout message;
     @BindView(R.id.message_dot)
@@ -149,7 +151,6 @@ public class MeFragment extends Fragment {
         nick.setText(me.getNickname());
         fans.setText("粉丝:"+me.getIsFocusCount());
         follows.setText("关注:"+me.getFocusCount());
-        friends.setText("好友:"+me.getFriendsCount());
 
         updateFromCloud();
     }
@@ -170,7 +171,9 @@ public class MeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode >1){
-            if (data.getBooleanExtra("result",false)){
+            boolean f = data.getBooleanExtra("result",false);
+            Log.i(TAG,"登录结果:"+f);
+            if (f){
                 updateUserInfo();
             }
         }

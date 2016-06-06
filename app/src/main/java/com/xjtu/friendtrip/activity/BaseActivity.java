@@ -31,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
 
     SweetAlertDialog progressDialog;
     SweetAlertDialog errDialog;
+    SweetAlertDialog normalDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -47,6 +48,14 @@ public class BaseActivity extends AppCompatActivity {
         errDialog = new SweetAlertDialog(context,SweetAlertDialog.ERROR_TYPE);
         errDialog.setTitleText("错误！");
 
+        normalDialog = new SweetAlertDialog(context,SweetAlertDialog.NORMAL_TYPE);
+        normalDialog.setTitleText("提示");
+
+    }
+
+    protected void showNormalDialog(String message){
+        normalDialog.setContentText(message);
+        normalDialog.show();
     }
 
     protected void showErrDialog(String message){

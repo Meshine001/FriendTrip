@@ -64,7 +64,7 @@ public class DiscoveryGridAdapter extends BaseAdapter {
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-        List<Image> images = covers.get(position).getPictures();
+        List<Image> images = covers.get(position).getTravlenotespictures();
         if (images.size() > 0){
             Glide.with(context)
                     .load(images.get(0).getImagePath())

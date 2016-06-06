@@ -12,11 +12,9 @@ public class StoreBox {
     public static void saveUserInfo(Context context,User user){
         PrefUtils.setIntegerPreference(context,"id",user.getId());
         PrefUtils.setStringPreference(context,"username",user.getName());
-        PrefUtils.setStringPreference(context,"tagId",user.getTagId());
         PrefUtils.setStringPreference(context,"password",user.getPassword());
         PrefUtils.setIntegerPreference(context,"focusCount",user.getFocusCount());
         PrefUtils.setIntegerPreference(context,"isFocusCount",user.getIsFocusCount());
-        PrefUtils.setIntegerPreference(context,"friendsCount",user.getFriendsCount());
         PrefUtils.setStringPreference(context,"profilePhoto",user.getProfilePhoto());
         PrefUtils.setStringPreference(context,"nickname",user.getNickname());
     }
@@ -25,11 +23,9 @@ public class StoreBox {
         User u  = new User(
                 PrefUtils.getIntegerPreference(context,"id",0),
                 PrefUtils.getStringPreference(context,"username"),
-                PrefUtils.getStringPreference(context,"tagId"),
                 PrefUtils.getStringPreference(context,"password"),
                 PrefUtils.getIntegerPreference(context,"focusCount",0),
                 PrefUtils.getIntegerPreference(context,"isFocusCount",0),
-                PrefUtils.getIntegerPreference(context,"friendsCount",0),
                 PrefUtils.getStringPreference(context,"profilePhoto"),
                 PrefUtils.getStringPreference(context,"nickname"));
         return u;
@@ -48,6 +44,14 @@ public class StoreBox {
 
 
     public static void clearUserInfo(Context context){
-        saveUserInfo(context,new User(null,null,null,null,null,null,null,null,null));
+        PrefUtils.setIntegerPreference(context,"id",-1);
+        PrefUtils.setStringPreference(context,"username",null);
+        PrefUtils.setStringPreference(context,"tagId",null);
+        PrefUtils.setStringPreference(context,"password",null);
+        PrefUtils.setIntegerPreference(context,"focusCount",-1);
+        PrefUtils.setIntegerPreference(context,"isFocusCount",-1);
+        PrefUtils.setIntegerPreference(context,"friendsCount",-1);
+        PrefUtils.setStringPreference(context,"profilePhoto",null);
+        PrefUtils.setStringPreference(context,"nickname",null);
     }
 }
