@@ -160,10 +160,11 @@ public class LoginActivity extends BaseActivity {
     private void login(final String username, final String password) {
         showProgressDialog();
         String body = new Gson().toJson(new LoginJson(username,password));
+        CommonUtil.printRequest("登录",body);
         Ion.with(this).load("POST",Config.LOGIN).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"登录完成:"+result);
+               CommonUtil.printResponse(result);
                 if(RequestUtil.isRequestSuccess(result)){
                     loginSuccess(result);
                 }else {

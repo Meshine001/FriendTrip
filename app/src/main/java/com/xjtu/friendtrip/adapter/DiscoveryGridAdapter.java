@@ -9,9 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Cover;
+import com.xjtu.friendtrip.bean.Discovery;
+import com.xjtu.friendtrip.bean.Image;
+import com.xjtu.friendtrip.bean.User;
 
 import java.util.List;
 
@@ -24,10 +31,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class DiscoveryGridAdapter extends BaseAdapter {
 
-    private List<Cover> covers;
+    private List<Discovery> covers;
     private Context context;
 
-    public DiscoveryGridAdapter(List<Cover> covers, Context context) {
+    public DiscoveryGridAdapter(List<Discovery> covers, Context context) {
         this.covers = covers;
         this.context = context;
     }
@@ -48,8 +55,8 @@ public class DiscoveryGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
         if (convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.item_discovery_grid,parent,false);
             holder = new ViewHolder(convertView);
@@ -57,24 +64,31 @@ public class DiscoveryGridAdapter extends BaseAdapter {
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        Glide.with(context)
-                .load(covers.get(position).getCoverUrl())
-                .placeholder(R.drawable.ic_loading)
-                .dontAnimate()
-                .dontTransform()
-                .into(holder.cover);
-
+        List<Image> images = covers.get(position).getPictures();
+        if (images.size() > 0){
+            Glide.with(context)
+                    .load(images.get(0).getImagePath())
+                    .placeholder(R.drawable.ic_loading)
+                    .dontAnimate()
+                    .dontTransform()
+                    .into(holder.cover);
+        }
         holder.summary.setText(covers.get(position).getSummary());
 
-        Glide.with(context)
-                .load(covers.get(position).getAvatarUrl())
-                .placeholder(R.drawable.ic_loading)
-                .dontAnimate()
-                .dontTransform()
-                .into(holder.avatar);
-
-        holder.nick.setText(covers.get(position).getNick());
+        String url = Config.USER_INFO + covers.get(position).getUserid();
+        Ion.with(context).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                User u = RequestUtil.requestToUser(result);
+                Glide.with(context)
+                        .load(u.getProfilePhoto())
+                        .placeholder(R.drawable.ic_loading)
+                        .dontAnimate()
+                        .dontTransform()
+                        .into(holder.avatar);
+                holder.nick.setText(u.getNickname());
+            }
+        });
         holder.location.setText(covers.get(position).getLocation());
 
         return convertView;

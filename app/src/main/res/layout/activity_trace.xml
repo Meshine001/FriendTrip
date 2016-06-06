@@ -3,11 +3,111 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.ecloud.pulltozoomview.PullToZoomScrollViewEx
-        android:id="@+id/pull_zoom_scrollview"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.ecloud.pulltozoomview.PullToZoomScrollViewEx>
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/head_layout"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="@color/colorPrimary"
+                android:gravity="bottom">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/avatar"
+                        android:layout_width="@dimen/avatar_size"
+                        android:layout_height="@dimen/avatar_size"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/test_u2" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="游记名称"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp" />
+
+                                <com.makeramen.roundedimageview.RoundedImageView
+                                    android:id="@+id/cover"
+                                    android:layout_width="@dimen/me_icon_size"
+                                    android:layout_height="@dimen/me_icon_size"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_edit"
+                                    app:riv_corner_radius="10dip" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="2016-04-22 19:22"
+                                android:textColor="@android:color/white"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/head_layout"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/map_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/shape_rec_corner">
+
+                    <FrameLayout
+                        android:id="@+id/map_frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp">
+
+                    </FrameLayout>
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/time_line_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
 
     <com.nightonke.boommenu.BoomMenuButton
         android:id="@+id/boom"
@@ -19,4 +119,14 @@
         app:boom_button_color="#1abc9c"
         app:boom_button_pressed_color="@color/colorPrimary"
         app:boom_inActionBar="false" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBarSize"
+        android:background="@color/transparent"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@android:color/white"/>
 </RelativeLayout>

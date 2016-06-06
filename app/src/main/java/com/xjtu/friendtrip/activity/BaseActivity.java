@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
@@ -53,10 +54,11 @@ public class BaseActivity extends AppCompatActivity {
         errDialog.show();
     }
 
-    protected void dismissErrDialog(){
-        errDialog.dismiss();
-    }
 
+//    protected void setActionBarTransparent(){
+//        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#330000ff")));
+//        actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#550000ff")));
+//    }
 
     protected void showProgressDialog(){
         progressDialog.show();

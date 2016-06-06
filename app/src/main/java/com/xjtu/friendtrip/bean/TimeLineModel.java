@@ -12,16 +12,16 @@ public class TimeLineModel implements Serializable{
 
     private Object content;
     private String time;
-    private String location;
+    private CustomLocation location;
     private int type;
 
     public TimeLineModel() {
     }
 
-    public TimeLineModel(Object content, String location, String time, int type) {
+    public TimeLineModel(Object content, String time, CustomLocation location, int type) {
         this.content = content;
-        this.location = location;
         this.time = time;
+        this.location = location;
         this.type = type;
     }
 
@@ -33,11 +33,11 @@ public class TimeLineModel implements Serializable{
         this.content = content;
     }
 
-    public String getLocation() {
+    public CustomLocation getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(CustomLocation location) {
         this.location = location;
     }
 
@@ -57,13 +57,5 @@ public class TimeLineModel implements Serializable{
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "TimeLineModel{" +
-                "content=" + content +
-                ", time='" + time + '\'' +
-                ", location='" + location + '\'' +
-                ", type=" + type +
-                '}';
-    }
+
 }

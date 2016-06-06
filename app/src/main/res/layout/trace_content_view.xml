@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -11,23 +12,19 @@
         android:layout_margin="10dp"
         android:background="@drawable/shape_rec_corner">
 
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/map"
+        <FrameLayout
+            android:id="@+id/map_frame"
             android:layout_width="match_parent"
             android:layout_height="120dp">
 
-        </com.baidu.mapapi.map.MapView>
+        </FrameLayout>
     </RelativeLayout>
 
-
     <android.support.v7.widget.RecyclerView
-        android:clipToPadding="false"
         android:id="@+id/time_line_recycler_view"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/map_layout"
-        android:layout_margin="10dp"
-        android:paddingBottom="30dp" />
+        android:layout_height="match_parent" />
 
 
-</RelativeLayout>
+</LinearLayout>

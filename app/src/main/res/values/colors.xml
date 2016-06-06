@@ -6,4 +6,6 @@
 
     <color name="card_view_color">#f9f5dc</color>
     <color name="time_line_bg_color">#f9f5dc</color>
+
+    <color name="like_transparent_color">#00ffffff</color>
 </resources>

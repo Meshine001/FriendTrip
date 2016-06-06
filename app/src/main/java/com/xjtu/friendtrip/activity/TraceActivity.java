@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,10 +15,22 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.SupportMapFragment;
+import com.baidu.mapapi.model.LatLng;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
@@ -27,9 +40,11 @@ import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.TimeLineAdapter;
+import com.xjtu.friendtrip.bean.CustomLocation;
 import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.TimeLineModel;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.LocationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,84 +55,91 @@ import butterknife.ButterKnife;
 /**
  * Created by Meshine on 16/5/29.
  */
-public class TraceActivity extends Activity {
+public class TraceActivity extends BaseActivity {
 
 
-    private static final String TAG = TraceActivity.class.getName() ;
+    private static final String TAG = TraceActivity.class.getName();
 
-    @BindView(R.id.pull_zoom_scrollview)
-    PullToZoomScrollViewEx ptzScrollView;
+
+    ImageView topRight;
+    ImageView topSubRight;
+
+    @BindView(R.id.map_frame)
+    FrameLayout mapFrame;
+    SupportMapFragment mapFragment;
+    BaiduMap map;
+    List<LatLng> pts = new ArrayList<>();
+
+    @BindView(R.id.time_line_recycler_view)
+    RecyclerView timeLineRecyclerView;
+    TimeLineAdapter timeLineAdapter;
+    List<TimeLineModel> timeLineItems = new ArrayList<>();
 
     @BindView(R.id.boom)
     BoomMenuButton boom;
 
-    MapView mapView;
-
-    RecyclerView timeLineRecyclerView;
-    TimeLineAdapter timeLineAdapter;
-    List<TimeLineModel> timeLineItems = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trace);
         ButterKnife.bind(this);
-
-        initPullToZoomScrollView();
+        initUI();
+        initTimeLine();
         initBoom();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
+    private void initUI() {
+        initTop();
+        initMap();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
+    private void initTop() {
+        initToolbar("");
+        topRight = new ImageView(this);
+        topRight.setImageResource(R.drawable.ic_share);
+        topRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        setActionBarRightView(topRight);
+
+        topSubRight = new ImageView(this);
+        topSubRight.setImageResource(R.drawable.ic_cloud);
+        topSubRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+        setActionBarSubRightView(topSubRight);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    private void initPullToZoomScrollView() {
-        View headView = LayoutInflater.from(this).inflate(R.layout.trace_head_view, null, false);
-        View zoomView = LayoutInflater.from(this).inflate(R.layout.trace_zoom_view, null, false);
-        View contentView = LayoutInflater.from(this).inflate(R.layout.trace_content_view, null, false);
-        ptzScrollView.setHeaderView(headView);
-        ptzScrollView.setZoomView(zoomView);
-        ptzScrollView.setScrollContentView(contentView);
-
-        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        int mScreenHeight = localDisplayMetrics.heightPixels;
-        int mScreenWidth = localDisplayMetrics.widthPixels;
-        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenWidth / 16.0F)));
-        ptzScrollView.setHeaderLayoutParams(localObject);
-
-        ptzScrollView.setZoomEnabled(true);
+    private void initMap() {
+        mapFragment = new SupportMapFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.map_frame, mapFragment).commit();
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                //execute the task
+                map = mapFragment.getBaiduMap();
+            }
+        }, 2000);
 
 
-        initTimeLine();
-
-        initBaiduMap();
-    }
-
-    private void initBaiduMap() {
-        mapView = (MapView) ptzScrollView.getRootView().findViewById(R.id.map);
     }
 
     private void initTimeLine() {
-        timeLineRecyclerView = (RecyclerView) ptzScrollView.getRootView().findViewById(R.id.time_line_recycler_view);
+        timeLineRecyclerView = (RecyclerView) findViewById(R.id.time_line_recycler_view);
+
+        timeLineRecyclerView.setHasFixedSize(true);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         timeLineRecyclerView.setLayoutManager(linearLayoutManager);
 
-        timeLineAdapter = new TimeLineAdapter(this,timeLineItems);
+        timeLineAdapter = new TimeLineAdapter(this, timeLineItems);
         timeLineRecyclerView.setAdapter(timeLineAdapter);
     }
 
@@ -150,18 +172,18 @@ public class TraceActivity extends Activity {
                 .onSubButtonClick(new BoomMenuButton.OnSubButtonClickListener() {
                     @Override
                     public void onClick(int buttonIndex) {
-                        Intent intent = new Intent(TraceActivity.this,TraceItemActivity.class);
-                        switch (buttonIndex){
+                        Intent intent = new Intent(TraceActivity.this, TraceItemActivity.class);
+                        switch (buttonIndex) {
                             case 0:
-                                intent.putExtra("type",TimeLineModel.TYPE_TEXT);
+                                intent.putExtra("type", TimeLineModel.TYPE_TEXT);
                                 break;
                             case 1:
                                 break;
                             case 2:
-                                intent.putExtra("type",TimeLineModel.TYPE_IMAGE);
+                                intent.putExtra("type", TimeLineModel.TYPE_IMAGE);
                                 break;
                         }
-                        startActivityForResult(intent,TraceItemActivity.TIME_LINE_ITEM_EDIT);
+                        startActivityForResult(intent, TraceItemActivity.TIME_LINE_ITEM_EDIT);
                     }
                 })
                 .button(ButtonType.HAM)
@@ -174,11 +196,54 @@ public class TraceActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TraceItemActivity.TIME_LINE_ITEM_EDIT){
+        if (requestCode == TraceItemActivity.TIME_LINE_ITEM_EDIT) {
             TimeLineModel model = (TimeLineModel) data.getSerializableExtra("data");
-            Log.i(TAG,model.toString());
+            Log.i(TAG, model.toString());
             timeLineItems.add(model);
             timeLineAdapter.notifyDataSetChanged();
+
+            int type = model.getType();
+            CustomLocation location = model.getLocation();
+            drawMarker(location, type);
         }
+    }
+
+    private void drawMarker(CustomLocation location, int type) {
+
+        //构建Marker图标
+        BitmapDescriptor bitmap = null;
+        switch (type) {
+            case TimeLineModel.TYPE_TEXT:
+                bitmap = BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_trace_text);
+                break;
+            case TimeLineModel.TYPE_RECORD:
+                bitmap = BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_trace_recorder);
+                break;
+            case TimeLineModel.TYPE_IMAGE:
+                bitmap = BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_trace_image);
+                break;
+        }
+        drawTrace(location, map);
+        LocationUtil.addMarker(bitmap, location.getLat(), location.getLon(), map);
+        if (pts.size() > 2) {
+            LocationUtil.changeMapCenter(location.getLat(), location.getLon(), map, 16f);
+        } else if (pts.size() > 1) {
+            LocationUtil.changeMapCenter(location.getLat(), location.getLon(), map, 17f);
+        } else {
+            LocationUtil.changeMapCenter(location.getLat(), location.getLon(), map, 18f);
+        }
+
+    }
+
+    private void drawTrace(CustomLocation location, BaiduMap map) {
+        LatLng end = new LatLng(location.getLat(), location.getLon());
+        if (pts.size() > 0) {
+            LatLng start = pts.get(pts.size() - 1);
+            LocationUtil.drawLine(start, end, map);
+        }
+        pts.add(end);
     }
 }

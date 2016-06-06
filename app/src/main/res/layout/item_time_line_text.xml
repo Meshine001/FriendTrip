@@ -5,34 +5,27 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.vipul.hp_hp.timelineview.TimelineView
-        android:id="@+id/time_marker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="30dp"
-        android:paddingEnd="3dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="30dp"
-        app:line="@color/colorPrimary"
-        app:line_size="2dp"
-        app:marker="@drawable/shape_time_line_marker"
-        app:marker_size="25dp" />
-
     <android.support.v7.widget.CardView
+        android:padding="20dp"
         android:background="#eff0a4"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="30dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <RelativeLayout
+            <TextView
                 android:layout_margin="5dp"
-                android:layout_width="match_parent"
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/content"/>
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

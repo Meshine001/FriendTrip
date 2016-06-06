@@ -14,10 +14,15 @@ public class Config {
     public static final String LOGIN = BASE_URL+"/user/login";
 
     /**
+     * UserInfo
+     */
+     public static final String USER_INFO = BASE_URL + "/user/getInfo/";
+    /**
      * Home tab
      */
     /**
      *  按点赞量  /newscenicspots/{offset}/{limit}/findTopStarSpots
+     *  Ex. offset=0 , limit = 3; offset = 4 ,limit = 3
      */
     public static final String FIND_TOP_STAR_SPOTS = "/findTopStarSpots";
     public static final String REQUEST_TOP_LIKE_DISCOVERIES = BASE_URL+"/newscenicspots/";

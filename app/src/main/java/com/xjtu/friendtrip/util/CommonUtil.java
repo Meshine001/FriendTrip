@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +30,16 @@ import java.util.Random;
  * Created by Meshine on 16/5/26.
  */
 public class CommonUtil {
+
+    private static final String TAG = CommonUtil.class.getName();
+
+    public static void printRequest(String name, String param){
+        Log.i(TAG,name+"请求："+param);
+    }
+
+    public static void printResponse(String result){
+        Log.i(TAG,"请求结果:"+result);
+    }
 
     /**
      * 获取本地时间

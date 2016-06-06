@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -17,18 +19,28 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.mapapi.map.Marker;
 import com.google.gson.Gson;
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.bean.CustomLocation;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.TimeLineModel;
+import com.xjtu.friendtrip.listener.Locationlistener;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.LocationUtil;
 
 
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindDrawable;
@@ -68,6 +80,32 @@ public class TraceItemActivity extends BaseActivity {
     @BindView(R.id.location)
     TextView location;
 
+    LocationClient locationClient;
+    BDLocationListener locationListener;
+
+    CustomLocation myLocation;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Locationlistener.LOCATION_SUCCESS:
+                    BDLocation loc = (BDLocation) msg.obj;
+                    String name = loc.getAddrStr();
+                    Double lat = loc.getLatitude();
+                    Double lon = loc.getLongitude();
+                    location.setText(name);
+                    myLocation = new CustomLocation(name,lat,lon);
+                    locationClient.stop();
+                    break;
+                case Locationlistener.LOCATION_FAILD:
+                    Toast.makeText(getBaseContext(), "获取位置失败", Toast.LENGTH_SHORT).show();
+                    locationClient.stop();
+                    break;
+            }
+        }
+    };
+
     int type = 0;
 
     @OnClick({R.id.update_location, R.id.image})
@@ -75,6 +113,8 @@ public class TraceItemActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.update_location:
                 Log.i(TAG, "updateLocation");
+                Intent locIntent = new Intent(TraceItemActivity.this,LocationActivity.class);
+                startActivityForResult(locIntent,LocationActivity.GET_LOCATION);
                 break;
             case R.id.image:
                 selectImage();
@@ -87,9 +127,22 @@ public class TraceItemActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trace_item);
         ButterKnife.bind(this);
+        initUI();
+        initLocation();
+    }
+
+    private void initUI() {
         initToolbar("添加印记");
         initToolbarRight();
         initContent();
+    }
+
+    private void initLocation() {
+        locationListener = new Locationlistener(handler);
+        locationClient = new LocationClient(this);
+        locationClient.registerLocationListener(locationListener);
+        LocationUtil.initLocationOptions(locationClient);
+        locationClient.start();
     }
 
     private void initContent() {
@@ -127,7 +180,7 @@ public class TraceItemActivity extends BaseActivity {
                 Intent data = new Intent();
                 TimeLineModel timeLineModel = new TimeLineModel();
                 timeLineModel.setTime(time.getText().toString().trim());
-                timeLineModel.setLocation(location.getText().toString().trim());
+                timeLineModel.setLocation(myLocation);
                 switch (type) {
                     case TimeLineModel.TYPE_TEXT:
                         Text str = new Text(text.getText().toString().trim());
@@ -202,12 +255,38 @@ public class TraceItemActivity extends BaseActivity {
                 List<String> paths = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
                 // do your logic ....
                 for (String path : paths) {
-                    imagePath = path;
-                    image.setImageURI(Uri.fromFile(new File(path)));
+                    startCropImageActivity(Uri.fromFile(new File(path)));
                 }
-
-
             }
         }
+
+        // handle the crop image uri
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == Activity.RESULT_OK) {
+                Uri resultUri = result.getUri();
+                imagePath = resultUri.getPath();
+                image.setImageURI(resultUri);
+                Log.i(TAG, resultUri.toString());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Log.i(TAG, error.toString());
+            }
+        }
+
+
+        if (requestCode == LocationActivity.GET_LOCATION){
+            Log.i(TAG,"ResultCode:"+resultCode);
+            if (resultCode > 0){
+                myLocation = (CustomLocation) data.getSerializableExtra("data");
+                location.setText(myLocation.getName());
+                Log.i(TAG,"获得位置:"+myLocation);
+            }
+
+        }
+    }
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .start(this);
     }
 }

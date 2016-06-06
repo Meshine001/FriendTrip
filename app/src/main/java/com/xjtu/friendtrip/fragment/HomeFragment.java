@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.activity.AllDiscoveryActivity;
 import com.xjtu.friendtrip.activity.AllFriendItemsActivity;
@@ -25,7 +26,9 @@ import com.xjtu.friendtrip.activity.StoryDetailsActivity;
 import com.xjtu.friendtrip.adapter.DiscoveryGridAdapter;
 import com.xjtu.friendtrip.adapter.SiteListAdapter;
 import com.xjtu.friendtrip.bean.Cover;
+import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Site;
+import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.widget.AdBannerView;
 import com.xjtu.friendtrip.widget.ExpandGridView;
 import com.xjtu.friendtrip.widget.ExpandListView;
@@ -57,7 +60,7 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.discovery_grid)
     ExpandGridView discoveryGrid;
-    List<Cover> discoveryCovers = new ArrayList<>();
+    List<Discovery> discoveryCovers = new ArrayList<>();
     DiscoveryGridAdapter discoveryGridAdaper;
 
     @BindView(R.id.friend_grid)
@@ -160,16 +163,16 @@ public class HomeFragment extends Fragment {
      * 初始化 好友景点
      */
     private void initFriendGrid() {
-        friendGridAdaper = new DiscoveryGridAdapter(friendCovers, getContext());
-        friendGrid.setAdapter(friendGridAdaper);
-        friendGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getContext(), StoryDetailsActivity.class);
-                startActivity(intent);
-            }
-        });
-        initFriendGridData();
+//        friendGridAdaper = new DiscoveryGridAdapter(friendCovers, getContext());
+//        friendGrid.setAdapter(friendGridAdaper);
+//        friendGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getContext(), StoryDetailsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//        initFriendGridData();
     }
 
     private void initFriendGridData() {
@@ -213,6 +216,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getContext(), DiscoveryDetailsActivity.class);
+                intent.putExtra("discovery",discoveryCovers.get(position));
                 startActivity(intent);
             }
         });
@@ -225,48 +229,15 @@ public class HomeFragment extends Fragment {
         int offset = 0;
         int limit = 3;
         String url = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
+        CommonUtil.printRequest("新发现",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"请求新发现结果:"+result);
+                CommonUtil.printResponse(result);
+                discoveryCovers.addAll(RequestUtil.requestToDiscoveries(result));
+                discoveryGridAdaper.notifyDataSetChanged();
             }
         });
-
-        offset = 4;
-        String url1 = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
-        Ion.with(this).load("GET",url1).asString().setCallback(new FutureCallback<String>() {
-            @Override
-            public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"请求新发现1结果:"+result);
-            }
-        });
-
-        //TODO
-        discoveryCovers.add(new Cover(
-                "http://i0.sinaimg.cn/travel/2013/0403/U7118P704DT20130403134240.jpg",
-                "在大街的那条巷子里",
-                "http://img5.imgtn.bdimg.com/it/u=2593135614,3870081477&fm=21&gp=0.jpg",
-                "小明", "曲江区"
-        ));
-        discoveryCovers.add(new Cover(
-                "http://pic3.nipic.com/20090623/2743956_192919027_2.jpg",
-                "身边的美食，你只是没发现而已",
-                "http://h.hiphotos.baidu.com/image/h%3D200/sign=71cd4229be014a909e3e41bd99763971/472309f7905298221dd4c458d0ca7bcb0b46d442.jpg",
-                "小亚茹", "雁塔区"
-        ));
-        discoveryCovers.add(new Cover(
-                "http://img.bendibao.com/tour/201210/15/2012101594223628.JPG",
-                "还是要善于发现美",
-                "http://img4.duitang.com/uploads/item/201511/08/20151108131440_HvuEB.thumb.700_0.jpeg",
-                "小思", "我的雁塔"
-        ));
-        discoveryCovers.add(new Cover(
-                "http://liaoning.sinaimg.cn/2013/0331/U8386P1195DT20130331212520.jpg",
-                "古城也有江南风味",
-                "http://img4q.duitang.com/uploads/item/201404/14/20140414004026_H4Q8R.jpeg",
-                "小波波熊", "古城江南"
-        ));
-        discoveryGridAdaper.notifyDataSetChanged();
     }
 
     /**

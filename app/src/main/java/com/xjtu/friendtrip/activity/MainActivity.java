@@ -64,6 +64,7 @@ import com.xjtu.friendtrip.fragment.HomeFragment;
 import com.xjtu.friendtrip.fragment.MeFragment;
 import com.xjtu.friendtrip.fragment.ShareFragment;
 import com.xjtu.friendtrip.listener.Locationlistener;
+import com.xjtu.friendtrip.util.LocationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,19 +129,8 @@ public class MainActivity extends BaseActivity {
      * @param location
      */
     private void updateMyLocation(BDLocation location) {
-
-        MyLocationData locData = new MyLocationData.Builder()
-                .accuracy(location.getRadius())
-                // 此处设置开发者获取到的方向信息，顺时针0-360
-                .direction(100).latitude(location.getLatitude())
-                .longitude(location.getLongitude()).build();
-        map.setMyLocationData(locData);
-
-        LatLng ll = new LatLng(location.getLatitude(),
-                location.getLongitude());
-        MapStatus.Builder builder = new MapStatus.Builder();
-        builder.target(ll).zoom(18.0f);
-        map.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        LocationUtil.setMyLocationData(location,map);
+        LocationUtil.changeMapCenter(location.getLatitude(),location.getLongitude(),map,18.0f);
         locationClient.stop();
         getFriendLocations(location);
     }
@@ -270,7 +260,8 @@ public class MainActivity extends BaseActivity {
         locationListener = new Locationlistener(handler);
         locationClient = new LocationClient(this);
         locationClient.registerLocationListener(locationListener);
-        initLocation();
+//        initLocation();
+        LocationUtil.initLocationOptions(locationClient);
         locationClient.start();
     }
 
