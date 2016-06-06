@@ -30,7 +30,10 @@ import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.ImageListAdapter;
 import com.xjtu.friendtrip.bean.CustomLocation;
 import com.xjtu.friendtrip.bean.Image;
+import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.PrefUtils;
+import com.xjtu.friendtrip.util.StoreBox;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
 import java.io.File;
@@ -106,14 +109,20 @@ public class DiscoveryActivity extends BaseActivity {
     }
 
     private void shareDiscovery() {
-        //TODO
+        User u = StoreBox.getUserInfo(this);
         String body = new Gson().toJson(new AddDiscoveryJson(
-                "未命名","好地方",1203,34.2131314,104.21121,"http://7xui79.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20160524092514.jpg,http://7xui79.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20160524092848.jpg","曲江新区"
+                "未命名",discovery.getText().toString().trim(),
+                u.getId(),
+                myLoc.getLat(),
+                myLoc.getLon(),
+                images,
+                myLoc.getName()
         ));
+        CommonUtil.printRequest("添加新发现",body);
         Ion.with(this).load("POST", Config.ADD_DISCOVERY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"添加结果:"+result);
+               CommonUtil.printResponse(result);
                 if (RequestUtil.isRequestSuccess(result)){
                     CommonUtil.showToast(DiscoveryActivity.this,"添加成功!");
                }else {

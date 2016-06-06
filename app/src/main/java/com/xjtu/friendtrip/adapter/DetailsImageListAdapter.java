@@ -57,7 +57,7 @@ public class DetailsImageListAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_image_list,parent,false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_details_image_list,parent,false);
             holder = new ViewHolder(convertView);
             int screenWidth = width;
 
@@ -79,13 +79,6 @@ public class DetailsImageListAdapter extends BaseAdapter {
 
         holder.image.setImageURI(Uri.fromFile(new File(images.get(position).getImagePath())));
         holder.summary.setText(images.get(position).getSummary());
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                images.remove(position);
-                notifyDataSetChanged();
-            }
-        });
 
         return convertView;
     }
@@ -93,7 +86,6 @@ public class DetailsImageListAdapter extends BaseAdapter {
     static class ViewHolder{
         @BindView(R.id.image) ImageView image;
         @BindView(R.id.summary) TextView summary;
-        @BindView(R.id.delete)ImageView delete;
         public ViewHolder(View view) {
             ButterKnife.bind(this,view);
         }

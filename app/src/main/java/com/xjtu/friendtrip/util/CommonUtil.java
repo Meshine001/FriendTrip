@@ -33,6 +33,7 @@ public class CommonUtil {
 
     private static final String TAG = CommonUtil.class.getName();
 
+
     public static void printRequest(String name, String param){
         Log.i(TAG,name+"请求："+param);
     }

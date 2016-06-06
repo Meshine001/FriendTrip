@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -94,7 +95,8 @@ public class ImageListAdapter extends BaseAdapter {
 
     static class ViewHolder{
         @BindView(R.id.image) ImageView image;
-        @BindView(R.id.summary) TextView summary;
+        @BindView(R.id.summary)
+        EditText summary;
         @BindView(R.id.delete)ImageView delete;
         public ViewHolder(View view) {
             ButterKnife.bind(this,view);

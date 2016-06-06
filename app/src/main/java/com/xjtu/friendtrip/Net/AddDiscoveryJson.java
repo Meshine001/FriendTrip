@@ -1,6 +1,9 @@
 package com.xjtu.friendtrip.Net;
 
+import com.xjtu.friendtrip.bean.Image;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Meshine on 16/6/2.
@@ -23,8 +26,21 @@ public class AddDiscoveryJson implements Serializable{
     private int userid;
     private Double  longitude;
     private Double  latitude;
-    private String picture;
+    private List<Image>travlenotespictures;
     private String location;
+
+    public AddDiscoveryJson() {
+    }
+
+    public AddDiscoveryJson(String scenicname, String summary, int userid,Double latitude, Double longitude,  List<Image> travlenotespictures, String location) {
+        this.scenicname = scenicname;
+        this.summary = summary;
+        this.userid = userid;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.travlenotespictures = travlenotespictures;
+        this.location = location;
+    }
 
     public String getScenicname() {
         return scenicname;
@@ -66,12 +82,12 @@ public class AddDiscoveryJson implements Serializable{
         this.latitude = latitude;
     }
 
-    public String getPicture() {
-        return picture;
+    public List<Image> getTravlenotespictures() {
+        return travlenotespictures;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setTravlenotespictures(List<Image> travlenotespictures) {
+        this.travlenotespictures = travlenotespictures;
     }
 
     public String getLocation() {
@@ -82,14 +98,16 @@ public class AddDiscoveryJson implements Serializable{
         this.location = location;
     }
 
-    public AddDiscoveryJson(String scenicname, String summary, int userid, Double longitude, Double latitude, String picture, String location) {
-
-        this.scenicname = scenicname;
-        this.summary = summary;
-        this.userid = userid;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.picture = picture;
-        this.location = location;
+    @Override
+    public String toString() {
+        return "AddDiscoveryJson{" +
+                "scenicname='" + scenicname + '\'' +
+                ", summary='" + summary + '\'' +
+                ", userid=" + userid +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", travlenotespictures=" + travlenotespictures +
+                ", location='" + location + '\'' +
+                '}';
     }
 }

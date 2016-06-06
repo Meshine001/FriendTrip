@@ -27,9 +27,13 @@ import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.Net.StarJson;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.adapter.DetailsImageListAdapter;
 import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Image;
+import com.xjtu.friendtrip.bean.Star;
 import com.xjtu.friendtrip.bean.User;
+import com.xjtu.friendtrip.util.ActivityUtil;
+import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
@@ -98,8 +102,7 @@ public class DiscoveryDetailsActivity extends BaseActivity {
                 commentDiscovery();
                 break;
             case R.id.avatar:
-                Intent userInfoIntent = new Intent(DiscoveryDetailsActivity.this,UserInfoActivity.class);
-                startActivity(userInfoIntent);
+                ActivityUtil.startUserInfoActivity(this,details.getUserid());
                 break;
         }
     }
@@ -135,11 +138,40 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         initMapData();
         initImageData();
 
+        initComment();
+    }
+
+    private void initComment() {
+         int width = CommonUtil.getScreenWidth(this);
+         int avaterSize = width/7;
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(avaterSize,avaterSize);
+        likeCount.setText(details.getStarCount());
+        for (final Star s:details.getStarses()){
+            CircleImageView iv = new CircleImageView(this);
+            iv.setLayoutParams(lp);
+            Glide.with(this)
+                    .load(s.getProfilePhoto())
+                    .placeholder(R.drawable.ic_loading)
+                    .dontAnimate()
+                    .dontTransform()
+                    .into(iv);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO
+                    ActivityUtil.startUserInfoActivity(DiscoveryDetailsActivity.this,s.getId());//s的id是userId吗？
+                }
+            });
+            likeLayout.addView(iv);
+        }
+
+
     }
 
     private void initImageData() {
         List<Image> images = details.getPictures();
-
+        DetailsImageListAdapter adapter = new DetailsImageListAdapter(images,this);
+        imageList.setAdapter(adapter);
     }
 
     private void initMapData() {
