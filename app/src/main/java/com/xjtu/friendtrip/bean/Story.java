@@ -25,11 +25,13 @@ public class Story implements Serializable {
     private Double longitude;
     private Integer commentCount;
     private String datetime;
+    private Integer rightType;
+    private Integer scanCount;
 
     public Story() {
     }
 
-    public Story(List<Image> travlenotespictures, List<Comment> commentses, String location, List<Star> starses, Integer userId, Integer travelNotesid, Integer starCount, String discription, Double latitude, Double longitude, Integer commentCount, String datetime) {
+    public Story(List<Image> travlenotespictures, List<Comment> commentses, String location, List<Star> starses, Integer userId, Integer travelNotesid, Integer starCount, String discription, Double latitude, Double longitude, Integer commentCount, String datetime,Integer rightType,Integer scanCount) {
         this.travlenotespictures = travlenotespictures;
         this.commentses = commentses;
         this.location = location;
@@ -42,6 +44,8 @@ public class Story implements Serializable {
         this.longitude = longitude;
         this.commentCount = commentCount;
         this.datetime = datetime;
+        this.rightType = rightType;
+        this.scanCount = scanCount;
     }
 
     public List<Image> getTravlenotespictures() {
@@ -50,6 +54,22 @@ public class Story implements Serializable {
 
     public void setTravlenotespictures(List<Image> travlenotespictures) {
         this.travlenotespictures = travlenotespictures;
+    }
+
+    public Integer getScanCount() {
+        return scanCount;
+    }
+
+    public void setScanCount(Integer scanCount) {
+        this.scanCount = scanCount;
+    }
+
+    public Integer getRightType() {
+        return rightType;
+    }
+
+    public void setRightType(Integer rightType) {
+        this.rightType = rightType;
     }
 
     public List<Comment> getCommentses() {
@@ -155,6 +175,8 @@ public class Story implements Serializable {
                 ", longitude=" + longitude +
                 ", commentCount=" + commentCount +
                 ", datetime='" + datetime + '\'' +
+                ", rightType=" + rightType +
+                ", scanCount=" + scanCount +
                 '}';
     }
 }

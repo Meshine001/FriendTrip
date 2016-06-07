@@ -22,6 +22,7 @@ public class Discovery implements Serializable {
     private String scenicname;
     private List<Star> starses;
 
+
     public Discovery() {
     }
 

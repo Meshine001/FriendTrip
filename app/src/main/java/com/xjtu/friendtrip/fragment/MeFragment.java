@@ -14,7 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.activity.LoginActivity;
 import com.xjtu.friendtrip.activity.MessageActivity;
@@ -22,6 +25,7 @@ import com.xjtu.friendtrip.activity.MyStoriesActivity;
 import com.xjtu.friendtrip.activity.MyTracesActivity;
 import com.xjtu.friendtrip.activity.SettingsActivity;
 import com.xjtu.friendtrip.bean.User;
+import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.PrefUtils;
 import com.xjtu.friendtrip.util.StoreBox;
 
@@ -69,9 +73,7 @@ public class MeFragment extends Fragment {
 
     User me;
 
-
-
-    boolean isLogedIn = false;
+    boolean isViewOk = false;
 
     @Nullable
     @Override
@@ -80,6 +82,9 @@ public class MeFragment extends Fragment {
         ButterKnife.bind(this, view);
         initUI();
         initUserInfo();
+
+        isViewOk = true;
+
         return view;
     }
 
@@ -101,7 +106,7 @@ public class MeFragment extends Fragment {
     @OnClick({R.id.message, R.id.settings, R.id.avatar, R.id.nick, R.id.stories, R.id.traces})
     void onClick(View view) {
 
-        if (!isLogedIn) {
+        if (!StoreBox.isSomeOneHere(getContext())) {
             gotoLogin();
             return;
         }
@@ -130,28 +135,33 @@ public class MeFragment extends Fragment {
     }
 
     private void initUserInfo() {
-        String username = PrefUtils.getStringPreference(getContext(), "username");
-        if (username == null) {
-            nick.setText("现在登陆");
+        if (!StoreBox.isSomeOneHere(getContext())) {
+            resetUserInfo();
         } else {
-            isLogedIn = true;
-            updateUserInfo();
+            getUserInfo();
+        }
+    }
+
+    private void resetUserInfo() {
+        nick.setText("现在登陆");
+        fans.setText("粉丝:0");
+        follows.setText("关注:0");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isViewOk){
+           getUserInfo();
         }
     }
 
     /**
-     * 网络获取最新用户信息
+     * 获取最新用户信息
      */
-    private void updateUserInfo() {
+    private void getUserInfo() {
         me = StoreBox.getUserInfo(getContext());
-        Glide.with(this).load(me.getProfilePhoto())
-                .placeholder(R.drawable.ic_loading)
-                .dontAnimate()
-                .dontTransform().into(avatar);
-        nick.setText(me.getNickname());
-        fans.setText("粉丝:"+me.getIsFocusCount());
-        follows.setText("关注:"+me.getFocusCount());
-
+        updateUI(me);
         updateFromCloud();
     }
 
@@ -159,23 +169,39 @@ public class MeFragment extends Fragment {
      * 从云端更新
      */
     private void updateFromCloud() {
+        Integer userId = me.getId();
+        String url  = Config.USER_INFO + userId;
+        CommonUtil.printRequest("用户信息",url);
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                User u = RequestUtil.requestToUser(result);
+                updateUI(u);
+            }
+        });
+    }
 
+    private void updateUI(User u) {
+        Glide.with(this)
+                .load(u.getProfilePhoto())
+                .placeholder(R.drawable.ic_loading)
+                .dontAnimate()
+                .dontTransform()
+                .into(avatar);
+        nick.setText(u.getNickname());
+        fans.setText("粉丝:"+u.getIsFocusCount());
+        follows.setText("关注:"+u.getFocusCount());
+
+        saveUserInfo(u);
+    }
+
+    private void saveUserInfo(User u) {
+        StoreBox.saveUserInfo(getContext(),u);
     }
 
     private void gotoLogin() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivityForResult(intent,LoginActivity.REQUEST_LOGIN);
+        startActivity(intent);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode >1){
-            boolean f = data.getBooleanExtra("result",false);
-            Log.i(TAG,"登录结果:"+f);
-            if (f){
-                updateUserInfo();
-            }
-        }
-    }
 }

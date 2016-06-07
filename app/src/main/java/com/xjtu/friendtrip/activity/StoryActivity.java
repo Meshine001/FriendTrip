@@ -130,21 +130,24 @@ public class StoryActivity extends BaseActivity {
 
     private void shareStory() {
         User u = StoreBox.getUserInfo(this);
+
         List<StoryFile> storyFiles = new ArrayList<>();
         for (Image img : images){
-            storyFiles.add(new StoryFile(img.getImagePath(),img.getSummary(),StoryFile.TYPE_IMEG));
+            //TODO 还未上传QCloud
+            storyFiles.add(new StoryFile("http://p3.gexing.com/G1/M00/29/C0/rBACE1Qv7q7gPh_qAAL8BojGUH4426.jpg",img.getSummary(),StoryFile.TYPE_IMEG));
         }
+
         String body = new Gson().toJson(new AddSotryJson(
             discovery.getText().toString().trim(),
                 myLoc.getName(),
                 time.getText().toString().trim(),
                 u.getId(),
                 myLoc.getLat(),
-                myLoc.getLon(),storyFiles
+                myLoc.getLon(),storyFiles,auths[curAuthIndex]
         )
 
         );
-        CommonUtil.printRequest("添加新发现",body);
+        CommonUtil.printRequest("添加心情",body);
         Ion.with(this).load("POST", Config.ADD_DISCOVERY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {

@@ -110,12 +110,20 @@ public class DiscoveryActivity extends BaseActivity {
 
     private void shareDiscovery() {
         User u = StoreBox.getUserInfo(this);
+
+        //TODO
+        List<Image> testImages = new ArrayList<>();
+        testImages.add(new Image("http://img5.imgtn.bdimg.com/it/u=3639896409,2665473252&fm=21&gp=0.jpg",
+                "好漂亮"));
+        testImages.add(new Image("http://img2.3lian.com/2014/c7/80/d/82.jpg",
+                "好美丽"));
+
         String body = new Gson().toJson(new AddDiscoveryJson(
                 "未命名",discovery.getText().toString().trim(),
                 u.getId(),
                 myLoc.getLat(),
                 myLoc.getLon(),
-                images,
+                testImages,
                 myLoc.getName()
         ));
         CommonUtil.printRequest("添加新发现",body);

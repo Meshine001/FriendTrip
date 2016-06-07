@@ -19,6 +19,12 @@ public class StoreBox {
         PrefUtils.setStringPreference(context,"nickname",user.getNickname());
     }
 
+    public static boolean isSomeOneHere(Context context){
+        String username = PrefUtils.getStringPreference(context,"username");
+        if (username != null)return true;
+        return false;
+    }
+
     public static User getUserInfo(Context context){
         User u  = new User(
                 PrefUtils.getIntegerPreference(context,"id",0),

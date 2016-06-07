@@ -131,6 +131,7 @@
         android:background="@color/transparent">
 
         <RelativeLayout
+            android:layout_marginStart="18dp"
             android:id="@+id/left_view"
             android:layout_width="20dp"
             android:layout_height="match_parent"

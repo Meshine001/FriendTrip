@@ -16,11 +16,13 @@ public class AddSotryJson implements Serializable {
     private Double latitude;
     private Double longitude;
     private List<StoryFile> travlenotespictures;
+    private Integer rightType;
+
 
     public AddSotryJson() {
     }
 
-    public AddSotryJson(String discription, String location, String datetime, Integer userid, Double latitude, Double longitude, List<StoryFile> travlenotespictures) {
+    public AddSotryJson(String discription, String location, String datetime, Integer userid, Double latitude, Double longitude, List<StoryFile> travlenotespictures,Integer rightType) {
         this.discription = discription;
         this.location = location;
         this.datetime = datetime;
@@ -28,6 +30,16 @@ public class AddSotryJson implements Serializable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.travlenotespictures = travlenotespictures;
+        this.rightType = rightType;
+    }
+
+
+    public Integer getRightType() {
+        return rightType;
+    }
+
+    public void setRightType(Integer rightType) {
+        this.rightType = rightType;
     }
 
     public String getDiscription() {
@@ -96,6 +108,7 @@ public class AddSotryJson implements Serializable {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", travlenotespictures=" + travlenotespictures +
+                ", rightType=" + rightType +
                 '}';
     }
 }

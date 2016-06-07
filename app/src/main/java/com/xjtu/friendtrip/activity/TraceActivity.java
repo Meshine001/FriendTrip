@@ -87,7 +87,7 @@ public class TraceActivity extends AppCompatActivity {
         switch (view.getId()){
             case R.id.settings:
                 if (settingsDialog == null){
-                    final String[] items = {"预览足迹","权限设置","保存草稿","删除足迹"};
+                    final String[] items = {"发布足迹","预览足迹","保存草稿","删除足迹"};
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items);
                     settingsDialog = DialogPlus.newDialog(this)
                             .setAdapter(adapter)
@@ -97,6 +97,7 @@ public class TraceActivity extends AppCompatActivity {
                                 @Override
                                 public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
                                     CommonUtil.showToast(TraceActivity.this,items[position]);
+                                    settingsDialog.dismiss();
                                 }
                             }).create();
                 }

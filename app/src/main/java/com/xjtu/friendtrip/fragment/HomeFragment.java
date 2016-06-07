@@ -25,9 +25,11 @@ import com.xjtu.friendtrip.activity.DiscoveryDetailsActivity;
 import com.xjtu.friendtrip.activity.StoryDetailsActivity;
 import com.xjtu.friendtrip.adapter.DiscoveryGridAdapter;
 import com.xjtu.friendtrip.adapter.SiteListAdapter;
+import com.xjtu.friendtrip.adapter.StoryGridAdapter;
 import com.xjtu.friendtrip.bean.Cover;
 import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Site;
+import com.xjtu.friendtrip.bean.Story;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.widget.AdBannerView;
 import com.xjtu.friendtrip.widget.ExpandGridView;
@@ -65,8 +67,8 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.friend_grid)
     ExpandGridView friendGrid;
-    List<Cover> friendCovers = new ArrayList<>();
-    DiscoveryGridAdapter friendGridAdaper;
+    List<Story> friendCovers = new ArrayList<>();
+    StoryGridAdapter friendGridAdaper;
 
     @BindView(R.id.sites_list)
     ExpandListView sitesList;
@@ -160,50 +162,39 @@ public class HomeFragment extends Fragment {
 
 
     /**
-     * 初始化 好友景点
+     * 初始化 好友心情
      */
     private void initFriendGrid() {
-//        friendGridAdaper = new DiscoveryGridAdapter(friendCovers, getContext());
-//        friendGrid.setAdapter(friendGridAdaper);
-//        friendGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getContext(), StoryDetailsActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//        initFriendGridData();
+        friendGridAdaper = new StoryGridAdapter(friendCovers, getContext());
+        friendGrid.setAdapter(friendGridAdaper);
+        friendGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), StoryDetailsActivity.class);
+                intent.putExtra("story",friendCovers.get(position));
+                startActivity(intent);
+            }
+        });
+        initFriendGridData();
     }
 
     private void initFriendGridData() {
 
         friendCovers.clear();
-        //TODO
-        friendCovers.add(new Cover(
-                "http://pic41.nipic.com/20140531/18107775_134019262173_2.jpg",
-                "巴厘岛乐园之旅",
-                "http://www.qqpk.cn/Article/UploadFiles/201202/20120208134912759.jpg",
-                "小小", "巴厘岛"
-        ));
-        friendCovers.add(new Cover(
-                "http://img1.qunarzz.com/sight/p0/201403/07/e52053cbc7468d9ac4c19401b21dad34.jpg_1190x550_0344d9a4.jpg",
-                "lalalala。这是个好地方",
-                "http://v1.qzone.cc/avatar/201408/21/13/32/53f5845197327705.jpg!200x200.jpg",
-                "Sla", "雁塔区"
-        ));
-        friendCovers.add(new Cover(
-                "http://img1.imgtn.bdimg.com/it/u=4081927646,1723414767&fm=21&gp=0.jpg",
-                "华山之巅，我愿飞翔",
-                "http://v1.qzone.cc/avatar/201507/19/15/30/55ab520054839972.jpg!200x200.jpg",
-                "帅到爆", "渭南"
-        ));
-        friendCovers.add(new Cover(
-                "http://img3.fengniao.com/forum/attachpics/787/138/31467492_1024.jpg",
-                "夜色摩尼",
-                "http://www.feizl.com/upload2007/2011_04/110403170151167.jpg",
-                "HuLaha", "雁塔区"
-        ));
-        friendGridAdaper.notifyDataSetChanged();
+        int offset = 0;
+        int limit = 3;
+
+        String url = Config.REQUEST_TOP_LIKE_FRIENDS+ offset +"/"+limit+Config.FIND_TOP_STAR_NOTES;
+        CommonUtil.printRequest("朋友心情",url);
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
+                friendCovers.addAll(RequestUtil.requestToStories(result));
+                friendGridAdaper.notifyDataSetChanged();
+            }
+        });
+
     }
 
 
