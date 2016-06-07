@@ -7,6 +7,12 @@ import java.util.List;
  * Created by Meshine on 16/5/27.
  */
 public class Story implements Serializable {
+
+    public static final int AUTH_WORLD = 0;
+    public static final int AUTH_FRIENDS = 1;
+    public static final int AUTH_SELF = 2;
+
+
     private List<Image> travlenotespictures;
     private List<Comment> commentses;
     private String location;

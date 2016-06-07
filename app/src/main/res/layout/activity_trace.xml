@@ -3,12 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <RelativeLayout
                 android:id="@+id/head_layout"
                 android:layout_width="match_parent"
@@ -47,20 +50,20 @@
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
-                                <TextView
+                                <EditText
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:background="@android:color/transparent"
                                     android:text="游记名称"
                                     android:textColor="@android:color/white"
-                                    android:textSize="14sp" />
+                                    android:textSize="15sp" />
 
-                                <com.makeramen.roundedimageview.RoundedImageView
-                                    android:id="@+id/cover"
+                                <ImageView
+                                    android:layout_marginStart="3dp"
+                                    android:id="@+id/edit"
                                     android:layout_width="@dimen/me_icon_size"
                                     android:layout_height="@dimen/me_icon_size"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/ic_edit"
-                                    app:riv_corner_radius="10dip" />
+                                    android:src="@drawable/ic_edit" />
                             </LinearLayout>
 
                             <TextView
@@ -90,6 +93,7 @@
                     android:background="@drawable/shape_rec_corner">
 
                     <FrameLayout
+                        android:background="@drawable/shape_corner_gray"
                         android:id="@+id/map_frame"
                         android:layout_width="match_parent"
                         android:layout_height="140dp">
@@ -120,13 +124,54 @@
         app:boom_button_pressed_color="@color/colorPrimary"
         app:boom_inActionBar="false" />
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
+        android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/actionBarSize"
-        android:background="@color/transparent"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@android:color/white"/>
+        android:background="@color/transparent">
+
+        <RelativeLayout
+            android:id="@+id/left_view"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_back" />
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:id="@+id/settings"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_settings"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/cloud"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@id/settings"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_cloud"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
 </RelativeLayout>

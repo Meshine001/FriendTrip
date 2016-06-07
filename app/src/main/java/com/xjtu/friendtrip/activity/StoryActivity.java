@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -39,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -70,12 +72,22 @@ public class StoryActivity extends BaseActivity {
     ImageListAdapter imageAdapter;
     List<Image> images = new ArrayList<>();
 
+    @BindView(R.id.auth_icon)
+    ImageView authIcon;
+    @BindView(R.id.auth_text)
+    TextView authText;
+    int[] auths = {Story.AUTH_WORLD,Story.AUTH_FRIENDS,Story.AUTH_SELF};
+    int[] icons = {R.drawable.ic_world_visible,R.drawable.ic_friends_visible,R.drawable.ic_self_visible};
+    String[] authTexts = {"全部可见","好友可见","个人可见"};
+    int curAuthIndex = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discovery);
-        initToolbar("新发现");
+        setContentView(R.layout.activity_story);
+        initToolbar("新心情");
         ButterKnife.bind(this);
         initImageList();
     }
@@ -86,19 +98,29 @@ public class StoryActivity extends BaseActivity {
         imageList.setAdapter(imageAdapter);
     }
 
-    @OnClick({R.id.add_image,R.id.share,R.id.location})
+    @OnClick({R.id.add_image,R.id.share,R.id.location,R.id.auth_layout})
     void onClick(View view){
         switch (view.getId()){
             case R.id.add_image:
                 selectImage();
                 break;
             case R.id.share:
-                shareDiscovery();
+                shareStory();
                 break;
             case R.id.location:
                 getLocation();
                 break;
+            case R.id.auth_layout:
+                changeAuth();
+                break;
         }
+    }
+
+    private void changeAuth() {
+        curAuthIndex++;
+        if (curAuthIndex == 3)curAuthIndex=0;
+        authIcon.setImageResource(icons[curAuthIndex]);
+        authText.setText(authTexts[curAuthIndex]);
     }
 
     private void getLocation() {
@@ -106,7 +128,7 @@ public class StoryActivity extends BaseActivity {
         startActivityForResult(intent,LocationActivity.GET_LOCATION);
     }
 
-    private void shareDiscovery() {
+    private void shareStory() {
         User u = StoreBox.getUserInfo(this);
         List<StoryFile> storyFiles = new ArrayList<>();
         for (Image img : images){

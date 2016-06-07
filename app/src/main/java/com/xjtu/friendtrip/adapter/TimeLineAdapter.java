@@ -1,6 +1,8 @@
 package com.xjtu.friendtrip.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.TimeLineModel;
+import com.xjtu.friendtrip.util.BitmapUtil;
 
 import java.io.File;
 import java.util.List;
@@ -102,7 +105,8 @@ public class TimeLineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case TimeLineModel.TYPE_IMAGE:
                 ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
                 Image img = (Image) model.getContent();
-                imageViewHolder.image.setImageURI(Uri.fromFile(new File(img.getImagePath())));
+                Bitmap thumb = BitmapUtil.extractMiniThumb(BitmapFactory.decodeFile(img.getImagePath()),400,300);
+                imageViewHolder.image.setImageBitmap(thumb);
                 imageViewHolder.summary.setText(img.getSummary());
                 imageViewHolder.location.setText(model.getLocation().getName());
                 imageViewHolder.time.setText(model.getTime());

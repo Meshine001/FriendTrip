@@ -90,10 +90,35 @@
             <RelativeLayout
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="120dp">
+                <RelativeLayout
+                    android:id="@+id/auth_layout"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/auth_icon"
+                        android:layout_width="@dimen/auth_icon_size"
+                        android:layout_height="@dimen/auth_icon_size"
+                        android:src="@drawable/ic_world_visible"/>
+                    <TextView
+                        android:layout_marginStart="3dp"
+                        android:id="@+id/auth_text"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/auth_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/white"
+                        android:text="全部可见"/>
+                </RelativeLayout>
                 <Button
+                    android:id="@+id/share"
+                    android:layout_centerInParent="true"
                     android:background="@drawable/shape_corner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

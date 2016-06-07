@@ -13,8 +13,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +40,9 @@ import com.nightonke.boommenu.Types.ButtonType;
 import com.nightonke.boommenu.Types.OrderType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.ListHolder;
+import com.orhanobut.dialogplus.OnItemClickListener;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.TimeLineAdapter;
 import com.xjtu.friendtrip.bean.CustomLocation;
@@ -51,21 +56,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Meshine on 16/5/29.
  */
-public class TraceActivity extends BaseActivity {
+public class TraceActivity extends AppCompatActivity {
 
 
     private static final String TAG = TraceActivity.class.getName();
 
 
-    ImageView topRight;
-    ImageView topSubRight;
-
-    @BindView(R.id.map_frame)
-    FrameLayout mapFrame;
     SupportMapFragment mapFragment;
     BaiduMap map;
     List<LatLng> pts = new ArrayList<>();
@@ -79,6 +80,37 @@ public class TraceActivity extends BaseActivity {
     BoomMenuButton boom;
 
 
+    DialogPlus settingsDialog;
+
+    @OnClick({R.id.settings,R.id.cloud,R.id.back})
+    void onClick(View view){
+        switch (view.getId()){
+            case R.id.settings:
+                if (settingsDialog == null){
+                    final String[] items = {"预览足迹","权限设置","保存草稿","删除足迹"};
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items);
+                    settingsDialog = DialogPlus.newDialog(this)
+                            .setAdapter(adapter)
+                            .setGravity(Gravity.CENTER)
+                            .setCancelable(true)
+                            .setOnItemClickListener(new OnItemClickListener() {
+                                @Override
+                                public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+                                    CommonUtil.showToast(TraceActivity.this,items[position]);
+                                }
+                            }).create();
+                }
+                settingsDialog.show();
+                break;
+            case R.id.cloud:
+                CommonUtil.showToast(TraceActivity.this,"同步到云端");
+                break;
+            case R.id.back:
+                finish();
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,33 +122,9 @@ public class TraceActivity extends BaseActivity {
     }
 
     private void initUI() {
-        initTop();
         initMap();
     }
 
-    private void initTop() {
-        initToolbar("");
-        topRight = new ImageView(this);
-        topRight.setImageResource(R.drawable.ic_share);
-        topRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        setActionBarRightView(topRight);
-
-        topSubRight = new ImageView(this);
-        topSubRight.setImageResource(R.drawable.ic_cloud);
-        topSubRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-            }
-        });
-        setActionBarSubRightView(topSubRight);
-    }
 
     private void initMap() {
         mapFragment = new SupportMapFragment();
