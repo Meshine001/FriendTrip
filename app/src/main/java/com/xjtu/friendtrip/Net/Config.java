@@ -17,6 +17,12 @@ public class Config {
      * UserInfo
      */
      public static final String USER_INFO = BASE_URL + "/user/getInfo/";
+
+    /**
+     * Follow TA
+     */
+     public static final String FOLLOW_TA = BASE_URL + "";
+
     /**
      * Home tab
      */

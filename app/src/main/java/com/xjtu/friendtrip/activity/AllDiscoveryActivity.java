@@ -12,10 +12,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.DiscoveryGridAdapter;
 import com.xjtu.friendtrip.bean.Cover;
 import com.xjtu.friendtrip.bean.Discovery;
+import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.widget.ExpandGridView;
 
 import java.util.ArrayList;
@@ -37,6 +42,9 @@ public class AllDiscoveryActivity extends BaseActivity {
     GridView discoveryGrid;
     List<Discovery> discoveryCovers = new ArrayList<>();
     DiscoveryGridAdapter discoveryGridAdaper;
+
+    int offset = 0;
+    int limit = 8;
 
     @BindView(R.id.pull_up_bottom)
     RelativeLayout pullUpBottom;
@@ -66,7 +74,6 @@ public class AllDiscoveryActivity extends BaseActivity {
                         // 判断滚动到底部
                         if (view.getLastVisiblePosition() == (view.getCount() - 1)) {
                             appendData();
-
                         }
                         break;
                 }
@@ -85,17 +92,31 @@ public class AllDiscoveryActivity extends BaseActivity {
 
     private void appendData() {
         pullUpBottom.setVisibility(View.VISIBLE);
-
+        getDataFromCloud();
         discoveryGridAdaper.notifyDataSetChanged();
         discoveryGrid.setSelection(discoveryCovers.size()-1);
         pullUpBottom.setVisibility(View.GONE);
     }
 
+    private void getDataFromCloud(){
+        String url = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
+        CommonUtil.printRequest("新发现",url);
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
+                discoveryCovers.addAll(RequestUtil.requestToDiscoveries(result));
+                discoveryGridAdaper.notifyDataSetChanged();
+                offset += (limit +1);
+            }
+        });
+    }
 
     private void initDiscoveryGridData() {
+        offset = 0;
+        limit = 8;
         discoveryCovers.clear();
-
-        discoveryGridAdaper.notifyDataSetChanged();
+        getDataFromCloud();
     }
 
     private void initPrtFrame() {

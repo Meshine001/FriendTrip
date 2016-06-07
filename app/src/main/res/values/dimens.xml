@@ -32,4 +32,6 @@
 
     <dimen name="info_title_size">15sp</dimen>
     <dimen name="info_content_size">12sp</dimen>
+
+    <dimen name="my_story_cover_height">90dp</dimen>
 </resources>
