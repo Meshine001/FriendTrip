@@ -118,5 +118,10 @@ dependencies {
      */
     compile 'com.github.2359media:EasyAndroidAnimations:0.8'
 
+    /**
+     * Database
+     */
+    compile 'org.greenrobot:greendao:2.2.0'
+    compile 'org.greenrobot:greendao-generator:2.2.0'
 
 }

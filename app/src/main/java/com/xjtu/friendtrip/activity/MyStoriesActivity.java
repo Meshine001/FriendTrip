@@ -42,9 +42,9 @@ public class MyStoriesActivity extends BaseActivity {
     }
 
     private void initData() {
-        userId = getIntent().getIntExtra("userId",-1);
-        String url = Config.REQUEST_STORIES_BY_USER+ userId+Config.GET_NOTES_BY_ID;
-        CommonUtil.printRequest("性情集",url);
+        userId = getIntent().getIntExtra("userId",0);
+        String url = Config.REQUEST_STORIES_BY_USER+ userId+Config.GET_NOTES_BY_USER_ID;
+        CommonUtil.printRequest("心情集",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {

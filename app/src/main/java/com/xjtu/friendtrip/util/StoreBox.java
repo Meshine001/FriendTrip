@@ -50,13 +50,13 @@ public class StoreBox {
 
 
     public static void clearUserInfo(Context context){
-        PrefUtils.setIntegerPreference(context,"id",-1);
+        PrefUtils.setIntegerPreference(context,"id",0);
         PrefUtils.setStringPreference(context,"username",null);
         PrefUtils.setStringPreference(context,"tagId",null);
         PrefUtils.setStringPreference(context,"password",null);
-        PrefUtils.setIntegerPreference(context,"focusCount",-1);
-        PrefUtils.setIntegerPreference(context,"isFocusCount",-1);
-        PrefUtils.setIntegerPreference(context,"friendsCount",-1);
+        PrefUtils.setIntegerPreference(context,"focusCount",0);
+        PrefUtils.setIntegerPreference(context,"isFocusCount",0);
+        PrefUtils.setIntegerPreference(context,"friendsCount",0);
         PrefUtils.setStringPreference(context,"profilePhoto",null);
         PrefUtils.setStringPreference(context,"nickname",null);
     }

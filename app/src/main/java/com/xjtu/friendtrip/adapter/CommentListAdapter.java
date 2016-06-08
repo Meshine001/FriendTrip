@@ -72,7 +72,7 @@ public class CommentListAdapter extends BaseAdapter {
                         .dontAnimate()
                         .dontTransform()
                         .into(holder.avatar);
-                holder.nick.setText(u.getNickname());
+                holder.nick.setText(u.getNickname()+":");
                 holder.avatar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -116,8 +116,10 @@ public class MeFragment extends Fragment {
         switch (view.getId()) {
             case R.id.message:
                 intent.setClass(getContext(), MessageActivity.class);
+                startActivity(intent);
             case R.id.settings:
                 intent.setClass(getContext(), SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.avatar:
                 break;
@@ -125,19 +127,24 @@ public class MeFragment extends Fragment {
                 break;
             case R.id.stories:
                 intent.setClass(getContext(), MyStoriesActivity.class);
+                intent.putExtra("userId",me.getId());
+                startActivity(intent);
                 break;
             case R.id.traces:
                 intent.setClass(getContext(), MyTracesActivity.class);
+                startActivity(intent);
                 break;
         }
 
-        startActivity(intent);
+
     }
 
     private void initUserInfo() {
         if (!StoreBox.isSomeOneHere(getContext())) {
+            Log.i(TAG,"没人登录");
             resetUserInfo();
         } else {
+            Log.i(TAG,"有人登录");
             getUserInfo();
         }
     }
@@ -151,7 +158,7 @@ public class MeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (isViewOk){
+        if (isViewOk && StoreBox.isSomeOneHere(getContext())){
            getUserInfo();
         }
     }
@@ -161,6 +168,7 @@ public class MeFragment extends Fragment {
      */
     private void getUserInfo() {
         me = StoreBox.getUserInfo(getContext());
+        Log.i(TAG,me.toString());
         updateUI(me);
         updateFromCloud();
     }

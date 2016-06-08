@@ -1,8 +1,10 @@
 package com.xjtu.friendtrip.activity;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserInfoActivity extends AppCompatActivity {
 
+    private static final String TAG = UserInfoActivity.class.getName();
     @BindView(R.id.avatar)
     CircleImageView avatar;
     @BindView(R.id.nick)
@@ -48,7 +51,8 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private void getInfoFromCloud() {
-        userId = getIntent().getIntExtra("userId",-1);
+        userId = getIntent().getIntExtra("userId",0);
+        Log.i(TAG," "+userId);
         String url  = Config.USER_INFO + userId;
         CommonUtil.printRequest("用户信息",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {

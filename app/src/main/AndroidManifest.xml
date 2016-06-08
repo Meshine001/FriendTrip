@@ -61,7 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.StoryActivity"/>
+        <activity android:name=".activity.StoryActivity" />
         <activity android:name=".activity.DiscoveryActivity" />
         <activity android:name=".activity.LocationActivity" />
         <activity android:name=".activity.LoginActivity" />
@@ -75,7 +75,8 @@
         <activity android:name=".activity.AllFriendItemsActivity" />
         <activity android:name=".activity.DiscoveryDetailsActivity" />
         <activity android:name=".activity.UserInfoActivity" />
-        <activity android:name=".activity.UserInfoSettings"></activity>
+        <activity android:name=".activity.UserInfoSettings" />
+        <activity android:name=".activity.PreViewTraceActivity"/>
 
         <!-- Image Selector Entry -->
         <activity
@@ -93,7 +94,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
     </application>
 
 </manifest>

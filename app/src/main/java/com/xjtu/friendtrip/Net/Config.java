@@ -43,7 +43,7 @@ public class Config {
     /**
      * 主页 好友
      */
-    public static final String FIND_TOP_STAR_NOTES = "findTopStarNotes";
+    public static final String FIND_TOP_STAR_NOTES = "/findTopStarNotes";
     public static final String REQUEST_TOP_LIKE_FRIENDS = BASE_URL + "/travelnotes/";
 
     /**
@@ -69,8 +69,14 @@ public class Config {
     /**
      * 我的心情集
      */
-    public static final String GET_NOTES_BY_ID = "/getNotesById";
+    public static final String GET_NOTES_BY_USER_ID = "/getNotesByUserId";
     public static final String REQUEST_STORIES_BY_USER = BASE_URL + "/travelnotes/";
+
+//    /**
+//     * 我的心情集
+//     */
+//    public static final String GET_NOTES_BY_USER_ID = "/getNotesByUserId";
+//    public static final String REQUEST_STORIES_BY_USER = BASE_URL + "/travelnotes/";
 
     public static final String ME_STORIES_BG_URL = "http://pic29.nipic.com/20130523/9908282_160306298113_2.jpg";
     public static final String ME_TRACES_BG_URL = "http://e.hiphotos.baidu.com/zhidao/pic/item/0b7b02087bf40ad1b660bcb9552c11dfa8eccee0.jpg";

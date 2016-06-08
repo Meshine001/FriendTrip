@@ -96,7 +96,7 @@
                         android:background="@drawable/shape_corner_gray"
                         android:id="@+id/map_frame"
                         android:layout_width="match_parent"
-                        android:layout_height="140dp">
+                        android:layout_height="160dp">
 
                     </FrameLayout>
                 </RelativeLayout>

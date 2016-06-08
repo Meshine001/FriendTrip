@@ -53,6 +53,18 @@ public class CommonUtil {
         return str;
     }
 
+    /**
+     * 获取本地时间精确到秒
+     * @return
+     */
+    public static String getCurrentTime2Sectr(){
+        SimpleDateFormat    formatter    =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date    curDate    =   new Date(System.currentTimeMillis());//获取当前时间
+        String    str    =    formatter.format(curDate);
+        return str;
+    }
+
+
 
     private static String[] Colors = {
             "#F44336",

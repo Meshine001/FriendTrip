@@ -46,6 +46,7 @@ import com.orhanobut.dialogplus.OnItemClickListener;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.TimeLineAdapter;
 import com.xjtu.friendtrip.bean.CustomLocation;
+import com.xjtu.friendtrip.bean.Story;
 import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.TimeLineModel;
 import com.xjtu.friendtrip.util.CommonUtil;
@@ -81,27 +82,21 @@ public class TraceActivity extends AppCompatActivity {
 
 
     DialogPlus settingsDialog;
+    final String[] sItems = {"发布足迹","预览足迹","保存草稿","删除足迹"};
+    ArrayAdapter<String> settingsAdapter;
+
+    DialogPlus authDialog;
+    final String[] aItems = {"全部可见","朋友可见","自己可见"};
+    ArrayAdapter<String> aAdapter;
+
+    Integer auth = Story.AUTH_WORLD;
+
 
     @OnClick({R.id.settings,R.id.cloud,R.id.back})
     void onClick(View view){
         switch (view.getId()){
             case R.id.settings:
-                if (settingsDialog == null){
-                    final String[] items = {"发布足迹","预览足迹","保存草稿","删除足迹"};
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,items);
-                    settingsDialog = DialogPlus.newDialog(this)
-                            .setAdapter(adapter)
-                            .setGravity(Gravity.CENTER)
-                            .setCancelable(true)
-                            .setOnItemClickListener(new OnItemClickListener() {
-                                @Override
-                                public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-                                    CommonUtil.showToast(TraceActivity.this,items[position]);
-                                    settingsDialog.dismiss();
-                                }
-                            }).create();
-                }
-                settingsDialog.show();
+                showSettingsDialog();
                 break;
             case R.id.cloud:
                 CommonUtil.showToast(TraceActivity.this,"同步到云端");
@@ -110,6 +105,98 @@ public class TraceActivity extends AppCompatActivity {
                 finish();
                 break;
         }
+    }
+
+    private void showSettingsDialog() {
+        if (settingsDialog == null){
+            settingsAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,sItems);
+            settingsDialog = DialogPlus.newDialog(this)
+                    .setAdapter(settingsAdapter)
+                    .setGravity(Gravity.CENTER)
+                    .setCancelable(true)
+                    .setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+//                            CommonUtil.showToast(TraceActivity.this,items[position]);
+                            switch (position){
+                                case 0:
+                                    showAuthDialog();
+                                    break;
+                                case 1:
+                                    preViewTrace();
+                                    break;
+                                case 2:
+                                    saveToLocal();
+                                    break;
+                                case 3:
+                                    deleteTrace();
+                                    break;
+                            }
+                            settingsDialog.dismiss();
+                        }
+                    }).create();
+        }
+        settingsDialog.show();
+    }
+
+    private void showAuthDialog() {
+        if (authDialog == null){
+            aAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,aItems);
+            authDialog = DialogPlus.newDialog(this)
+                    .setAdapter(aAdapter)
+                    .setGravity(Gravity.CENTER)
+                    .setCancelable(true)
+                    .setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
+//                            CommonUtil.showToast(TraceActivity.this,items[position]);
+                            switch (position){
+                                case Story.AUTH_WORLD:
+                                    auth = Story.AUTH_WORLD;
+                                    break;
+                                case Story.AUTH_FRIENDS:
+                                    auth = Story.AUTH_FRIENDS;
+                                    break;
+                                case Story.AUTH_SELF:
+                                    auth = Story.AUTH_SELF;
+                                    break;
+
+                            }
+                            authDialog.dismiss();
+                            shareTrace();
+                        }
+                    }).create();
+        }
+        authDialog.show();
+    }
+
+    /**
+     * 删除当前足迹
+     */
+    private void deleteTrace() {
+
+    }
+
+    /**
+     * 保存草稿
+     */
+    private void saveToLocal() {
+
+    }
+
+    /**
+     * 预览足迹
+     */
+    private void preViewTrace() {
+        Intent intent = new Intent(TraceActivity.this,PreViewTraceActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 发布足迹
+     */
+    private void shareTrace() {
+
     }
 
     @Override
@@ -134,6 +221,8 @@ public class TraceActivity extends AppCompatActivity {
             public void run() {
                 //execute the task
                 map = mapFragment.getBaiduMap();
+                MapView mapView = mapFragment.getMapView();
+                mapView.showScaleControl(false);
             }
         }, 2000);
 

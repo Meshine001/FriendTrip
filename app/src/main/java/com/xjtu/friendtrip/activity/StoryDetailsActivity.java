@@ -52,7 +52,7 @@ public class StoryDetailsActivity extends BaseActivity {
     @BindView(R.id.nick)
     TextView nick;
 
-    @BindView(R.id.time)
+    @BindView(R.id.date_time)
     TextView dateTime;
     @BindView(R.id.location)
     TextView location;

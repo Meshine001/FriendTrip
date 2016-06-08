@@ -254,7 +254,7 @@ public class DiscoveryDetailsActivity extends BaseActivity {
     private void commentDiscovery() {
         User u = StoreBox.getUserInfo(this);
         String body = new Gson().toJson(new CommentJson(
-                u.getId(), null, comment.getText().toString().trim(), CommentJson.DISCOVERY, details.getScenicid(),CommonUtil.getCurrentTimeStr()
+                u.getId(), null, comment.getText().toString().trim(), CommentJson.DISCOVERY, details.getScenicid(),CommonUtil.getCurrentTime2Sectr()
         ));
         Log.i(TAG, "评论请求:" + body);
         Ion.with(this).load("POST", Config.REQUEST_COMMENT).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
