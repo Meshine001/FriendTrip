@@ -12,7 +12,6 @@ public class StoreBox {
     public static void saveUserInfo(Context context,User user){
         PrefUtils.setIntegerPreference(context,"id",user.getId());
         PrefUtils.setStringPreference(context,"username",user.getName());
-        PrefUtils.setStringPreference(context,"password",user.getPassword());
         PrefUtils.setIntegerPreference(context,"focusCount",user.getFocusCount());
         PrefUtils.setIntegerPreference(context,"isFocusCount",user.getIsFocusCount());
         PrefUtils.setStringPreference(context,"profilePhoto",user.getProfilePhoto());
@@ -29,7 +28,6 @@ public class StoreBox {
         User u  = new User(
                 PrefUtils.getIntegerPreference(context,"id",0),
                 PrefUtils.getStringPreference(context,"username"),
-                PrefUtils.getStringPreference(context,"password"),
                 PrefUtils.getIntegerPreference(context,"focusCount",0),
                 PrefUtils.getIntegerPreference(context,"isFocusCount",0),
                 PrefUtils.getStringPreference(context,"profilePhoto"),

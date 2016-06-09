@@ -1,10 +1,16 @@
 package com.xjtu.friendtrip.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.view.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +24,27 @@ import java.util.UUID;
  */
 public class BitmapUtil {
 
+    /**
+     * 背景虚化
+     * @param bkg
+     * @param view
+     * @param radius
+     * @param context
+     */
+    private void blur(Bitmap bkg, View view, float radius, Context context) {
+        Bitmap overlay = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overlay);
+        canvas.drawBitmap(bkg, -view.getLeft(), -view.getTop(), null);
+        RenderScript rs = RenderScript.create(context);
+        Allocation overlayAlloc = Allocation.createFromBitmap(rs, overlay);
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, overlayAlloc.getElement());
+        blur.setInput(overlayAlloc);
+        blur.setRadius(radius);
+        blur.forEach(overlayAlloc);
+        overlayAlloc.copyTo(overlay);
+        view.setBackground(new BitmapDrawable(context.getResources(), overlay));
+        rs.destroy();
+    }
     // 可用于生成缩略图。
     /**
      * Creates a centered bitmap of the desired size. Recycles the input.

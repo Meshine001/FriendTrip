@@ -183,15 +183,11 @@ public class LoginActivity extends BaseActivity {
             Log.i(TAG,u.toString());
             StoreBox.saveUserInfo(this,u);
             dismissProgressDialog();
-            setResult2Main();
-            finish();
+             setResult(RESULT_OK);
+              finish();
     }
 
-    private void setResult2Main() {
-        Intent data = new Intent();
-        data.putExtra("result", LOGIN_SUCCESS);
-        setResult(REQUEST_LOGIN,data);
-    }
+
 
 
     int validateCountDownTotal = 59;

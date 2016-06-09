@@ -76,7 +76,7 @@
         <activity android:name=".activity.DiscoveryDetailsActivity" />
         <activity android:name=".activity.UserInfoActivity" />
         <activity android:name=".activity.UserInfoSettings" />
-        <activity android:name=".activity.PreViewTraceActivity"/>
+        <activity android:name=".activity.PreViewTraceActivity" />
 
         <!-- Image Selector Entry -->
         <activity
@@ -94,6 +94,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".activity.FansActivity" />
+        <activity android:name=".activity.FollowsActivity"></activity>
     </application>
 
 </manifest>

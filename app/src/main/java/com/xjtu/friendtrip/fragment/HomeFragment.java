@@ -53,8 +53,6 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG =  HomeFragment.class.getName();
 
-    @BindView(R.id.ptr_frame_layout)
-    PtrFrameLayout ptrFrameLayout;
 
     @BindView(R.id.ad_banner)
     AdBannerView adBannerView;
@@ -103,7 +101,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void init() {
-        initPtrFrameLayout();
         initAdBanner();
         initDiscoveryGrid();
         initFriendGrid();
@@ -141,24 +138,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void initPtrFrameLayout() {
-        ptrFrameLayout.setPtrHandler(new PtrHandler() {
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-            }
 
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                frame.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ptrFrameLayout.refreshComplete();
-                    }
-                }, 1800);
-            }
-        });
-    }
 
 
     /**

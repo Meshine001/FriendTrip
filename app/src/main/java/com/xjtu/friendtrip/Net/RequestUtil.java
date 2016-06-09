@@ -207,22 +207,25 @@ public class RequestUtil {
 
     public static User requestToUser(String result) {
         if (result == null) return null;
-        try {
             JSONObject jo = JSON.parseObject(result);
+            Integer id = jo.getInteger("id");
+            String name = jo.getString("name");
+            Integer focusCount = jo.getInteger("focusCount");
+        if (focusCount == null)focusCount = 0;
+            Integer isFocusCount = jo.getInteger("isFocusCount");
+        if (isFocusCount == null)isFocusCount = 0;
+         String profilePhoto = jo.getString("profilePhoto");
+        String nickname = jo.getString("nickname");
             User u = new User(
-                    jo.getInteger("id"),
-                    jo.getString("name"),
-                    jo.getString("password"),
-                    jo.getInteger("focusCount"),
-                    jo.getInteger("isFocusCount"),
-                    jo.getString("profilePhoto"),
-                    jo.getString("nickname")
+                    id,
+                    name,
+                    focusCount,
+                    isFocusCount,
+                    profilePhoto ,
+                    nickname
             );
             return u;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+
     }
 
     public static boolean isRequestSuccess(String result) {

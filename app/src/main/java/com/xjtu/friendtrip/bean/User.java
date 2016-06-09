@@ -9,7 +9,6 @@ public class User implements Serializable{
 
     private Integer id;
     private String name;
-    private String password;
     private Integer focusCount;
     private Integer isFocusCount;
     private String profilePhoto;
@@ -17,10 +16,9 @@ public class User implements Serializable{
 
 
 
-    public User(Integer id, String name,String password, Integer focusCount, Integer isFocusCount, String profilePhoto, String nickname) {
+    public User(Integer id, String name, Integer focusCount, Integer isFocusCount, String profilePhoto, String nickname) {
         this.id = id;
         this.name = name;
-        this.password = password;
         this.focusCount = focusCount;
         this.isFocusCount = isFocusCount;
         this.profilePhoto = profilePhoto;
@@ -45,13 +43,6 @@ public class User implements Serializable{
 
 
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public Integer getFocusCount() {
         return focusCount;
@@ -90,7 +81,6 @@ public class User implements Serializable{
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 ", focusCount=" + focusCount +
                 ", isFocusCount=" + isFocusCount +
                 ", profilePhoto='" + profilePhoto + '\'' +

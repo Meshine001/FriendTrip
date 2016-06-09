@@ -15,6 +15,9 @@ import butterknife.OnClick;
 
 public class SettingsActivity extends BaseActivity {
 
+    public static final int REQUEST_SETTINGS = 0;
+    public static final int SETTINGS_UPDATED = 1;
+
     @BindView(R.id.exit)
     Button exit;
 
@@ -36,6 +39,7 @@ public class SettingsActivity extends BaseActivity {
                 break;
             case R.id.exit:
                 StoreBox.clearUserInfo(this);
+                setResult(SETTINGS_UPDATED);
                 finish();
                 break;
         }

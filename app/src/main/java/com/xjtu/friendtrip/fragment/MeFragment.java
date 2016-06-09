@@ -1,5 +1,7 @@
 package com.xjtu.friendtrip.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -57,8 +59,6 @@ public class MeFragment extends Fragment {
     TextView fans;
     @BindView(R.id.follows)
     TextView follows;
-    @BindView(R.id.friends)
-    TextView friends;
 
     @BindView(R.id.stories)
     RelativeLayout stories;
@@ -71,30 +71,74 @@ public class MeFragment extends Fragment {
     ImageView tracesBg;
 
 
-    User me;
+    User myInfo;
 
-    boolean isViewOk = false;
+    boolean isLogin = false;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        checkUser();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, container, false);
         ButterKnife.bind(this, view);
+        checkUser();
         initUI();
-        initUserInfo();
-
-        isViewOk = true;
-
         return view;
     }
 
+    private void checkUser(){
+        isLogin = StoreBox.isSomeOneHere(getContext());
+        if (isLogin){
+            myInfo = StoreBox.getUserInfo(getContext());
+        }
+    }
+
+    /**
+     *
+     */
     private void initUI() {
+        initMessageBox();
+        initUserProfile();
+        initDiscovery();
+        initStory();
+        initTrace();
+
+
+    }
+
+    private void initMessageBox() {
+
+    }
+
+    private void initUserProfile() {
+        if (!isLogin) {
+            Log.i(TAG,"用户未登录");
+            resetUserInfo();
+        } else {
+            Log.i(TAG,"用户已登录：+\n"+myInfo.toString());
+            updateProfile(myInfo);
+            updateFromCloud();
+        }
+    }
+
+    private void initTrace(){
+
+    }
+    private void initStory() {
         Glide.with(this)
                 .load(Config.ME_STORIES_BG_URL)
                 .placeholder(R.drawable.ic_loading)
                 .dontAnimate()
                 .dontTransform()
                 .into(storiesBg);
+    }
+
+    private void initDiscovery() {
         Glide.with(this)
                 .load(Config.ME_TRACES_BG_URL)
                 .placeholder(R.drawable.ic_loading)
@@ -119,7 +163,7 @@ public class MeFragment extends Fragment {
                 startActivity(intent);
             case R.id.settings:
                 intent.setClass(getContext(), SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,SettingsActivity.REQUEST_SETTINGS);
                 break;
             case R.id.avatar:
                 break;
@@ -127,7 +171,7 @@ public class MeFragment extends Fragment {
                 break;
             case R.id.stories:
                 intent.setClass(getContext(), MyStoriesActivity.class);
-                intent.putExtra("userId",me.getId());
+                intent.putExtra("userId",myInfo.getId());
                 startActivity(intent);
                 break;
             case R.id.traces:
@@ -139,57 +183,33 @@ public class MeFragment extends Fragment {
 
     }
 
-    private void initUserInfo() {
-        if (!StoreBox.isSomeOneHere(getContext())) {
-            Log.i(TAG,"没人登录");
-            resetUserInfo();
-        } else {
-            Log.i(TAG,"有人登录");
-            getUserInfo();
-        }
-    }
-
     private void resetUserInfo() {
         nick.setText("现在登陆");
         fans.setText("粉丝:0");
         follows.setText("关注:0");
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isViewOk && StoreBox.isSomeOneHere(getContext())){
-           getUserInfo();
-        }
-    }
-
-    /**
-     * 获取最新用户信息
-     */
-    private void getUserInfo() {
-        me = StoreBox.getUserInfo(getContext());
-        Log.i(TAG,me.toString());
-        updateUI(me);
-        updateFromCloud();
-    }
-
     /**
      * 从云端更新
      */
     private void updateFromCloud() {
-        Integer userId = me.getId();
+        Integer userId = myInfo.getId();
         String url  = Config.USER_INFO + userId;
-        CommonUtil.printRequest("用户信息",url);
+        CommonUtil.printRequest("获取用户信息",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 User u = RequestUtil.requestToUser(result);
-                updateUI(u);
+                updateProfile(u);
             }
         });
     }
 
-    private void updateUI(User u) {
+    /**
+     *
+     * @param u
+     */
+    private void updateProfile(User u) {
         Glide.with(this)
                 .load(u.getProfilePhoto())
                 .placeholder(R.drawable.ic_loading)
@@ -209,7 +229,26 @@ public class MeFragment extends Fragment {
 
     private void gotoLogin() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,LoginActivity.REQUEST_LOGIN);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //登录界面返回
+        if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
+           stateChanges();
+        }
+
+        //设置界面返回
+        if (requestCode == SettingsActivity.REQUEST_SETTINGS && resultCode == SettingsActivity.SETTINGS_UPDATED){
+            stateChanges();
+        }
+    }
+
+    private void stateChanges(){
+        checkUser();
+        initUserProfile();
+    }
 }
