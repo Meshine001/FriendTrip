@@ -12,41 +12,61 @@ public class StoryFile implements Serializable{
     public static final int TYPE_TEXT = 2;
 
 
-    private String fileUrl;
+    private String url;
     private String summary;
     private Integer type;
+    private Double latitude;
+    private Double longitude;
+    private String datetime;
 
     public StoryFile() {
     }
 
-    public StoryFile(String fileUrl, String summary, Integer type) {
-        this.fileUrl = fileUrl;
+    public StoryFile(String url, String summary, Integer type) {
+        this.url = url;
         this.summary = summary;
         this.type = type;
     }
 
-    public static int getTypeImeg() {
-        return TYPE_IMEG;
+    public StoryFile(String url, String summary, Integer type, Double latitude, Double longitude, String datetime) {
+        this.url = url;
+        this.summary = summary;
+        this.type = type;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.datetime = datetime;
     }
 
-    public static int getTypeRecord() {
-        return TYPE_RECORD;
+    public String getDatetime() {
+        return datetime;
     }
 
-    public static int getTypeVideo() {
-        return TYPE_VIDEO;
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 
-    public static int getTypeText() {
-        return TYPE_TEXT;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public String getFileUrl() {
-        return fileUrl;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getSummary() {
@@ -68,9 +88,12 @@ public class StoryFile implements Serializable{
     @Override
     public String toString() {
         return "StoryFile{" +
-                "fileUrl='" + fileUrl + '\'' +
+                "url='" + url + '\'' +
                 ", summary='" + summary + '\'' +
                 ", type=" + type +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", datetime='" + datetime + '\'' +
                 '}';
     }
 }

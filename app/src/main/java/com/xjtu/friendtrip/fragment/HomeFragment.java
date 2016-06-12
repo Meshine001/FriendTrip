@@ -162,9 +162,9 @@ public class HomeFragment extends Fragment {
 
         friendCovers.clear();
         int offset = 0;
-        int limit = 3;
+        int limit = 4;
 
-        String url = Config.REQUEST_TOP_LIKE_FRIENDS+ offset +"/"+limit+Config.FIND_TOP_STAR_NOTES;
+        String url = Config.REQUEST_TOP_STORIES+ offset +"/"+limit+Config.FIND_TOP_STAR_NOTES;
         CommonUtil.printRequest("朋友心情",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
@@ -198,7 +198,7 @@ public class HomeFragment extends Fragment {
     private void initDiscoveryGridData() {
         discoveryCovers.clear();
         int offset = 0;
-        int limit = 3;
+        int limit = 4;
         String url = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
         CommonUtil.printRequest("新发现",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {

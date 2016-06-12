@@ -82,7 +82,7 @@ public class DiscoveryGridAdapter extends BaseAdapter {
                 User u = RequestUtil.requestToUser(result);
                 Glide.with(context)
                         .load(u.getProfilePhoto())
-                        .placeholder(R.drawable.ic_loading)
+                        .placeholder(R.drawable.ic_default_user)
                         .dontAnimate()
                         .dontTransform()
                         .into(holder.avatar);

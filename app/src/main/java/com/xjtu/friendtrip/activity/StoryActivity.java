@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -20,11 +22,13 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.tencent.upload.UploadManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.Net.AddDiscoveryJson;
 import com.xjtu.friendtrip.Net.AddSotryJson;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.RequestUtil;
+import com.xjtu.friendtrip.Net.Tencent;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.ImageListAdapter;
 import com.xjtu.friendtrip.bean.CustomLocation;
@@ -65,7 +69,7 @@ public class StoryActivity extends BaseActivity {
     TextView time;
 
     @BindView(R.id.discovery)
-    EditText discovery;
+    EditText description;
 
     @BindView(R.id.image_list)
     ExpandListView imageList;
@@ -87,8 +91,10 @@ public class StoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-        initToolbar("新心情");
         ButterKnife.bind(this);
+        initToolbar("新心情");
+        time.setText(CommonUtil.getCurrentTime2Sectr());
+        initDialog(this);
         initImageList();
     }
 
@@ -129,36 +135,82 @@ public class StoryActivity extends BaseActivity {
     }
 
     private void shareStory() {
-        User u = StoreBox.getUserInfo(this);
+        showProgressDialog();
 
-        List<StoryFile> storyFiles = new ArrayList<>();
-        for (Image img : images){
-            //TODO 还未上传QCloud
-            storyFiles.add(new StoryFile("http://p3.gexing.com/G1/M00/29/C0/rBACE1Qv7q7gPh_qAAL8BojGUH4426.jpg",img.getSummary(),StoryFile.TYPE_IMEG));
+        final User u = StoreBox.getUserInfo(this);
+
+        final List<StoryFile> storyFiles = new ArrayList<>();
+        for (Image img:images){
+            storyFiles.add(new StoryFile(img.getImagePath(),img.getSummary(),StoryFile.TYPE_IMEG));
         }
 
-        String body = new Gson().toJson(new AddSotryJson(
-            discovery.getText().toString().trim(),
-                myLoc.getName(),
-                time.getText().toString().trim(),
-                u.getId(),
-                myLoc.getLat(),
-                myLoc.getLon(),storyFiles,auths[curAuthIndex]
-        )
-
-        );
-        CommonUtil.printRequest("添加心情",body);
-        Ion.with(this).load("POST", Config.ADD_DISCOVERY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+        final Handler handler = new Handler(){
             @Override
-            public void onCompleted(Exception e, String result) {
-                CommonUtil.printResponse(result);
-                if (RequestUtil.isRequestSuccess(result)){
-                    CommonUtil.showToast(StoryActivity.this,"添加成功!");
-                }else {
-                    CommonUtil.showToast(StoryActivity.this,"添加失败!");
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case Tencent.UPLOAD_SUCCESS:
+                        if (msg.arg1 == images.size()){
+
+                            String body = new Gson().toJson(new AddSotryJson(
+                                    description.getText().toString(),myLoc.getName(),
+                                    time.getText().toString(),
+                                    u.getId(),
+                                    myLoc.getLat(),
+                                    myLoc.getLon(),
+                                    storyFiles,
+                                    curAuthIndex
+                            ));
+                            CommonUtil.printRequest("添加新心情",body);
+                            Ion.with(StoryActivity.this).load("POST", Config.ADD_NEW_STORY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+                                @Override
+                                public void onCompleted(Exception e, String result) {
+                                    CommonUtil.printResponse(result);
+                                    dismissProgressDialog();
+                                    if (RequestUtil.isRequestSuccess(result)){
+                                        CommonUtil.showToast(StoryActivity.this,"添加成功!");
+                                    }else {
+                                        CommonUtil.showToast(StoryActivity.this,"添加失败!");
+                                    }
+                                }
+                            });
+                        }
+                        break;
+                    case Tencent.UPLOAD_FAILED:
+                        CommonUtil.showToast(StoryActivity.this,"上传图片失败");
+                        dismissProgressDialog();
+                        break;
                 }
             }
-        });
+        };
+
+
+        UploadManager manager = Tencent.getUploadManager(this);
+
+        for (int i=0;i<storyFiles.size();i++){
+            final StoryFile file = storyFiles.get(i);
+            final int finalI = i+1;
+            Tencent.uploadPic(manager,file.getUrl(),new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    switch (msg.what){
+                        case Tencent.UPLOAD_SUCCESS:
+                            String url = (String) msg.obj;
+                            file.setUrl(url);
+                            Message message = new Message();
+                            message.what = Tencent.UPLOAD_SUCCESS;
+                            message.arg1 = finalI;
+                            handler.sendMessage(message);
+                            break;
+                        case Tencent.UPLOAD_FAILED:
+                            Message message1 = new Message();
+                            message1.what = Tencent.UPLOAD_FAILED;
+                            message1.arg1 = finalI;
+                            handler.sendMessage(message1);
+                            break;
+                    }
+                }
+            });
+        }
 
     }
 

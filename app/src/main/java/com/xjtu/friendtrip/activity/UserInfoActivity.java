@@ -43,6 +43,7 @@ public class UserInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        ButterKnife.bind(this);
         initUI();
     }
 
@@ -67,7 +68,7 @@ public class UserInfoActivity extends AppCompatActivity {
     private void updateUI(User u) {
         Glide.with(this)
                 .load(u.getProfilePhoto())
-                .placeholder(R.drawable.ic_loading)
+                .placeholder(R.drawable.ic_default_user)
                 .dontAnimate()
                 .dontTransform()
                 .into(avatar);

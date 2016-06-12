@@ -3,19 +3,41 @@ package com.xjtu.friendtrip.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.alibaba.fastjson.JSON;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.tencent.upload.Const;
+import com.tencent.upload.UploadManager;
+import com.tencent.upload.task.ITask;
+import com.tencent.upload.task.IUploadTaskListener;
+import com.tencent.upload.task.data.FileInfo;
+import com.tencent.upload.task.impl.PhotoUploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
+import com.xjtu.friendtrip.Net.Tencent;
+import com.xjtu.friendtrip.Net.UserJson;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.StoreBox;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.nereo.multi_image_selector.MultiImageSelector;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
@@ -27,12 +49,17 @@ public class UserInfoSettings extends BaseActivity {
     private static final int REQUEST_IMAGE = 1;
     private static final String TAG = UserInfoSettings.class.getName();
 
+    @BindView(R.id.avatar)
+    CircleImageView avatar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info_settings);
         ButterKnife.bind(this);
+        initDialog(this);
         initToolbar("账户设置");
+
     }
 
     @OnClick({R.id.avatar})
@@ -73,6 +100,8 @@ public class UserInfoSettings extends BaseActivity {
             if (resultCode == Activity.RESULT_OK) {
                 Uri resultUri = result.getUri();
                 Log.i(TAG, resultUri.toString());
+                uploadPic(resultUri);
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Log.i(TAG, error.toString());
@@ -84,5 +113,55 @@ public class UserInfoSettings extends BaseActivity {
     private void startCropImageActivity(Uri uri) {
         CropImage.activity(uri)
                 .start(this);
+    }
+
+
+
+    void uploadPic(final Uri uri){
+        showProgressDialog();
+        UploadManager manager = Tencent.getUploadManager(this);
+        Tencent.uploadPic(manager,uri,new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case Tencent.UPLOAD_SUCCESS:
+                        String url = (String) msg.obj;
+                        avatar.setImageURI(uri);
+                        modifyAvatar2Cloud(url);
+                        break;
+                    case Tencent.UPLOAD_FAILED:
+                        dismissProgressDialog();
+                        CommonUtil.showToast(UserInfoSettings.this,"上传头像失败");
+                        break;
+                }
+            }
+        });
+    }
+
+    private void modifyAvatar2Cloud(String url) {
+        String body = JSON.toJSONString(new UserJson(
+                StoreBox.getUserInfo(this).getId(),
+                "",
+                "",
+                url,""
+        ));
+        updateUserInfo(body);
+    }
+
+    private void updateUserInfo(String body) {
+        CommonUtil.printRequest("更新用户信息",body);
+        Ion.with(this).load("POST",Config.UPDATE_USER_INFO).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
+                if (RequestUtil.isRequestSuccess(result)){
+                    setResult(STATE_CHANGED);
+                    dismissProgressDialog();
+                }else {
+                    dismissProgressDialog();
+                    CommonUtil.showToast(UserInfoSettings.this,"更新失败");
+                }
+            }
+        });
     }
 }

@@ -115,7 +115,7 @@ public class AllFriendItemsActivity extends BaseActivity {
     }
 
     private void getDataFromCloud() {
-        String url = Config.REQUEST_TOP_LIKE_FRIENDS + offset +"/"+limit+Config.FIND_TOP_STAR_NOTES;
+        String url = Config.REQUEST_TOP_STORIES + offset +"/"+limit+Config.FIND_TOP_STAR_NOTES;
         CommonUtil.printRequest("朋友",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override

@@ -9,17 +9,7 @@ import java.util.List;
  * Created by Meshine on 16/6/2.
  */
 public class AddDiscoveryJson implements Serializable{
-    /**
-     * {
-     "scenicname":"小楼",
-     "summary":"小楼的确很美啊！",
-     "userid":"1203",
-     "longitude":"34.2131314",
-     "latitude":"104.21121",
-     "picture":"http://7xui79.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20160524092514.jpg,http://7xui79.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20160524092848.jpg",
-     "location":"灞桥啊"
-     }
-     */
+
 
     private String scenicname;
     private String summary;
@@ -28,11 +18,12 @@ public class AddDiscoveryJson implements Serializable{
     private Double  latitude;
     private List<Image>travlenotespictures;
     private String location;
+    private String datetime;
 
     public AddDiscoveryJson() {
     }
 
-    public AddDiscoveryJson(String scenicname, String summary, int userid,Double latitude, Double longitude,  List<Image> travlenotespictures, String location) {
+    public AddDiscoveryJson(String scenicname, String summary, int userid,Double latitude, Double longitude,  List<Image> travlenotespictures, String location,String datetime) {
         this.scenicname = scenicname;
         this.summary = summary;
         this.userid = userid;
@@ -40,6 +31,7 @@ public class AddDiscoveryJson implements Serializable{
         this.latitude = latitude;
         this.travlenotespictures = travlenotespictures;
         this.location = location;
+        this.datetime = datetime;
     }
 
     public String getScenicname() {
@@ -98,6 +90,14 @@ public class AddDiscoveryJson implements Serializable{
         this.location = location;
     }
 
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
     @Override
     public String toString() {
         return "AddDiscoveryJson{" +
@@ -108,6 +108,7 @@ public class AddDiscoveryJson implements Serializable{
                 ", latitude=" + latitude +
                 ", travlenotespictures=" + travlenotespictures +
                 ", location='" + location + '\'' +
+                ", datetime='" + datetime + '\'' +
                 '}';
     }
 }

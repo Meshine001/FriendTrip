@@ -135,8 +135,8 @@ public class MainActivity extends BaseActivity {
      * @param location
      */
     private void updateMyLocation(BDLocation location) {
-        LocationUtil.setMyLocationData(location,map);
-        LocationUtil.changeMapCenter(location.getLatitude(),location.getLongitude(),map,18.0f);
+        LocationUtil.setMyLocationData(location, map);
+        LocationUtil.changeMapCenter(location.getLatitude(), location.getLongitude(), map, 18.0f);
         locationClient.stop();
         getFriendLocations(location);
     }
@@ -145,6 +145,7 @@ public class MainActivity extends BaseActivity {
      * 获取朋友的位置
      */
     int friendCount = 10;
+
     private void getFriendLocations(BDLocation location) {
         User u = StoreBox.getUserInfo(this);
         String body = new Gson().toJson(new FriendNotesByLocationJson(
@@ -163,9 +164,6 @@ public class MainActivity extends BaseActivity {
         });
 
 
-
-
-
     }
 
     private void updateStories(List<Story> stories) {
@@ -176,12 +174,12 @@ public class MainActivity extends BaseActivity {
         markers.clear();
 
 
-        for (final Story s:stories){
-            final LatLng ll = new LatLng(s.getLatitude(),s.getLongitude());
-            Glide.with(this).load(s.getTravlenotespictures().get(0)).asBitmap().into(new SimpleTarget<Bitmap>(60,60) {
+        for (final Story s : stories) {
+            final LatLng ll = new LatLng(s.getLatitude(), s.getLongitude());
+            Glide.with(this).load(s.getTravlenotespictures().get(0)).asBitmap().into(new SimpleTarget<Bitmap>(60, 60) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    Log.i(TAG,"图片下载成功");
+                    Log.i(TAG, "图片下载成功");
                     //构建Marker图标
                     BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resource);
                     //构建MarkerOption，用于在地图上添加Marker
@@ -192,14 +190,14 @@ public class MainActivity extends BaseActivity {
                     //在地图上添加Marker，并显示
                     Marker marker = (Marker) map.addOverlay(option);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("story",s);
+                    bundle.putSerializable("story", s);
                     marker.setExtraInfo(bundle);
                     map.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
                             Story storyBundle = (Story) marker.getExtraInfo().get("story");
-                            Intent intent = new Intent(MainActivity.this,StoryDetailsActivity.class);
-                            intent.putExtra("story",storyBundle);
+                            Intent intent = new Intent(MainActivity.this, StoryDetailsActivity.class);
+                            intent.putExtra("story", storyBundle);
                             startActivity(intent);
                             return false;
                         }
@@ -210,8 +208,6 @@ public class MainActivity extends BaseActivity {
         }
 
 
-
-
     }
 
 
@@ -219,7 +215,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
         initBottom();
     }
@@ -345,39 +340,36 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    void showTab(int postion) {
+
+    void hideAllTabs(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.push_up_in, R.anim.push_up_out);
+        for (int i = 0; i < fragments.size(); i++) {
+            transaction.remove(fragments.get(i));
+        }
+        transaction.commit();
+        requestLoction.setVisibility(View.GONE);
+    }
+
+    void showTab(int postion) {
+        hideAllTabs();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.push_up_in, R.anim.push_up_out);
+        transaction.add(R.id.frameLayout, fragments.get(postion)).show(fragments.get(postion)).commit();
 
         if (1 == postion) {
             requestLoction.setVisibility(View.VISIBLE);
-        } else {
-            requestLoction.setVisibility(View.GONE);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    Message msg = new Message();
+                    msg.what = INIT_MAP;
+                    handler.sendMessage(msg);
+                }
+            }, 2000);
         }
-
-        for (int i = 0; i < fragments.size(); i++) {
-            if (i != postion)
-                transaction.hide(fragments.get(i));
-        }
-        if (fragments.get(postion).isAdded()) {
-            transaction.show(fragments.get(postion)).commit();
-        } else {
-            transaction.add(R.id.frameLayout, fragments.get(postion)).show(fragments.get(postion)).commit();
-
-            if (postion == 1) {
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Message msg = new Message();
-                        msg.what = INIT_MAP;
-                        handler.sendMessage(msg);
-                    }
-                }, 2000);
-            }
-        }
-
-
     }
 
 

@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,6 +53,7 @@
                                 android:orientation="horizontal">
 
                                 <EditText
+                                    android:id="@+id/description"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@android:color/transparent"
@@ -59,14 +62,15 @@
                                     android:textSize="15sp" />
 
                                 <ImageView
-                                    android:layout_marginStart="3dp"
                                     android:id="@+id/edit"
                                     android:layout_width="@dimen/me_icon_size"
                                     android:layout_height="@dimen/me_icon_size"
+                                    android:layout_marginStart="3dp"
                                     android:src="@drawable/ic_edit" />
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -93,10 +97,10 @@
                     android:background="@drawable/shape_rec_corner">
 
                     <FrameLayout
-                        android:background="@drawable/shape_corner_gray"
                         android:id="@+id/map_frame"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp">
+                        android:layout_height="160dp"
+                        android:background="@drawable/shape_corner_gray">
 
                     </FrameLayout>
                 </RelativeLayout>
@@ -131,11 +135,11 @@
         android:background="@color/transparent">
 
         <RelativeLayout
-            android:layout_marginStart="18dp"
             android:id="@+id/left_view"
             android:layout_width="20dp"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="18dp">
 
             <ImageView
                 android:id="@+id/back"
@@ -147,7 +151,6 @@
         </RelativeLayout>
 
 
-
         <RelativeLayout
             android:id="@+id/settings"
             android:layout_width="20dp"
@@ -155,10 +158,11 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:gravity="center">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_settings"/>
+                android:src="@drawable/ic_settings" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -168,10 +172,11 @@
             android:layout_marginEnd="10dp"
             android:layout_toStartOf="@id/settings"
             android:gravity="center">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_cloud"/>
+                android:src="@drawable/ic_cloud" />
         </RelativeLayout>
 
     </RelativeLayout>

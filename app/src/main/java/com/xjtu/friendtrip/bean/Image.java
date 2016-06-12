@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 public class Image implements Serializable{
     private String imagePath;
     private String summary;
+    private String url;
 
     public Image() {
     }
@@ -20,6 +21,12 @@ public class Image implements Serializable{
     public Image(String imagePath, String summary) {
         this.imagePath = imagePath;
         this.summary = summary;
+    }
+
+    public Image(String imagePath, String summary, String url) {
+        this.imagePath = imagePath;
+        this.summary = summary;
+        this.url = url;
     }
 
     public String getImagePath() {
@@ -38,11 +45,20 @@ public class Image implements Serializable{
         this.summary = summary;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return "Image{" +
                 "imagePath='" + imagePath + '\'' +
                 ", summary='" + summary + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

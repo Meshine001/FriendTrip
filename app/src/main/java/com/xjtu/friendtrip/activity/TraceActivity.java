@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -34,6 +39,9 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.SupportMapFragment;
 import com.baidu.mapapi.model.LatLng;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
+import com.google.gson.Gson;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
@@ -43,14 +51,25 @@ import com.nightonke.boommenu.Util;
 import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.ListHolder;
 import com.orhanobut.dialogplus.OnItemClickListener;
+import com.tencent.upload.UploadManager;
+import com.xjtu.friendtrip.Net.AddSotryJson;
+import com.xjtu.friendtrip.Net.AddTraceJson;
+import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.RequestUtil;
+import com.xjtu.friendtrip.Net.Tencent;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.TimeLineAdapter;
 import com.xjtu.friendtrip.bean.CustomLocation;
+import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Story;
+import com.xjtu.friendtrip.bean.StoryFile;
 import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.TimeLineModel;
+import com.xjtu.friendtrip.bean.User;
+import com.xjtu.friendtrip.listener.Locationlistener;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
+import com.xjtu.friendtrip.util.StoreBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +91,24 @@ public class TraceActivity extends AppCompatActivity {
     BaiduMap map;
     List<LatLng> pts = new ArrayList<>();
 
+    CustomLocation customLoc;
+    LocationClient locationClient;
+    BDLocationListener locationListener;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Locationlistener.LOCATION_SUCCESS:
+                    locationClient.stop();
+                    BDLocation location = (BDLocation) msg.obj;
+                    customLoc = new CustomLocation(location.getCity(),location.getLatitude(), location.getLongitude());
+                    LocationUtil.setMyLocationData(location, map);
+                    LocationUtil.changeMapCenter(location.getLatitude(), location.getLongitude(), map, 18.0f);
+                    break;
+            }
+        }
+    };
+
     @BindView(R.id.time_line_recycler_view)
     RecyclerView timeLineRecyclerView;
     TimeLineAdapter timeLineAdapter;
@@ -90,6 +127,7 @@ public class TraceActivity extends AppCompatActivity {
     ArrayAdapter<String> aAdapter;
 
     Integer auth = Story.AUTH_WORLD;
+
 
 
     @OnClick({R.id.settings,R.id.cloud,R.id.back})
@@ -196,7 +234,97 @@ public class TraceActivity extends AppCompatActivity {
      * 发布足迹
      */
     private void shareTrace() {
+        final User u = StoreBox.getUserInfo(this);
 
+        final List<StoryFile> storyFiles = new ArrayList<>();
+        for (TimeLineModel item:timeLineItems){
+            String url = "";
+            String summary = "";
+            int type = StoryFile.TYPE_TEXT;
+            Double lat = item.getLocation().getLat();
+            Double lon = item.getLocation().getLon();
+            String time = item.getTime();
+
+            switch (item.getType()){
+                case TimeLineModel.TYPE_TEXT:
+                    Text t = (Text) item.getContent();
+                    summary = t.getTextContent();
+                    type = StoryFile.TYPE_TEXT;
+
+                    break;
+                case TimeLineModel.TYPE_RECORD:
+                    break;
+                case TimeLineModel.TYPE_IMAGE:
+                    Image img = (Image) item.getContent();
+                    url = img.getImagePath();
+                    summary = img.getSummary();
+                    type = StoryFile.TYPE_IMEG;
+                    break;
+            }
+            storyFiles.add(new StoryFile(url,summary,type,lat,lon,time));
+        }
+
+        final Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case Tencent.UPLOAD_SUCCESS:
+                        if (msg.arg1 == timeLineItems.size()){
+
+                            String body = JSON.toJSONString(new AddTraceJson(
+                                    customLoc.getName(),
+                            ))
+                            CommonUtil.printRequest("添加新心情",body);
+                            Ion.with(StoryActivity.this).load("POST", Config.ADD_NEW_STORY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+                                @Override
+                                public void onCompleted(Exception e, String result) {
+                                    CommonUtil.printResponse(result);
+                                    dismissProgressDialog();
+                                    if (RequestUtil.isRequestSuccess(result)){
+                                        CommonUtil.showToast(StoryActivity.this,"添加成功!");
+                                    }else {
+                                        CommonUtil.showToast(StoryActivity.this,"添加失败!");
+                                    }
+                                }
+                            });
+                        }
+                        break;
+                    case Tencent.UPLOAD_FAILED:
+                        CommonUtil.showToast(StoryActivity.this,"上传图片失败");
+                        dismissProgressDialog();
+                        break;
+                }
+            }
+        };
+
+
+        UploadManager manager = Tencent.getUploadManager(this);
+
+        for (int i=0;i<storyFiles.size();i++){
+            final StoryFile file = storyFiles.get(i);
+            final int finalI = i+1;
+            Tencent.uploadPic(manager,file.getUrl(),new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    switch (msg.what){
+                        case Tencent.UPLOAD_SUCCESS:
+                            String url = (String) msg.obj;
+                            file.setUrl(url);
+                            Message message = new Message();
+                            message.what = Tencent.UPLOAD_SUCCESS;
+                            message.arg1 = finalI;
+                            handler.sendMessage(message);
+                            break;
+                        case Tencent.UPLOAD_FAILED:
+                            Message message1 = new Message();
+                            message1.what = Tencent.UPLOAD_FAILED;
+                            message1.arg1 = finalI;
+                            handler.sendMessage(message1);
+                            break;
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -215,14 +343,22 @@ public class TraceActivity extends AppCompatActivity {
 
 
     private void initMap() {
+        customLoc = new CustomLocation("未知",-999999.0, -99999.0);
         mapFragment = new SupportMapFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.map_frame, mapFragment).commit();
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 //execute the task
-                map = mapFragment.getBaiduMap();
                 MapView mapView = mapFragment.getMapView();
                 mapView.showScaleControl(false);
+                map = mapFragment.getBaiduMap();
+                // 开启定位图层
+                map.setMyLocationEnabled(true);
+                locationListener = new Locationlistener(handler);
+                locationClient = new LocationClient(TraceActivity.this);
+                locationClient.registerLocationListener(locationListener);
+                LocationUtil.initLocationOptions(locationClient);
+                locationClient.start();
             }
         }, 2000);
 

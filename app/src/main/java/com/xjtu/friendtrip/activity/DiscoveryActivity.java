@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -22,10 +24,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.tencent.upload.UploadManager;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.Net.AddDiscoveryJson;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.RequestUtil;
+import com.xjtu.friendtrip.Net.Tencent;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.ImageListAdapter;
 import com.xjtu.friendtrip.bean.CustomLocation;
@@ -77,8 +81,10 @@ public class DiscoveryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discovery);
+        initDialog(this);
         initToolbar("新发现");
         ButterKnife.bind(this);
+        time.setText(CommonUtil.getCurrentTime2Sectr());
         initImageList();
     }
 
@@ -108,36 +114,79 @@ public class DiscoveryActivity extends BaseActivity {
         startActivityForResult(intent,LocationActivity.GET_LOCATION);
     }
 
+
+
     private void shareDiscovery() {
-        User u = StoreBox.getUserInfo(this);
-
-        //TODO
-        List<Image> testImages = new ArrayList<>();
-        testImages.add(new Image("http://img5.imgtn.bdimg.com/it/u=3639896409,2665473252&fm=21&gp=0.jpg",
-                "好漂亮"));
-        testImages.add(new Image("http://img2.3lian.com/2014/c7/80/d/82.jpg",
-                "好美丽"));
-
-        String body = new Gson().toJson(new AddDiscoveryJson(
-                "未命名",discovery.getText().toString().trim(),
-                u.getId(),
-                myLoc.getLat(),
-                myLoc.getLon(),
-                testImages,
-                myLoc.getName()
-        ));
-        CommonUtil.printRequest("添加新发现",body);
-        Ion.with(this).load("POST", Config.ADD_DISCOVERY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+        showProgressDialog();
+        final User u = StoreBox.getUserInfo(this);
+        final Handler handler = new Handler(){
             @Override
-            public void onCompleted(Exception e, String result) {
-               CommonUtil.printResponse(result);
-                if (RequestUtil.isRequestSuccess(result)){
-                    CommonUtil.showToast(DiscoveryActivity.this,"添加成功!");
-               }else {
-                    CommonUtil.showToast(DiscoveryActivity.this,"添加失败!");
-               }
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case Tencent.UPLOAD_SUCCESS:
+                        if (msg.arg1 == images.size()){
+
+                            String body = new Gson().toJson(new AddDiscoveryJson(
+                                    "未命名",discovery.getText().toString().trim(),
+                                    u.getId(),
+                                    myLoc.getLat(),
+                                    myLoc.getLon(),
+                                    images,
+                                    myLoc.getName(),
+                                    time.getText().toString()
+                            ));
+                            CommonUtil.printRequest("添加新发现",body);
+                            Ion.with(DiscoveryActivity.this).load("POST", Config.ADD_DISCOVERY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+                                @Override
+                                public void onCompleted(Exception e, String result) {
+                                    CommonUtil.printResponse(result);
+                                    dismissProgressDialog();
+                                    if (RequestUtil.isRequestSuccess(result)){
+                                        CommonUtil.showToast(DiscoveryActivity.this,"添加成功!");
+                                    }else {
+                                        CommonUtil.showToast(DiscoveryActivity.this,"添加失败!");
+                                    }
+                                }
+                            });
+                        }
+                        break;
+                    case Tencent.UPLOAD_FAILED:
+                        CommonUtil.showToast(DiscoveryActivity.this,"上传图片失败");
+                        dismissProgressDialog();
+                        break;
+                }
             }
-        });
+        };
+
+        UploadManager manager = Tencent.getUploadManager(this);
+            
+        for (int i=0;i<images.size();i++){
+            final Image img = images.get(i);
+            final int finalI = i+1;
+            Tencent.uploadPic(manager,img.getImagePath(),new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    switch (msg.what){
+                        case Tencent.UPLOAD_SUCCESS:
+                            String url = (String) msg.obj;
+                            img.setUrl(url);
+                            Message message = new Message();
+                            message.what = Tencent.UPLOAD_SUCCESS;
+                            message.arg1 = finalI;
+                            handler.sendMessage(message);
+                            break;
+                        case Tencent.UPLOAD_FAILED:
+                            Message message1 = new Message();
+                            message1.what = Tencent.UPLOAD_FAILED;
+                            message1.arg1 = finalI;
+                            handler.sendMessage(message1);
+                            break;
+                    }
+                }
+            });
+        }
+
+
 
     }
 
