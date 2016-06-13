@@ -110,7 +110,7 @@ public class MyStoryListAdapter extends RecyclerView.Adapter<MyStoryListAdapter.
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image);
             browseCount = (TextView) itemView.findViewById(R.id.browse_count);
-            time = (TextView) time.findViewById(R.id.time);
+            time = (TextView) itemView.findViewById(R.id.time);
         }
     }
 }

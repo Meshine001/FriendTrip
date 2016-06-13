@@ -15,21 +15,27 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.SupportMapFragment;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.xjtu.friendtrip.Net.CommentJson;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.RequestUtil;
+import com.xjtu.friendtrip.Net.StarJson;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.CommentListAdapter;
 import com.xjtu.friendtrip.adapter.DetailsImageListAdapter;
 import com.xjtu.friendtrip.adapter.StoryImageAdapter;
 import com.xjtu.friendtrip.bean.Comment;
+import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Star;
 import com.xjtu.friendtrip.bean.Story;
+import com.xjtu.friendtrip.bean.Text;
 import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.ActivityUtil;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.StoreBox;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
 import java.util.ArrayList;
@@ -52,6 +58,8 @@ public class StoryDetailsActivity extends BaseActivity {
     @BindView(R.id.nick)
     TextView nick;
 
+    @BindView(R.id.browse_count)
+    TextView browseCount;
     @BindView(R.id.date_time)
     TextView dateTime;
     @BindView(R.id.location)
@@ -76,19 +84,55 @@ public class StoryDetailsActivity extends BaseActivity {
     @BindView(R.id.comment)
     EditText comment;
 
-
-
     Story details;
 
-
-    @OnClick({R.id.avatar})
+    @OnClick({R.id.avatar,R.id.comment_submit})
     void onClick(View view){
         switch (view.getId()){
             case R.id.avatar:
-                Intent userInfoIntent = new Intent(StoryDetailsActivity.this,UserInfoActivity.class);
-                startActivity(userInfoIntent);
+                ActivityUtil.startUserInfoActivity(this, details.getUserId());
+                break;
+            case R.id.comment_submit:
+                commentStory();
                 break;
         }
+    }
+
+    private void commentStory() {
+        if (!StoreBox.isSomeOneHere(this)){
+            showErrDialog("你还没有登录");
+            return;
+        }
+        User u = StoreBox.getUserInfo(this);
+        String body = new Gson().toJson(new CommentJson(
+                u.getId(), null, comment.getText().toString().trim(), CommentJson.STORY, details.getTravelNotesid(),CommonUtil.getCurrentTime2Sectr()
+        ));
+        Log.i(TAG, "评论请求:" + body);
+        Ion.with(this).load("POST", Config.REQUEST_COMMENT).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG, "评论请求结果:" + result);
+                if (RequestUtil.isRequestSuccess(result)){
+                    refreshDetails();
+                }
+            }
+        });
+    }
+
+    private void refreshDetails() {
+        String url = Config.REQUEST_GET_STORY_BY_ID + details.getTravelNotesid()+Config.GET_STORY_BY_ID;
+        CommonUtil.printRequest("新发现详情",url);
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
+                Story s = RequestUtil.requestToStory(result);
+                if (s != null){
+                    details = s;
+                    initComment();
+                }
+            }
+        });
     }
 
     @Override
@@ -121,6 +165,7 @@ public class StoryDetailsActivity extends BaseActivity {
                 nick.setText(u.getNickname());
             }
         });
+        browseCount.setText(details.getScanCount()+"次浏览");
         location.setText(details.getLocation());
         dateTime.setText(details.getDatetime());
         description.setText(details.getDiscription());
@@ -176,14 +221,43 @@ public class StoryDetailsActivity extends BaseActivity {
             public void onClick(View v) {
                 likeFlag = !likeFlag;
                 if (likeFlag){
-                    topSubRight.setImageResource(R.drawable.ic_like_filled);
+                    starStory(likeFlag);
                 }else {
-                    topSubRight.setImageResource(R.drawable.ic_like);
+                    starStory(likeFlag);
                 }
 
             }
         });
         setActionBarSubRightView(topSubRight);
+    }
+
+    private void starStory(final boolean like) {
+        if (!StoreBox.isSomeOneHere(this)){
+            showErrDialog("你还没有登录");
+            return;
+        }
+        User u = StoreBox.getUserInfo(this);
+        Integer tag;
+        if (like) tag = StarJson.TAG_LIKE;
+        else tag = StarJson.TAG_UN_LIKE;
+        String body = new Gson().toJson(new StarJson(
+                u.getId(), StarJson.STORY, details.getTravelNotesid(), tag
+        ));
+        Log.i(TAG, "点赞请求:" + body);
+        Ion.with(this).load("POST", Config.REQUEST_STAR).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                Log.i(TAG, "点赞请求结果:" + result);
+                if (RequestUtil.isRequestSuccess(result)){
+                    if (like){
+                        topSubRight.setImageResource(R.drawable.ic_like_filled);
+                    }else {
+                        topSubRight.setImageResource(R.drawable.ic_like);
+                    }
+
+                }
+            }
+        });
     }
 
 

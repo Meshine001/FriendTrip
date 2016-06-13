@@ -18,6 +18,7 @@ import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Story;
 import com.xjtu.friendtrip.bean.User;
+import com.xjtu.friendtrip.util.CommonUtil;
 
 import java.util.List;
 
@@ -75,9 +76,11 @@ public class StoryGridAdapter extends BaseAdapter {
         holder.summary.setText(covers.get(position).getDiscription());
 
         String url = Config.USER_INFO + covers.get(position).getUserId();
+        CommonUtil.printRequest("用户信息",url);
         Ion.with(context).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
                 User u = RequestUtil.requestToUser(result);
                 Glide.with(context)
                         .load(u.getProfilePhoto())

@@ -56,22 +56,6 @@ public class Story implements Serializable {
         this.travlenotespictures = travlenotespictures;
     }
 
-    public Integer getScanCount() {
-        return scanCount;
-    }
-
-    public void setScanCount(Integer scanCount) {
-        this.scanCount = scanCount;
-    }
-
-    public Integer getRightType() {
-        return rightType;
-    }
-
-    public void setRightType(Integer rightType) {
-        this.rightType = rightType;
-    }
-
     public List<Comment> getCommentses() {
         return commentses;
     }
@@ -158,6 +142,22 @@ public class Story implements Serializable {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public Integer getRightType() {
+        return rightType;
+    }
+
+    public void setRightType(Integer rightType) {
+        this.rightType = rightType;
+    }
+
+    public Integer getScanCount() {
+        return scanCount;
+    }
+
+    public void setScanCount(Integer scanCount) {
+        this.scanCount = scanCount;
     }
 
     @Override

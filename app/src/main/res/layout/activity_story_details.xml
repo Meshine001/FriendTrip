@@ -7,6 +7,8 @@
     tools:context="com.xjtu.friendtrip.activity.StoryDetailsActivity">
 
     <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -106,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
                     android:layout_marginTop="15dp"
-                    android:text="钟楼之行感触良多"
+                    android:text=""
                     android:textSize="@dimen/story_description_size" />
 
                 <com.xjtu.friendtrip.widget.ExpandListView

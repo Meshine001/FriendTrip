@@ -46,10 +46,12 @@ public class BaseActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
         errDialog = new SweetAlertDialog(context,SweetAlertDialog.ERROR_TYPE);
+        errDialog.setCancelable(true);
         errDialog.setTitleText("错误！");
 
         normalDialog = new SweetAlertDialog(context,SweetAlertDialog.NORMAL_TYPE);
         normalDialog.setTitleText("提示");
+        normalDialog.setCancelable(true);
 
     }
 

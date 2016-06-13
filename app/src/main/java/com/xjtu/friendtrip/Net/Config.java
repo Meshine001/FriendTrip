@@ -8,8 +8,8 @@ import com.xjtu.friendtrip.util.PrefUtils;
  */
 public class Config {
 //    public static final String BASE_URL = "http://192.168.0.146:8080/friendTrip";
-//    public static final String BASE_URL = "http://192.168.1.101:8080/friendTrip";
-    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
+    public static final String BASE_URL = "http://192.168.1.101:8080/friendTrip";
+//    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
 
 
 
@@ -70,6 +70,18 @@ public class Config {
      */
     public static final String FIND_TOP_COMMENT_SPOTS = "/findTopCommentSpots";
     public static final String REQUEST_TOP_COMMENT_DISCOVERIES = BASE_URL+"/newscenicspots/";
+
+    /**
+     * 通过 新发现id获取新发现详细信息
+     */
+    public static final String GET_SPOTS_BY_ID = "/getSpotsById";
+    public static final String REQUEST_GET_SPOTS_BY_ID = BASE_URL + "/newscenicspots/";
+
+    /**
+     * 通过 新发现id获取心情详细信息
+     */
+    public static final String GET_STORY_BY_ID = "/getNotesById";
+    public static final String REQUEST_GET_STORY_BY_ID = BASE_URL + "/travelnotes/";
 
     /**
      * 主页 好友

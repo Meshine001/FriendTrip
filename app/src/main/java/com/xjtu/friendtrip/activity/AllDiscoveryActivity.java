@@ -1,12 +1,14 @@
 
 package com.xjtu.friendtrip.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -83,6 +85,14 @@ public class AllDiscoveryActivity extends BaseActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
+            }
+        });
+        discoveryGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(AllDiscoveryActivity.this, DiscoveryDetailsActivity.class);
+                intent.putExtra("discovery",discoveryCovers.get(position));
+                startActivity(intent);
             }
         });
         discoveryGridAdaper = new DiscoveryGridAdapter(discoveryCovers, this);

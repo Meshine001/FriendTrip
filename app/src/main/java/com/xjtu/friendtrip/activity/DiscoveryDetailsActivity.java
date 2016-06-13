@@ -161,17 +161,16 @@ public class DiscoveryDetailsActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     //TODO
-                    ActivityUtil.startUserInfoActivity(DiscoveryDetailsActivity.this, s.getId());//s的id是userId吗？
+                    ActivityUtil.startUserInfoActivity(DiscoveryDetailsActivity.this, s.getId());
                 }
             });
             likeLayout.addView(iv);
         }
 
+        commentCount.setText(""+details.getCommentCount());
         List<Comment> comments = details.getCommentses();
         CommentListAdapter adapter = new CommentListAdapter(comments,this);
         commentList.setAdapter(adapter);
-
-
 
     }
 
@@ -221,10 +220,8 @@ public class DiscoveryDetailsActivity extends BaseActivity {
             public void onClick(View v) {
                 likeFlag = !likeFlag;
                 if (likeFlag) {
-                    topSubRight.setImageResource(R.drawable.ic_like_filled);
                     starDiscovery(likeFlag);
                 } else {
-                    topSubRight.setImageResource(R.drawable.ic_like);
                     starDiscovery(likeFlag);
                 }
 
@@ -233,7 +230,11 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         setActionBarSubRightView(topSubRight);
     }
 
-    private void starDiscovery(boolean like) {
+    private void starDiscovery(final boolean like) {
+        if (!StoreBox.isSomeOneHere(this)){
+            showErrDialog("你还没有登录");
+            return;
+        }
         User u = StoreBox.getUserInfo(this);
         Integer tag;
         if (like) tag = StarJson.TAG_LIKE;
@@ -246,12 +247,23 @@ public class DiscoveryDetailsActivity extends BaseActivity {
             @Override
             public void onCompleted(Exception e, String result) {
                 Log.i(TAG, "点赞请求结果:" + result);
-//                showNormalDialog("点赞成功");
+                if (RequestUtil.isRequestSuccess(result)){
+                    if (like){
+                        topSubRight.setImageResource(R.drawable.ic_like_filled);
+                    }else {
+                        topSubRight.setImageResource(R.drawable.ic_like);
+                    }
+
+                }
             }
         });
     }
 
     private void commentDiscovery() {
+        if (!StoreBox.isSomeOneHere(this)){
+            showErrDialog("你还没有登录");
+            return;
+        }
         User u = StoreBox.getUserInfo(this);
         String body = new Gson().toJson(new CommentJson(
                 u.getId(), null, comment.getText().toString().trim(), CommentJson.DISCOVERY, details.getScenicid(),CommonUtil.getCurrentTime2Sectr()
@@ -261,8 +273,28 @@ public class DiscoveryDetailsActivity extends BaseActivity {
             @Override
             public void onCompleted(Exception e, String result) {
                 Log.i(TAG, "评论请求结果:" + result);
-//                showNormalDialog("评论成功");
+                if (RequestUtil.isRequestSuccess(result)){
+                    refreshDetails();
+                }
             }
         });
     }
+
+    private void refreshDetails() {
+        String url = Config.REQUEST_GET_SPOTS_BY_ID + details.getScenicid()+Config.GET_SPOTS_BY_ID;
+        CommonUtil.printRequest("新发现详情",url);
+        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                CommonUtil.printResponse(result);
+               Discovery dis = RequestUtil.requestToDiscovery(result);
+                if (dis != null){
+                    details = dis;
+                    initComment();
+                }
+            }
+        });
+    }
+
+
 }

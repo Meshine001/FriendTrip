@@ -86,10 +86,12 @@ public class UserInfoActivity extends AppCompatActivity {
                 break;
             case R.id.stories:
                 intent.setClass(UserInfoActivity.this,MyStoriesActivity.class);
+                intent.putExtra("userId",userId);
                 startActivity(intent);
                 break;
             case R.id.traces:
                 intent.setClass(UserInfoActivity.this,MyTracesActivity.class);
+                intent.putExtra("userId",userId);
                 startActivity(intent);
                 break;
             case R.id.follow_ta:
@@ -98,6 +100,7 @@ public class UserInfoActivity extends AppCompatActivity {
         }
     }
 
+    //TODO
     private void doFollowTa() {
         String url = Config.FOLLOW_TA;
     }

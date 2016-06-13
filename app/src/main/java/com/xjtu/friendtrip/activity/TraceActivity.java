@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,15 +78,22 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Meshine on 16/5/29.
  */
-public class TraceActivity extends AppCompatActivity {
+public class TraceActivity extends BaseActivity {
 
 
     private static final String TAG = TraceActivity.class.getName();
 
+    @BindView(R.id.avatar)
+    CircleImageView avatar;
+    @BindView(R.id.description)
+    EditText description;
+    @BindView(R.id.time)
+    TextView time;
 
     SupportMapFragment mapFragment;
     BaiduMap map;
@@ -271,26 +279,32 @@ public class TraceActivity extends AppCompatActivity {
                     case Tencent.UPLOAD_SUCCESS:
                         if (msg.arg1 == timeLineItems.size()){
 
-                            String body = JSON.toJSONString(new AddTraceJson(
+                            String body = JSON.toJSONString(new AddTraceJson(description.getText().toString(),
                                     customLoc.getName(),
-                            ))
-                            CommonUtil.printRequest("添加新心情",body);
-                            Ion.with(StoryActivity.this).load("POST", Config.ADD_NEW_STORY).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+                                    time.getText().toString(),
+                                    u.getId(),
+                                    customLoc.getLat(),
+                                    customLoc.getLon(),
+                                    storyFiles,
+                                    auth
+                            ));
+                            CommonUtil.printRequest("添加新印记",body);
+                            Ion.with(TraceActivity.this).load("POST", Config.ADD_NEW_TRACE).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
                                 @Override
                                 public void onCompleted(Exception e, String result) {
                                     CommonUtil.printResponse(result);
                                     dismissProgressDialog();
                                     if (RequestUtil.isRequestSuccess(result)){
-                                        CommonUtil.showToast(StoryActivity.this,"添加成功!");
+                                        CommonUtil.showToast(TraceActivity.this,"添加成功!");
                                     }else {
-                                        CommonUtil.showToast(StoryActivity.this,"添加失败!");
+                                        CommonUtil.showToast(TraceActivity.this,"添加失败!");
                                     }
                                 }
                             });
                         }
                         break;
                     case Tencent.UPLOAD_FAILED:
-                        CommonUtil.showToast(StoryActivity.this,"上传图片失败");
+                        CommonUtil.showToast(TraceActivity.this,"上传图片失败");
                         dismissProgressDialog();
                         break;
                 }
@@ -303,27 +317,44 @@ public class TraceActivity extends AppCompatActivity {
         for (int i=0;i<storyFiles.size();i++){
             final StoryFile file = storyFiles.get(i);
             final int finalI = i+1;
-            Tencent.uploadPic(manager,file.getUrl(),new Handler(){
-                @Override
-                public void handleMessage(Message msg) {
-                    switch (msg.what){
-                        case Tencent.UPLOAD_SUCCESS:
-                            String url = (String) msg.obj;
-                            file.setUrl(url);
-                            Message message = new Message();
-                            message.what = Tencent.UPLOAD_SUCCESS;
-                            message.arg1 = finalI;
-                            handler.sendMessage(message);
-                            break;
-                        case Tencent.UPLOAD_FAILED:
-                            Message message1 = new Message();
-                            message1.what = Tencent.UPLOAD_FAILED;
-                            message1.arg1 = finalI;
-                            handler.sendMessage(message1);
-                            break;
+            //上传图片
+            if (file.getType() == TimeLineModel.TYPE_IMAGE){
+                Tencent.uploadPic(manager,file.getUrl(),new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        switch (msg.what){
+                            case Tencent.UPLOAD_SUCCESS:
+                                String url = (String) msg.obj;
+                                file.setUrl(url);
+                                Message message = new Message();
+                                message.what = Tencent.UPLOAD_SUCCESS;
+                                message.arg1 = finalI;
+                                handler.sendMessage(message);
+                                break;
+                            case Tencent.UPLOAD_FAILED:
+                                Message message1 = new Message();
+                                message1.what = Tencent.UPLOAD_FAILED;
+                                message1.arg1 = finalI;
+                                handler.sendMessage(message1);
+                                break;
+                        }
                     }
-                }
-            });
+                });
+            }else if (file.getType() == TimeLineModel.TYPE_RECORD){
+                //TODO
+                //上传音频
+                Message message = new Message();
+                message.what = Tencent.UPLOAD_SUCCESS;
+                message.arg1 = finalI;
+                handler.sendMessage(message);
+            }else {
+                //文本
+                Message message = new Message();
+                message.what = Tencent.UPLOAD_SUCCESS;
+                message.arg1 = finalI;
+                handler.sendMessage(message);
+            }
+
         }
     }
 
@@ -338,6 +369,7 @@ public class TraceActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        time.setText(CommonUtil.getCurrentTime2Sectr());
         initMap();
     }
 
