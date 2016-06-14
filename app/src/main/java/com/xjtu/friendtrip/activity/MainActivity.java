@@ -50,6 +50,7 @@ import com.bumptech.glide.request.target.Target;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 import com.google.gson.Gson;
+import com.huawei.android.pushagent.api.PushManager;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.orhanobut.dialogplus.DialogPlus;
@@ -59,6 +60,7 @@ import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.FriendNotesByLocationJson;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.application.MyApplication;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Story;
 import com.xjtu.friendtrip.bean.User;
@@ -67,6 +69,7 @@ import com.xjtu.friendtrip.fragment.HomeFragment;
 import com.xjtu.friendtrip.fragment.MeFragment;
 import com.xjtu.friendtrip.fragment.ShareFragment;
 import com.xjtu.friendtrip.listener.Locationlistener;
+import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
 import com.xjtu.friendtrip.util.StoreBox;
 
@@ -136,8 +139,14 @@ public class MainActivity extends BaseActivity {
                     initBaiduMap();
                     break;
                 case RECEIVE_PUSH_MSG:
+                    String pushMsg = (String) msg.obj;
+                    Log.i(TAG,"Push message: "+pushMsg);
+
                     break;
                 case RECEIVE_TOKEN_MSG:
+                    String  token = (String) msg.obj;
+                    Log.i(TAG,"Token: "+token);
+                    CommonUtil.showToast(MainActivity.this,"token:"+token);
                     break;
                 case RECEIVE_NOTIFY_CLICK_MSG:
                     break;
@@ -241,7 +250,13 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        initBottom();
+        initPush();
+        //initBottom();
+    }
+
+    private void initPush() {
+        MyApplication.instance().setMainActivity(this);
+        PushManager.requestToken(MainActivity.this);
     }
 
     @OnClick({R.id.request_location})
