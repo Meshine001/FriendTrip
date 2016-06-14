@@ -26,11 +26,11 @@
         <ScrollView
             android:scrollbars="none"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -115,7 +115,7 @@
                     android:layout_margin="5dp"
                     android:id="@+id/image_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="15dp"
                     android:layout_marginTop="15dp"
                     android:divider="@android:color/transparent"

@@ -161,6 +161,7 @@ public class MeFragment extends Fragment {
             case R.id.message:
                 intent.setClass(getContext(), MessageActivity.class);
                 startActivity(intent);
+                break;
             case R.id.settings:
                 intent.setClass(getContext(), SettingsActivity.class);
                 startActivityForResult(intent,SettingsActivity.REQUEST_SETTINGS);

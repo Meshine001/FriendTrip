@@ -6,9 +6,11 @@ import java.io.Serializable;
  * Created by Meshine on 16/5/29.
  */
 public class TimeLineModel implements Serializable{
-    public static final int TYPE_TEXT = 0;
+    public static final int TYPE_IMAGE = 0;
     public static final int TYPE_RECORD = 1;
-    public static final int TYPE_IMAGE= 2;
+    public static final int TYPE_VIDEO = 2;
+    public static final int TYPE_TEXT = 3;
+
 
     private Object content;
     private String time;

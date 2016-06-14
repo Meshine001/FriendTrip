@@ -27,7 +27,7 @@ public class MyApplication extends Application {
         SDKInitializer.initialize(this);
 
         //万象优图auth
-//        getPicUploadAuth();
+        getPicUploadAuth();
     }
 
     void getPicUploadAuth(){

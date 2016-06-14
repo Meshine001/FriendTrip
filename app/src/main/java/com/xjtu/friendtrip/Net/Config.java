@@ -8,8 +8,8 @@ import com.xjtu.friendtrip.util.PrefUtils;
  */
 public class Config {
 //    public static final String BASE_URL = "http://192.168.0.146:8080/friendTrip";
-    public static final String BASE_URL = "http://192.168.1.101:8080/friendTrip";
-//    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
+//    public static final String BASE_URL = "http://192.168.1.101:8080/friendTrip";
+    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
 
 
 
@@ -50,11 +50,17 @@ public class Config {
      */
     public static final String TRACE = "/detailnotes";
     public static final String ADD_NEW_TRACE = BASE_URL + TRACE + "/addDetailNotes";
+    public static final String GET_DETAILS_NOTES_BY_USER_ID = "/getDetailNotesByUserId";
+    public static final String REQUEST_TRACES_BY_USER = BASE_URL+TRACE+"/";
 
     /**
-     * Follow TA
+     * 关注
      */
-     public static final String FOLLOW_TA = BASE_URL + "";
+    //关注用户
+     public static final String FOLLOW_TA = BASE_URL + "/relation/focus";
+    //关注我的用户
+     public static final String MY_FOCUS = "/myFocus";
+     public static final String REQUEST_MY_FOLLOWS = BASE_URL+"/relation";
 
     /**
      * Home tab

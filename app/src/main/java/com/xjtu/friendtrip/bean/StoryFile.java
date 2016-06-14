@@ -6,10 +6,10 @@ import java.io.Serializable;
  * Created by Meshine on 16/5/27.
  */
 public class StoryFile implements Serializable{
-    public static final int TYPE_IMEG = 0;
+    public static final int TYPE_IMAGE = 0;
     public static final int TYPE_RECORD = 1;
     public static final int TYPE_VIDEO = 2;
-    public static final int TYPE_TEXT = 2;
+    public static final int TYPE_TEXT = 3;
 
 
     private String url;

@@ -58,7 +58,7 @@ public class ImageListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.item_image_list,parent,false);
             holder = new ViewHolder(convertView);
@@ -82,6 +82,14 @@ public class ImageListAdapter extends BaseAdapter {
 
         holder.image.setImageURI(Uri.fromFile(new File(images.get(position).getImagePath())));
         holder.summary.setText(images.get(position).getSummary());
+        holder.summary.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus){
+                    images.get(position).setSummary(holder.summary.getText().toString().trim());
+                }
+            }
+        });
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

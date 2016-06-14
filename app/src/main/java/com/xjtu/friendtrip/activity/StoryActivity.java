@@ -141,7 +141,7 @@ public class StoryActivity extends BaseActivity {
 
         final List<StoryFile> storyFiles = new ArrayList<>();
         for (Image img:images){
-            storyFiles.add(new StoryFile(img.getImagePath(),img.getSummary(),StoryFile.TYPE_IMEG));
+            storyFiles.add(new StoryFile(img.getImagePath(),img.getSummary(),StoryFile.TYPE_IMAGE));
         }
 
         final Handler handler = new Handler(){
@@ -196,6 +196,7 @@ public class StoryActivity extends BaseActivity {
                         case Tencent.UPLOAD_SUCCESS:
                             String url = (String) msg.obj;
                             file.setUrl(url);
+                            Log.i(TAG,file.toString());
                             Message message = new Message();
                             message.what = Tencent.UPLOAD_SUCCESS;
                             message.arg1 = finalI;

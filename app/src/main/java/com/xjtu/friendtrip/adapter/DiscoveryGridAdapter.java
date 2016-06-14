@@ -19,6 +19,7 @@ import com.xjtu.friendtrip.bean.Cover;
 import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.User;
+import com.xjtu.friendtrip.util.UIUtils;
 
 import java.util.List;
 
@@ -80,13 +81,11 @@ public class DiscoveryGridAdapter extends BaseAdapter {
             @Override
             public void onCompleted(Exception e, String result) {
                 User u = RequestUtil.requestToUser(result);
-                Glide.with(context)
-                        .load(u.getProfilePhoto())
-                        .placeholder(R.drawable.ic_default_user)
-                        .dontAnimate()
-                        .dontTransform()
-                        .into(holder.avatar);
-                holder.nick.setText(u.getNickname());
+                if (u != null){
+                    UIUtils.loadAvatar(context,u.getProfilePhoto(),holder.avatar);
+                    holder.nick.setText(u.getNickname());
+                }
+
             }
         });
         holder.location.setText(covers.get(position).getLocation());

@@ -143,7 +143,12 @@ public class UserInfoSettings extends BaseActivity {
                 StoreBox.getUserInfo(this).getId(),
                 "",
                 "",
-                url,""
+                url,
+                "",
+                "",
+                "",
+                "",
+                ""
         ));
         updateUserInfo(body);
     }

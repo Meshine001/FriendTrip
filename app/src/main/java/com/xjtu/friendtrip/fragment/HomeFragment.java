@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment {
 
     private void initFriendGridData() {
 
-        friendCovers.clear();
+
         int offset = 0;
         int limit = 4;
 
@@ -170,6 +170,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCompleted(Exception e, String result) {
                 CommonUtil.printResponse(result);
+                friendCovers.clear();
                 friendCovers.addAll(RequestUtil.requestToStories(result));
                 friendGridAdaper.notifyDataSetChanged();
             }
@@ -196,7 +197,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void initDiscoveryGridData() {
-        discoveryCovers.clear();
         int offset = 0;
         int limit = 4;
         String url = Config.REQUEST_TOP_LIKE_DISCOVERIES + offset +"/"+limit+Config.FIND_TOP_STAR_SPOTS;
@@ -205,6 +205,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCompleted(Exception e, String result) {
                 CommonUtil.printResponse(result);
+                discoveryCovers.clear();
                 discoveryCovers.addAll(RequestUtil.requestToDiscoveries(result));
                 discoveryGridAdaper.notifyDataSetChanged();
             }

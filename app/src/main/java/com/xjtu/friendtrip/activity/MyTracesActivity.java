@@ -28,13 +28,12 @@ public class MyTracesActivity extends AppCompatActivity {
     private void initData() {
         userId = getIntent().getIntExtra("userId",0);
         //TODO URL 不明确
-        String url = Config.REQUEST_STORIES_BY_USER+ userId+Config.GET_NOTES_BY_USER_ID;
-        CommonUtil.printRequest("心情集",url);
+        String url = Config.REQUEST_TRACES_BY_USER+ userId+Config.GET_DETAILS_NOTES_BY_USER_ID;
+        CommonUtil.printRequest("游记集",url);
         Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 CommonUtil.printResponse(result);
-
             }
         });
     }

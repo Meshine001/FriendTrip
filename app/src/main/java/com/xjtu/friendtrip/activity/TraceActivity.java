@@ -39,6 +39,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.SupportMapFragment;
 import com.baidu.mapapi.model.LatLng;
+import com.bumptech.glide.Glide;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
@@ -71,6 +72,7 @@ import com.xjtu.friendtrip.listener.Locationlistener;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
 import com.xjtu.friendtrip.util.StoreBox;
+import com.xjtu.friendtrip.util.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +96,16 @@ public class TraceActivity extends BaseActivity {
     EditText description;
     @BindView(R.id.time)
     TextView time;
+
+    @BindView(R.id.auth_icon)
+    ImageView authIcon;
+    @BindView(R.id.auth_text)
+    TextView authText;
+    int[] auths = {Story.AUTH_WORLD,Story.AUTH_FRIENDS,Story.AUTH_SELF};
+    int[] icons = {R.drawable.ic_world_visible,R.drawable.ic_friends_visible,R.drawable.ic_self_visible};
+    String[] authTexts = {"全部可见","好友可见","个人可见"};
+    int curAuthIndex = 0;
+
 
     SupportMapFragment mapFragment;
     BaiduMap map;
@@ -138,11 +150,12 @@ public class TraceActivity extends BaseActivity {
 
 
 
-    @OnClick({R.id.settings,R.id.cloud,R.id.back})
+    @OnClick({R.id.upload,R.id.cloud,R.id.back,R.id.auth_layout})
     void onClick(View view){
         switch (view.getId()){
-            case R.id.settings:
-                showSettingsDialog();
+            case R.id.upload:
+                //showSettingsDialog();
+                shareTrace();
                 break;
             case R.id.cloud:
                 CommonUtil.showToast(TraceActivity.this,"同步到云端");
@@ -150,7 +163,17 @@ public class TraceActivity extends BaseActivity {
             case R.id.back:
                 finish();
                 break;
+            case R.id.auth_layout:
+                changeAuth();
+                break;
         }
+    }
+
+    private void changeAuth() {
+        curAuthIndex++;
+        if (curAuthIndex == 3)curAuthIndex=0;
+        authIcon.setImageResource(icons[curAuthIndex]);
+        authText.setText(authTexts[curAuthIndex]);
     }
 
     private void showSettingsDialog() {
@@ -164,6 +187,7 @@ public class TraceActivity extends BaseActivity {
                         @Override
                         public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
 //                            CommonUtil.showToast(TraceActivity.this,items[position]);
+                            settingsDialog.dismiss();
                             switch (position){
                                 case 0:
                                     showAuthDialog();
@@ -178,7 +202,6 @@ public class TraceActivity extends BaseActivity {
                                     deleteTrace();
                                     break;
                             }
-                            settingsDialog.dismiss();
                         }
                     }).create();
         }
@@ -186,6 +209,7 @@ public class TraceActivity extends BaseActivity {
     }
 
     private void showAuthDialog() {
+        Log.i(TAG,"选择权限");
         if (authDialog == null){
             aAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,aItems);
             authDialog = DialogPlus.newDialog(this)
@@ -195,7 +219,6 @@ public class TraceActivity extends BaseActivity {
                     .setOnItemClickListener(new OnItemClickListener() {
                         @Override
                         public void onItemClick(DialogPlus dialog, Object item, View view, int position) {
-//                            CommonUtil.showToast(TraceActivity.this,items[position]);
                             switch (position){
                                 case Story.AUTH_WORLD:
                                     auth = Story.AUTH_WORLD;
@@ -206,8 +229,8 @@ public class TraceActivity extends BaseActivity {
                                 case Story.AUTH_SELF:
                                     auth = Story.AUTH_SELF;
                                     break;
-
                             }
+                            Log.i(TAG,"权限为:"+aItems[auth]);
                             authDialog.dismiss();
                             shareTrace();
                         }
@@ -242,6 +265,7 @@ public class TraceActivity extends BaseActivity {
      * 发布足迹
      */
     private void shareTrace() {
+        showProgressDialog();
         final User u = StoreBox.getUserInfo(this);
 
         final List<StoryFile> storyFiles = new ArrayList<>();
@@ -266,7 +290,7 @@ public class TraceActivity extends BaseActivity {
                     Image img = (Image) item.getContent();
                     url = img.getImagePath();
                     summary = img.getSummary();
-                    type = StoryFile.TYPE_IMEG;
+                    type = StoryFile.TYPE_IMAGE;
                     break;
             }
             storyFiles.add(new StoryFile(url,summary,type,lat,lon,time));
@@ -286,7 +310,7 @@ public class TraceActivity extends BaseActivity {
                                     customLoc.getLat(),
                                     customLoc.getLon(),
                                     storyFiles,
-                                    auth
+                                    curAuthIndex
                             ));
                             CommonUtil.printRequest("添加新印记",body);
                             Ion.with(TraceActivity.this).load("POST", Config.ADD_NEW_TRACE).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
@@ -362,6 +386,7 @@ public class TraceActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trace);
+        initDialog(this);
         ButterKnife.bind(this);
         initUI();
         initTimeLine();
@@ -369,7 +394,9 @@ public class TraceActivity extends BaseActivity {
     }
 
     private void initUI() {
-        time.setText(CommonUtil.getCurrentTime2Sectr());
+        User u = StoreBox.getUserInfo(this);
+        UIUtils.loadAvatar(this,u.getProfilePhoto(),avatar);
+        time.setText(CommonUtil.getCurrentTimeStr());
         initMap();
     }
 

@@ -9,14 +9,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.xjtu.friendtrip.Net.Config;
+import com.xjtu.friendtrip.Net.FollowTAJson;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.StoreBox;
+import com.xjtu.friendtrip.util.UIUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,13 @@ public class UserInfoActivity extends AppCompatActivity {
 
     Integer userId;
 
+    @BindView(R.id.stories_bg)
+    ImageView storiesBg;
+    @BindView(R.id.traces_bg)
+    ImageView tracesBg;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +60,8 @@ public class UserInfoActivity extends AppCompatActivity {
 
     private void initUI() {
         getInfoFromCloud();
+        UIUtils.loadImage(this,Config.ME_STORIES_BG_URL,storiesBg);
+        UIUtils.loadImage(this,Config.ME_TRACES_BG_URL,tracesBg);
     }
 
     private void getInfoFromCloud() {
@@ -66,18 +79,13 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private void updateUI(User u) {
-        Glide.with(this)
-                .load(u.getProfilePhoto())
-                .placeholder(R.drawable.ic_default_user)
-                .dontAnimate()
-                .dontTransform()
-                .into(avatar);
+        UIUtils.loadAvatar(this,u.getProfilePhoto(),avatar);
         nick.setText(u.getNickname());
         fans.setText("粉丝:"+u.getIsFocusCount());
         follows.setText("关注:"+u.getFocusCount());
     }
 
-    @OnClick({R.id.back,R.id.stories,R.id.traces,R.id.follow_ta})
+    @OnClick({R.id.back,R.id.stories,R.id.traces,R.id.follow_ta_layout,R.id.fans_layout,R.id.follows_layout})
     void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -94,14 +102,42 @@ public class UserInfoActivity extends AppCompatActivity {
                 intent.putExtra("userId",userId);
                 startActivity(intent);
                 break;
-            case R.id.follow_ta:
+            case R.id.follow_ta_layout:
                 doFollowTa();
+                break;
+            case R.id.fans_layout:
+                intent.setClass(UserInfoActivity.this,FansActivity.class);
+                intent.putExtra("userId",userId);
+                startActivity(intent);
+                break;
+            case R.id.follows_layout:
+                intent.setClass(UserInfoActivity.this,FollowsActivity.class);
+                intent.putExtra("userId",userId);
+                startActivity(intent);
                 break;
         }
     }
 
-    //TODO
     private void doFollowTa() {
+        User u = StoreBox.getUserInfo(this);
         String url = Config.FOLLOW_TA;
+        String body = JSON.toJSONString(
+                new FollowTAJson(
+                        u.getId(),userId,CommonUtil.getCurrentTime2Sectr()
+                )
+        );
+        Ion.with(this).load("POST",url)
+                .setStringBody(body)
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String result) {
+                             if (RequestUtil.isRequestSuccess(result)){
+                                 CommonUtil.showToast(UserInfoActivity.this,"关注成功");
+                                 getInfoFromCloud();
+                             }
+                    }
+                });
+
     }
 }

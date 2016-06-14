@@ -51,6 +51,7 @@
                     android:layout_height="20dp"
                     android:orientation="horizontal">
                     <LinearLayout
+                        android:id="@+id/fans_layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -69,6 +70,8 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/follows_layout"
+
                         android:gravity="center_vertical|center"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -87,6 +90,7 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/follow_ta_layout"
                         android:gravity="center_vertical|center"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -97,7 +101,6 @@
                             android:layout_height="@dimen/me_icon_size"
                             android:src="@drawable/ic_friends"/>
                         <TextView
-                            android:id="@+id/follow_ta"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
