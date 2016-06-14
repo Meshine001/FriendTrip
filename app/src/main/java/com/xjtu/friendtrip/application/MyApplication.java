@@ -24,7 +24,7 @@ public class MyApplication extends Application {
 
     private static MyApplication mInstance;
 
-    public static MyApplication instance() {
+    public static MyApplication getInstance() {
         return mInstance;
     }
 
@@ -35,11 +35,11 @@ public class MyApplication extends Application {
 
         //百度地图初始化
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
-        Log.i(TAG,"初始化百度地图");
-        SDKInitializer.initialize(this);
+      //  Log.i(TAG,"初始化百度地图");
+    //    SDKInitializer.initialize(this);
 
         //万象优图auth
-        getPicUploadAuth();
+        //getPicUploadAuth();
     }
 
     @Override

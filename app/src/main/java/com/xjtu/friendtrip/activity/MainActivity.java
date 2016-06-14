@@ -3,9 +3,6 @@ package com.xjtu.friendtrip.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,15 +27,10 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.InfoWindow;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.map.MyLocationData;
+
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.SupportMapFragment;
 import com.baidu.mapapi.model.LatLng;
@@ -53,9 +45,6 @@ import com.google.gson.Gson;
 import com.huawei.android.pushagent.api.PushManager;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.OnItemClickListener;
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.FriendNotesByLocationJson;
 import com.xjtu.friendtrip.Net.RequestUtil;
@@ -73,14 +62,12 @@ import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
 import com.xjtu.friendtrip.util.StoreBox;
 
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -140,13 +127,10 @@ public class MainActivity extends BaseActivity {
                     break;
                 case RECEIVE_PUSH_MSG:
                     String pushMsg = (String) msg.obj;
-                    Log.i(TAG,"Push message: "+pushMsg);
 
                     break;
                 case RECEIVE_TOKEN_MSG:
                     String  token = (String) msg.obj;
-                    Log.i(TAG,"Token: "+token);
-                    CommonUtil.showToast(MainActivity.this,"token:"+token);
                     break;
                 case RECEIVE_NOTIFY_CLICK_MSG:
                     break;
@@ -255,8 +239,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initPush() {
-        MyApplication.instance().setMainActivity(this);
-        PushManager.requestToken(MainActivity.this);
+        Log.i("华为推送","设置主Activity");
+        MyApplication.getInstance().setMainActivity(this);
+        Log.i("华为推送","请求Token");
+        PushManager.requestToken(this);
+        PushManager.enableReceiveNormalMsg(this,true);
+        PushManager.enableReceiveNotifyMsg(this,true);
     }
 
     @OnClick({R.id.request_location})

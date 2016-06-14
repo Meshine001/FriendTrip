@@ -44,12 +44,14 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:+'
     compile 'com.android.support:cardview-v7:+'
     /**
+     * 华为推送
+     */
+    compile files('libs/HwPush_SDK_V2705.jar')
+    /**
      * Dialog
      */
     compile 'com.orhanobut:dialogplus:1.11@aar'
-
     compile 'cn.pedant.sweetalert:library:1.3'
-
     compile 'com.flyco.dialog:FlycoDialog_Lib:1.3.0@aar'
     /**
      * 注入
@@ -102,26 +104,21 @@ dependencies {
      * Time Line
      */
     compile 'com.github.vipulasri:timelineview:1.0.2'
-
     /**
-    *百度地图
-    */
+     * 百度地图
+     */
     compile files('libs/BaiduLBS_Android.jar')
-
     /**
      * json
      */
     compile files('libs/gson-2.2.4.jar')
-
     /**
      * Animation
      */
     compile 'com.github.2359media:EasyAndroidAnimations:0.8'
-
     /**
      * Database
      */
     compile 'org.greenrobot:greendao:2.2.0'
     compile 'org.greenrobot:greendao-generator:2.2.0'
-
 }

@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.huawei.android.pushagent.PushReceiver;
 import com.huawei.android.pushagent.api.PushEventReceiver;
 import com.xjtu.friendtrip.activity.MainActivity;
 import com.xjtu.friendtrip.application.MyApplication;
@@ -20,7 +19,7 @@ public class HuaweiReceiver extends PushEventReceiver {
      * 显示Push消息
      */
     public void showPushMessage(int type, String msg) {
-        MainActivity mainActivity = MyApplication.instance().getMainActivity();
+        MainActivity mainActivity = MyApplication.getInstance().getMainActivity();
         if (mainActivity != null) {
             Handler handler = mainActivity.getHandler();
             if (handler != null) {
@@ -53,21 +52,21 @@ public class HuaweiReceiver extends PushEventReceiver {
         return false;
     }
 
-    public void onEvent(Context context, PushReceiver.Event event, Bundle extras) {
-        if (PushReceiver.Event.NOTIFICATION_OPENED.equals(event) || PushReceiver.Event.NOTIFICATION_CLICK_BTN.equals(event)) {
-            int notifyId = extras.getInt(PushReceiver.BOUND_KEY.pushNotifyId, 0);
+    public void onEvent(Context context, Event event, Bundle extras) {
+        if (Event.NOTIFICATION_OPENED.equals(event) || Event.NOTIFICATION_CLICK_BTN.equals(event)) {
+            int notifyId = extras.getInt(BOUND_KEY.pushNotifyId, 0);
             if (0 != notifyId) {
                 NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 manager.cancel(notifyId);
             }
-            String content = "收到通知附加消息： " + extras.getString(PushReceiver.BOUND_KEY.pushMsgKey);
+            String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
             Log.d(MainActivity.TAG, content);
             showPushMessage(MainActivity.RECEIVE_NOTIFY_CLICK_MSG, content);
-        } else if (PushReceiver.Event.PLUGINRSP.equals(event)) {
+        } else if (Event.PLUGINRSP.equals(event)) {
             final int TYPE_LBS = 1;
             final int TYPE_TAG = 2;
-            int reportType = extras.getInt(PushReceiver.BOUND_KEY.PLUGINREPORTTYPE, -1);
-            boolean isSuccess = extras.getBoolean(PushReceiver.BOUND_KEY.PLUGINREPORTRESULT, false);
+            int reportType = extras.getInt(BOUND_KEY.PLUGINREPORTTYPE, -1);
+            boolean isSuccess = extras.getBoolean(BOUND_KEY.PLUGINREPORTRESULT, false);
             String message = "";
             if (TYPE_LBS == reportType) {
                 message = "LBS report result :";

@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep class com.huawei.android.pushagent.**{*;}
+-keep class com.huawei.android. pushselfshow.**{*;}
+-keep class com.huawei.android. microkernel.**{*;}
+-keep class com.baidu.mapapi.**{*;}
