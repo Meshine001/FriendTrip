@@ -196,6 +196,7 @@ public class StoryActivity extends BaseActivity {
                         case Tencent.UPLOAD_SUCCESS:
                             String url = (String) msg.obj;
                             file.setUrl(url);
+                            file.setPosition(finalI);
                             Log.i(TAG,file.toString());
                             Message message = new Message();
                             message.what = Tencent.UPLOAD_SUCCESS;

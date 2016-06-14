@@ -7,9 +7,9 @@ import com.xjtu.friendtrip.util.PrefUtils;
  * Created by Meshine on 16/6/2.
  */
 public class Config {
-//    public static final String BASE_URL = "http://192.168.0.146:8080/friendTrip";
+    public static final String BASE_URL = "http://192.168.0.146:8080/friendTrip";
 //    public static final String BASE_URL = "http://192.168.1.101:8080/friendTrip";
-    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
+//    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
 
 
 
@@ -129,6 +129,7 @@ public class Config {
      * 获取万象优图上传照片的权限
      */
     //TODO
-    public static final String QPicAuth = "http://192.168.0.105:8888/qcloud/qPicAuth";
+//    public static final String QPicAuth = "http://192.168.0.105:8888/qcloud/qPicAuth";
+    public static final String QPicAuth = BASE_URL + "/auth/qPicAuth";
 
 }

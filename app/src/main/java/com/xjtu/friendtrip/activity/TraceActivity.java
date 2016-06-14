@@ -269,7 +269,8 @@ public class TraceActivity extends BaseActivity {
         final User u = StoreBox.getUserInfo(this);
 
         final List<StoryFile> storyFiles = new ArrayList<>();
-        for (TimeLineModel item:timeLineItems){
+        for (int i =0;i<timeLineItems.size();i++){
+            TimeLineModel item = timeLineItems.get(i);
             String url = "";
             String summary = "";
             int type = StoryFile.TYPE_TEXT;
@@ -293,7 +294,7 @@ public class TraceActivity extends BaseActivity {
                     type = StoryFile.TYPE_IMAGE;
                     break;
             }
-            storyFiles.add(new StoryFile(url,summary,type,lat,lon,time));
+            storyFiles.add(new StoryFile(url,summary,type,lat,lon,time,i));
         }
 
         final Handler handler = new Handler(){
@@ -350,6 +351,7 @@ public class TraceActivity extends BaseActivity {
                             case Tencent.UPLOAD_SUCCESS:
                                 String url = (String) msg.obj;
                                 file.setUrl(url);
+                                file.setPosition(finalI);
                                 Message message = new Message();
                                 message.what = Tencent.UPLOAD_SUCCESS;
                                 message.arg1 = finalI;

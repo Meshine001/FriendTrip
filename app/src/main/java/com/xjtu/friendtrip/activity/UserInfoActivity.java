@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -38,8 +39,8 @@ public class UserInfoActivity extends AppCompatActivity {
     TextView fans;
     @BindView(R.id.follows)
     TextView follows;
-    @BindView(R.id.follow_ta)
-    TextView followTa;
+    @BindView(R.id.follow_ta_layout)
+    LinearLayout followTa;
 
     Integer userId;
 
@@ -126,15 +127,19 @@ public class UserInfoActivity extends AppCompatActivity {
                         u.getId(),userId,CommonUtil.getCurrentTime2Sectr()
                 )
         );
+        CommonUtil.printRequest("关注",url+"\n"+body);
         Ion.with(this).load("POST",url)
                 .setStringBody(body)
                 .asString()
                 .setCallback(new FutureCallback<String>() {
                     @Override
                     public void onCompleted(Exception e, String result) {
+                            CommonUtil.printResponse(result);
                              if (RequestUtil.isRequestSuccess(result)){
                                  CommonUtil.showToast(UserInfoActivity.this,"关注成功");
                                  getInfoFromCloud();
+                             }else {
+                                 CommonUtil.showToast(UserInfoActivity.this,"关注");
                              }
                     }
                 });

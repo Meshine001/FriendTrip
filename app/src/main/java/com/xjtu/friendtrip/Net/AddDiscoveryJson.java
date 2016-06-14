@@ -19,7 +19,6 @@ public class AddDiscoveryJson implements Serializable{
     private List<Image>travlenotespictures;
     private String location;
     private String datetime;
-
     public AddDiscoveryJson() {
     }
 

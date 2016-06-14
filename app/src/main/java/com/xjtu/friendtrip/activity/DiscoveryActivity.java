@@ -75,6 +75,7 @@ public class DiscoveryActivity extends BaseActivity {
     ExpandListView imageList;
     ImageListAdapter imageAdapter;
     List<Image> images = new ArrayList<>();
+    int positionSeed = 0;
 
 
     @Override
@@ -170,6 +171,7 @@ public class DiscoveryActivity extends BaseActivity {
                         case Tencent.UPLOAD_SUCCESS:
                             String url = (String) msg.obj;
                             img.setUrl(url);
+                            img.setPosition(finalI);
                             Message message = new Message();
                             message.what = Tencent.UPLOAD_SUCCESS;
                             message.arg1 = finalI;

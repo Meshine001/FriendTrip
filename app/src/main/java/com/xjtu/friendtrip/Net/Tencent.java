@@ -22,8 +22,10 @@ public class Tencent {
     public static final int UPLOAD_SUCCESS = 0X1000;
     public static final int UPLOAD_FAILED = 0X1001;
 
-    public static final String APPID = "10041240";
-    public static final String BUCKET = "tripfile";
+//    public static final String APPID = "10041240";
+//    public static final String BUCKET = "tripfile";
+public static final String APPID = "10042654";
+    public static final String BUCKET = "friendtrip";
     public static String picAuth;
 
     public static UploadManager getUploadManager(Context context){

@@ -86,7 +86,7 @@ import me.majiajie.pagerbottomtabstrip.PagerBottomTabLayout;
 import me.majiajie.pagerbottomtabstrip.listener.OnTabItemSelectListener;
 
 public class MainActivity extends BaseActivity {
-    private static final String TAG = MainActivity.class.getName();
+    public static final String TAG = MainActivity.class.getName();
 
     public static final int INIT_MAP = 0x1000;
     /**
@@ -110,6 +110,16 @@ public class MainActivity extends BaseActivity {
 
     List<Marker> markers = new ArrayList<>();
 
+    //华为推送
+    // 接收Push消息
+    public static final int RECEIVE_PUSH_MSG = 0x100;
+    // 接收Push Token消息
+    public static final int RECEIVE_TOKEN_MSG = 0x101;
+    // 接收Push 自定义通知消息内容
+    public static final int RECEIVE_NOTIFY_CLICK_MSG = 0x102;
+    // 接收Push LBS 标签上报响应
+    public static final int RECEIVE_TAG_LBS_MSG = 0x103;
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -125,9 +135,21 @@ public class MainActivity extends BaseActivity {
                 case INIT_MAP:
                     initBaiduMap();
                     break;
+                case RECEIVE_PUSH_MSG:
+                    break;
+                case RECEIVE_TOKEN_MSG:
+                    break;
+                case RECEIVE_NOTIFY_CLICK_MSG:
+                    break;
+                case RECEIVE_TAG_LBS_MSG:
+                    break;
             }
         }
     };
+
+    public Handler getHandler() {
+        return handler;
+    }
 
     /**
      * 更新位置
@@ -176,7 +198,10 @@ public class MainActivity extends BaseActivity {
 
         for (final Story s : stories) {
             final LatLng ll = new LatLng(s.getLatitude(), s.getLongitude());
-            Glide.with(this).load(s.getTravlenotespictures().get(0)).asBitmap().into(new SimpleTarget<Bitmap>(60, 60) {
+            String url = "";
+            if (s.getTravlenotespictures().size() > 0) url = s.getTravlenotespictures().get(0).getUrl();
+            else url = "";
+            Glide.with(this).load(url).asBitmap().into(new SimpleTarget<Bitmap>(60, 60) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     Log.i(TAG, "图片下载成功");

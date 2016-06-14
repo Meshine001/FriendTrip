@@ -18,6 +18,7 @@ public class StoryFile implements Serializable{
     private Double latitude;
     private Double longitude;
     private String datetime;
+    private Integer position;
 
     public StoryFile() {
     }
@@ -28,13 +29,22 @@ public class StoryFile implements Serializable{
         this.type = type;
     }
 
-    public StoryFile(String url, String summary, Integer type, Double latitude, Double longitude, String datetime) {
+    public StoryFile(String url, String summary, Integer type, Double latitude, Double longitude, String datetime,Integer position) {
         this.url = url;
         this.summary = summary;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
         this.datetime = datetime;
+        this.position = position;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
     public String getDatetime() {
@@ -94,6 +104,7 @@ public class StoryFile implements Serializable{
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", datetime='" + datetime + '\'' +
+                ", position=" + position +
                 '}';
     }
 }
