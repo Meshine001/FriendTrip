@@ -1,6 +1,7 @@
 package com.xjtu.friendtrip.application;
 
 import android.app.Application;
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -9,7 +10,9 @@ import com.koushikdutta.ion.Ion;
 import com.xjtu.friendtrip.Net.Config;
 import com.xjtu.friendtrip.Net.Tencent;
 import com.xjtu.friendtrip.activity.MainActivity;
+import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.StoreBox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +22,8 @@ import org.json.JSONObject;
  */
 public class MyApplication extends Application {
     private static final String TAG = MyApplication.class.getName();
+
+    private static User user;
 
     private static MainActivity mainActivity = null;
 
@@ -33,13 +38,36 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
 
-        //百度地图初始化
-        //在使用SDK各组件之前初始化context信息，传入ApplicationContext
-      //  Log.i(TAG,"初始化百度地图");
-    //    SDKInitializer.initialize(this);
 
-        //万象优图auth
-        //getPicUploadAuth();
+        initUserInfo();
+        initBaidu();
+        initTencent();
+
+    }
+
+    private void initUserInfo() {
+        user = StoreBox.getUserInfo(getApplicationContext());
+        Log.i("初始化用户信息",user.toString());
+    }
+
+    public static User getUser() {
+        return user;
+    }
+
+    public static void setUser(User user) {
+        MyApplication.user = user;
+    }
+
+    private void initTencent() {
+        //        万象优图auth
+        getPicUploadAuth();
+    }
+
+    private void initBaidu() {
+        //        百度地图初始化
+//        在使用SDK各组件之前初始化context信息，传入ApplicationContext
+//        Log.i(TAG,"初始化百度地图");
+        SDKInitializer.initialize(this);
     }
 
     @Override

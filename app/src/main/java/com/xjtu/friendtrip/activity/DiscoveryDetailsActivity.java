@@ -29,6 +29,7 @@ import com.xjtu.friendtrip.Net.StarJson;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.adapter.CommentListAdapter;
 import com.xjtu.friendtrip.adapter.DetailsImageListAdapter;
+import com.xjtu.friendtrip.application.MyApplication;
 import com.xjtu.friendtrip.bean.Comment;
 import com.xjtu.friendtrip.bean.Discovery;
 import com.xjtu.friendtrip.bean.Image;
@@ -38,6 +39,7 @@ import com.xjtu.friendtrip.util.ActivityUtil;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.LocationUtil;
 import com.xjtu.friendtrip.util.StoreBox;
+import com.xjtu.friendtrip.util.UIUtils;
 import com.xjtu.friendtrip.widget.ExpandListView;
 
 import java.util.List;
@@ -125,13 +127,10 @@ public class DiscoveryDetailsActivity extends BaseActivity {
             @Override
             public void onCompleted(Exception e, String result) {
                 User u = RequestUtil.requestToUser(result);
-                Glide.with(DiscoveryDetailsActivity.this)
-                        .load(u.getProfilePhoto())
-                        .placeholder(R.drawable.ic_loading)
-                        .dontAnimate()
-                        .dontTransform()
-                        .into(avatar);
-                nick.setText(u.getNickname());
+                if (u!=null){
+                    UIUtils.loadAvatar(DiscoveryDetailsActivity.this,u.getProfilePhoto(),avatar);
+                    nick.setText(u.getNickname());
+                }
             }
         });
         location.setText(details.getLocation());
@@ -149,14 +148,14 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(avaterSize, avaterSize);
         likeCount.setText("" + details.getStarCount());
         for (final Star s : details.getStarses()) {
+            if (s.getId() == MyApplication.getUser().getId()){
+                Log.i(TAG,"用户已经点赞");
+                topSubRight.setImageResource(R.drawable.ic_like_filled);
+                likeFlag = true;
+            }
             CircleImageView iv = new CircleImageView(this);
             iv.setLayoutParams(lp);
-            Glide.with(this)
-                    .load(s.getProfilePhoto())
-                    .placeholder(R.drawable.ic_loading)
-                    .dontAnimate()
-                    .dontTransform()
-                    .into(iv);
+            UIUtils.loadAvatar(this,s.getProfilePhoto(),iv);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -182,7 +181,7 @@ public class DiscoveryDetailsActivity extends BaseActivity {
 
     private void initMapData() {
         BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.ic_trace_recorder);
+                .fromResource(R.drawable.ic_my_location);
         LocationUtil.addMarker(bitmap, details.getLatitude(), details.getLongitude(), map);
         LocationUtil.changeMapCenter(details.getLatitude(), details.getLongitude(), map, 18.0f);
     }
@@ -235,12 +234,11 @@ public class DiscoveryDetailsActivity extends BaseActivity {
             showErrDialog("你还没有登录");
             return;
         }
-        User u = StoreBox.getUserInfo(this);
         Integer tag;
         if (like) tag = StarJson.TAG_LIKE;
         else tag = StarJson.TAG_UN_LIKE;
         String body = new Gson().toJson(new StarJson(
-                u.getId(), StarJson.DISCOVERY, details.getScenicid(), tag
+                MyApplication.getUser().getId(), StarJson.DISCOVERY, details.getScenicid(), tag
         ));
         Log.i(TAG, "点赞请求:" + body);
         Ion.with(this).load("POST", Config.REQUEST_STAR).setStringBody(body).asString().setCallback(new FutureCallback<String>() {

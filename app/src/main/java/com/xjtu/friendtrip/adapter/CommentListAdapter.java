@@ -17,6 +17,7 @@ import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Comment;
 import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.ActivityUtil;
+import com.xjtu.friendtrip.util.UIUtils;
 
 import java.util.List;
 
@@ -66,19 +67,16 @@ public class CommentListAdapter extends BaseAdapter {
             @Override
             public void onCompleted(Exception e, String result) {
                 final User u = RequestUtil.requestToUser(result);
-                Glide.with(context)
-                        .load(u.getProfilePhoto())
-                        .placeholder(R.drawable.ic_loading)
-                        .dontAnimate()
-                        .dontTransform()
-                        .into(holder.avatar);
-                holder.nick.setText(u.getNickname()+":");
-                holder.avatar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ActivityUtil.startUserInfoActivity(context,u.getId());
-                    }
-                });
+                if (u!=null){
+                    UIUtils.loadAvatar(context,u.getProfilePhoto(),holder.avatar);
+                    holder.nick.setText(u.getNickname()+":");
+                    holder.avatar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ActivityUtil.startUserInfoActivity(context,u.getId());
+                        }
+                    });
+                }
             }
         });
 

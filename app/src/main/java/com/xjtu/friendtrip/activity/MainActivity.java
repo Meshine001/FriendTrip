@@ -42,7 +42,6 @@ import com.bumptech.glide.request.target.Target;
 import com.flyco.dialog.listener.OnOperItemClickL;
 import com.flyco.dialog.widget.ActionSheetDialog;
 import com.google.gson.Gson;
-import com.huawei.android.pushagent.api.PushManager;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.xjtu.friendtrip.Net.Config;
@@ -130,7 +129,7 @@ public class MainActivity extends BaseActivity {
 
                     break;
                 case RECEIVE_TOKEN_MSG:
-                    String  token = (String) msg.obj;
+                    String token = (String) msg.obj;
                     break;
                 case RECEIVE_NOTIFY_CLICK_MSG:
                     break;
@@ -192,7 +191,8 @@ public class MainActivity extends BaseActivity {
         for (final Story s : stories) {
             final LatLng ll = new LatLng(s.getLatitude(), s.getLongitude());
             String url = "";
-            if (s.getTravlenotespictures().size() > 0) url = s.getTravlenotespictures().get(0).getUrl();
+            if (s.getTravlenotespictures().size() > 0)
+                url = s.getTravlenotespictures().get(0).getUrl();
             else url = "";
             Glide.with(this).load(url).asBitmap().into(new SimpleTarget<Bitmap>(60, 60) {
                 @Override
@@ -235,16 +235,12 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initPush();
-        //initBottom();
+        initBottom();
     }
 
     private void initPush() {
-        Log.i("华为推送","设置主Activity");
+        Log.i("华为推送", "设置主Activity");
         MyApplication.getInstance().setMainActivity(this);
-        Log.i("华为推送","请求Token");
-        PushManager.requestToken(this);
-        PushManager.enableReceiveNormalMsg(this,true);
-        PushManager.enableReceiveNotifyMsg(this,true);
     }
 
     @OnClick({R.id.request_location})
@@ -369,7 +365,7 @@ public class MainActivity extends BaseActivity {
     };
 
 
-    void hideAllTabs(){
+    void hideAllTabs() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.push_up_in, R.anim.push_up_out);
         for (int i = 0; i < fragments.size(); i++) {

@@ -79,7 +79,6 @@ public class ImageListAdapter extends BaseAdapter {
         }
 
 
-
         holder.image.setImageURI(Uri.fromFile(new File(images.get(position).getImagePath())));
         holder.summary.setText(images.get(position).getSummary());
         holder.summary.setOnFocusChangeListener(new View.OnFocusChangeListener() {

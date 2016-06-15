@@ -19,6 +19,7 @@ import com.xjtu.friendtrip.bean.Image;
 import com.xjtu.friendtrip.bean.Story;
 import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
+import com.xjtu.friendtrip.util.UIUtils;
 
 import java.util.List;
 
@@ -80,15 +81,12 @@ public class StoryGridAdapter extends BaseAdapter {
         Ion.with(context).load("GET",url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                CommonUtil.printResponse(result);
+//                CommonUtil.printResponse(result);
                 User u = RequestUtil.requestToUser(result);
-                Glide.with(context)
-                        .load(u.getProfilePhoto())
-                        .placeholder(R.drawable.ic_loading)
-                        .dontAnimate()
-                        .dontTransform()
-                        .into(holder.avatar);
-                holder.nick.setText(u.getNickname());
+                if (u!=null){
+                    UIUtils.loadAvatar(context,u.getProfilePhoto(),holder.avatar);
+                    holder.nick.setText(u.getNickname());
+                }
             }
         });
         holder.location.setText(covers.get(position).getLocation());

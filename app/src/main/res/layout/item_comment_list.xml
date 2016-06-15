@@ -9,7 +9,7 @@
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
-        android:src="@drawable/test_u2"/>
+        android:src="@drawable/ic_default_user"/>
     <RelativeLayout
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
@@ -29,12 +29,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:text="ataa:"/>
+                    android:text=""/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/content"
-                    android:text="拍的好漂亮"/>
+                    android:text=""/>
             </LinearLayout>
             <TextView
                 android:id="@+id/time"
@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="一小时前"
+                android:text=""
                 android:textSize="12sp"/>
         </LinearLayout>
 

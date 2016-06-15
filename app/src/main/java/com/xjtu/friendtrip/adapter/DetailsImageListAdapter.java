@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.xjtu.friendtrip.R;
 import com.xjtu.friendtrip.bean.Image;
+import com.xjtu.friendtrip.util.UIUtils;
 
 import java.io.File;
 import java.util.List;
@@ -76,12 +77,7 @@ public class DetailsImageListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Glide.with(context)
-                .load(images.get(position).getImagePath())
-                .placeholder(R.drawable.ic_loading)
-                .dontAnimate()
-                .dontTransform()
-                .into(holder.image);
+        UIUtils.loadImage(context,images.get(position).getUrl(),holder.image);
         holder.summary.setText(images.get(position).getSummary());
 
         return convertView;
