@@ -26,6 +26,7 @@
                         android:layout_height="20dp"
                         android:src="@drawable/ic_message"/>
                     <ImageView
+                        android:visibility="gone"
                         android:id="@+id/message_dot"
                         android:layout_marginTop="3dp"
                         android:layout_alignParentEnd="true"
@@ -51,7 +52,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/test_u"/>
+                    android:src="@drawable/ic_default_user"/>
                 <TextView
                     android:id="@+id/nick"
                     android:layout_margin="10dp"
@@ -82,7 +83,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
-                            android:text="粉丝:2"/>
+                            android:text="粉丝:0"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -100,7 +101,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
-                            android:text="关注:10"/>
+                            android:text="关注:0"/>
 
                     </LinearLayout>
 

@@ -25,16 +25,16 @@ public class RequestUtil {
 
     private static final String TAG = RequestUtil.class.getName();
 
-    public static Story requestToStory(String result){
-        if (result == null)return null;
-        String str = "["+ result +"]";
+    public static Story requestToStory(String result) {
+        if (result == null) return null;
+        String str = "[" + result + "]";
         List<Story> stories = requestToStories(str);
-        if (stories.size() > 0)return stories.get(0);
+        if (stories.size() > 0) return stories.get(0);
         return null;
     }
 
-    public static Discovery requestToDiscovery(String result){
-        if (result == null)return null;
+    public static Discovery requestToDiscovery(String result) {
+        if (result == null) return null;
         try {
             JSONObject jo = JSON.parseObject(result);
             Discovery discovery = new Discovery();
@@ -128,7 +128,7 @@ public class RequestUtil {
         if (result == null) return stories;
         try {
             JSONArray ja = JSON.parseArray(result);
-            if (ja.size()>0){
+            if (ja.size() > 0) {
                 for (int i = 0; i < ja.size(); i++) {
                     JSONObject jo = ja.getJSONObject(i);
                     Story story = new Story();
@@ -150,7 +150,7 @@ public class RequestUtil {
                      */
                     List<Star> starses = new ArrayList<>();
                     JSONArray stars = jo.getJSONArray("stars");
-                    if (stars.size() > 0){
+                    if (stars.size() > 0) {
                         for (int j = 0; j < stars.size(); j++) {
                             JSONObject sJ = stars.getJSONObject(j);
                             Star s = new Star(
@@ -193,7 +193,7 @@ public class RequestUtil {
                      */
                     List<Image> travlenotespictures = new ArrayList<>();
                     JSONArray imgs = jo.getJSONArray("travlenotespictures");
-                    if (imgs.size()>0){
+                    if (imgs.size() > 0) {
                         for (int j = 0; j < imgs.size(); j++) {
                             JSONObject imgJo = imgs.getJSONObject(j);
                             Image img = new Image(imgJo.getString("url"), imgJo.getString("summary"));
@@ -210,13 +210,13 @@ public class RequestUtil {
                     /**
                      * scanCount
                      */
-                 story.setScanCount(jo.getInteger("scanCount"));
+                    story.setScanCount(jo.getInteger("scanCount"));
                     /**
                      * commentses
                      */
                     List<Comment> commentses = new ArrayList<>();
                     JSONArray comments = jo.getJSONArray("commentses");
-                    if (comments.size()>0){
+                    if (comments.size() > 0) {
                         for (int j = 0; j < comments.size(); j++) {
                             JSONObject cJo = comments.getJSONObject(j);
                             Comment c = new Comment(
@@ -236,9 +236,8 @@ public class RequestUtil {
                      */
                     story.setTravelNotesid(jo.getInteger("travelNotesid"));
                     stories.add(story);
-              }
+                }
             }
-
 
 
             return stories;
@@ -344,26 +343,46 @@ public class RequestUtil {
         return discoveries;
     }
 
+    static final String WEI_SHE_ZHI = "未设置";
+    static final String WEI_ZHI = "未知";
+    static final String WEI_TIAN_XIE = "未填写";
+
     public static User requestToUser(String result) {
         if (result == null) return null;
-            JSONObject jo = JSON.parseObject(result);
-            Integer id = jo.getInteger("id");
-            String name = jo.getString("name");
-            Integer focusCount = jo.getInteger("focusCount");
-           if (focusCount == null)focusCount = 0;
-            Integer isFocusCount = jo.getInteger("isFocusCount");
-          if (isFocusCount == null)isFocusCount = 0;
-             String profilePhoto = jo.getString("profilePhoto");
-          String nickname = jo.getString("nickname");
-            User u = new User(
-                    id,
-                    name,
-                    focusCount,
-                    isFocusCount,
-                    profilePhoto ,
-                    nickname
-            );
-            return u;
+        JSONObject jo = JSON.parseObject(result);
+        Integer id = jo.getInteger("id");
+        String name = jo.getString("name");
+        Integer focusCount = jo.getInteger("focusCount");
+        if (focusCount == null) focusCount = 0;
+        Integer isFocusCount = jo.getInteger("isFocusCount");
+        if (isFocusCount == null) isFocusCount = 0;
+        String profilePhoto = jo.getString("profilePhoto");
+        String nickname = jo.getString("nickname");
+        String email = jo.getString("email");
+        if (email.equals("null")) email = WEI_SHE_ZHI;
+        String region = jo.getString("region");
+        if (region.equals("null")) region = WEI_ZHI;
+        String gender = jo.getString("gender");
+        if (gender.equals("null")) gender = WEI_ZHI;
+        String birthday = jo.getString("birthday");
+        if (birthday.equals("null")) birthday = WEI_SHE_ZHI;
+        String signature = jo.getString("signature");
+        if (signature.equals("null")) signature = WEI_TIAN_XIE;
+
+        User u = new User(
+                id,
+                name,
+                focusCount,
+                isFocusCount,
+                profilePhoto,
+                nickname,
+                email,
+                region,
+                gender,
+                birthday,
+                signature
+        );
+        return u;
 
     }
 

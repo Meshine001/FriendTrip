@@ -27,6 +27,7 @@ import com.xjtu.friendtrip.Net.Mob;
 import com.xjtu.friendtrip.Net.RegistJson;
 import com.xjtu.friendtrip.Net.RequestUtil;
 import com.xjtu.friendtrip.R;
+import com.xjtu.friendtrip.application.MyApplication;
 import com.xjtu.friendtrip.bean.User;
 import com.xjtu.friendtrip.util.CommonUtil;
 import com.xjtu.friendtrip.util.MyStringRandomGen;
@@ -126,14 +127,14 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void checkUserExsit() {
-        String url = Config.CHECK_EXSIT+"/"+phoneNumber.getText().toString().trim() +"/registerResult";
-        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+        String url = Config.CHECK_EXSIT + "/" + phoneNumber.getText().toString().trim() + "/registerResult";
+        Ion.with(this).load("GET", url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"检查用户是否存在:"+result);
-                if (result.equals("notExits")){
+                Log.i(TAG, "检查用户是否存在:" + result);
+                if (result.equals("notExits")) {
                     doGetValidateCode();
-                }else{
+                } else {
                     showErrDialog("用户已存在");
                 }
             }
@@ -154,16 +155,16 @@ public class LoginActivity extends BaseActivity {
 
     private void login(final String username, final String password) {
         showProgressDialog();
-        String body = new Gson().toJson(new LoginJson(username,password));
-        CommonUtil.printRequest("登录",body);
-        Ion.with(this).load("POST",Config.LOGIN).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+        String body = new Gson().toJson(new LoginJson(username, password));
+        CommonUtil.printRequest("登录", body);
+        Ion.with(this).load("POST", Config.LOGIN).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-               CommonUtil.printResponse(result);
-                if(RequestUtil.isRequestSuccess(result)){
+                CommonUtil.printResponse(result);
+                if (RequestUtil.isRequestSuccess(result)) {
                     loginSuccess(result);
-                }else {
-                   loginFailed(result);
+                } else {
+                    loginFailed(result);
                 }
             }
         });
@@ -177,17 +178,16 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginSuccess(String result) {
-            JSONObject jo = JSON.parseObject(result);
-            User u = RequestUtil.requestToUser(jo.getString("data"));
-            StoreBox.clearUserInfo(this);
-            Log.i(TAG,u.toString());
-            StoreBox.saveUserInfo(this,u);
-            dismissProgressDialog();
-             setResult(RESULT_OK);
-              finish();
+        JSONObject jo = JSON.parseObject(result);
+        User u = RequestUtil.requestToUser(jo.getString("data"));
+        StoreBox.clearUserInfo(this);
+        Log.i(TAG, u.toString());
+        StoreBox.saveUserInfo(this, u);
+        MyApplication.setUser(u);
+        dismissProgressDialog();
+        setResult(RESULT_OK);
+        finish();
     }
-
-
 
 
     int validateCountDownTotal = 59;
@@ -330,7 +330,7 @@ public class LoginActivity extends BaseActivity {
                         handler.sendMessage(msg);
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         //获取验证码成功
-                        Log.i(TAG,data.toString());
+                        Log.i(TAG, data.toString());
 
                     } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
@@ -356,17 +356,17 @@ public class LoginActivity extends BaseActivity {
         final String nick = "u_" + MyStringRandomGen.generateRandomString();
         String body = new Gson().toJson(
                 new RegistJson(
-                        username,password,nick
+                        username, password, nick
                 )
         );
-        Log.i(TAG,"注册:"+Config.REGIST +"\n"+"Data:"+body);
-        Ion.with(this).load("POST",Config.REGIST).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
+        Log.i(TAG, "注册:" + Config.REGIST + "\n" + "Data:" + body);
+        Ion.with(this).load("POST", Config.REGIST).setStringBody(body).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                Log.i(TAG,"注册完成:"+result);
-                if (RequestUtil.isRequestSuccess(result)){
+                Log.i(TAG, "注册完成:" + result);
+                if (RequestUtil.isRequestSuccess(result)) {
                     registSuccess(result);
-                }else {
+                } else {
                     registFailed(result);
                 }
             }

@@ -9,7 +9,8 @@ import com.xjtu.friendtrip.util.PrefUtils;
 public class Config {
 //    public static final String BASE_URL = "http://192.168.0.146:8080/friendTrip";
 //    public static final String BASE_URL = "http://192.168.1.101:8080/friendTrip";
-    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
+//    public static final String BASE_URL = "http://192.168.0.105:8080/friendTrip";
+    public static final String BASE_URL = "http://192.168.0.134:8080/friendTrip";
 
 
 

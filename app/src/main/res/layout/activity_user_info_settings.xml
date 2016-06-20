@@ -51,15 +51,18 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="友行号"/>
                     <TextView
+                        android:id="@+id/you_xin_id"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="10002022"
+                        android:text=""
                         android:textColor="@android:color/darker_gray"/>
+
                 </RelativeLayout>
                 <ImageView
+                    android:visibility="invisible"
                     android:src="@drawable/ic_forward"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.2"
@@ -96,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="大傻"
+                        android:id="@+id/nick"
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView
@@ -131,12 +134,13 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="手机号"/>
                     <TextView
+                        android:id="@+id/tel"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="18710579465"
+                        android:text=""
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView
@@ -171,12 +175,13 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="邮箱"/>
                     <TextView
+                        android:id="@+id/email"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="未绑定"
+                        android:text=""
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView
@@ -211,12 +216,13 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="地区"/>
                     <TextView
+                        android:id="@+id/region"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="西安"
+                        android:text=""
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView
@@ -251,12 +257,12 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="性别"/>
                     <TextView
+                        android:id="@+id/gender"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="未知"
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView
@@ -291,12 +297,12 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="生日"/>
                     <TextView
+                        android:id="@+id/birthday"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="未设置"
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView
@@ -331,12 +337,13 @@
                         android:textSize="@dimen/info_title_size"
                         android:text="个人签名"/>
                     <TextView
+                        android:id="@+id/signature"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/info_content_size"
-                        android:text="未填写"
+                        android:text=""
                         android:textColor="@android:color/darker_gray"/>
                 </RelativeLayout>
                 <ImageView

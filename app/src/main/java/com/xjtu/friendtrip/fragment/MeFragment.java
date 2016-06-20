@@ -91,9 +91,9 @@ public class MeFragment extends Fragment {
         return view;
     }
 
-    private void checkUser(){
+    private void checkUser() {
         isLogin = StoreBox.isSomeOneHere(getContext());
-        if (isLogin){
+        if (isLogin) {
             myInfo = StoreBox.getUserInfo(getContext());
         }
     }
@@ -117,18 +117,19 @@ public class MeFragment extends Fragment {
 
     private void initUserProfile() {
         if (!isLogin) {
-            Log.i(TAG,"用户未登录");
+            Log.i(TAG, "用户未登录");
             resetUserInfo();
         } else {
-            Log.i(TAG,"用户已登录：+\n"+myInfo.toString());
+            Log.i(TAG, "用户已登录：+\n" + myInfo.toString());
             updateProfile(myInfo);
             updateFromCloud();
         }
     }
 
-    private void initTrace(){
+    private void initTrace() {
 
     }
+
     private void initStory() {
         Glide.with(this)
                 .load(Config.ME_STORIES_BG_URL)
@@ -164,7 +165,7 @@ public class MeFragment extends Fragment {
                 break;
             case R.id.settings:
                 intent.setClass(getContext(), SettingsActivity.class);
-                startActivityForResult(intent,SettingsActivity.REQUEST_SETTINGS);
+                startActivityForResult(intent, SettingsActivity.REQUEST_SETTINGS);
                 break;
             case R.id.avatar:
                 break;
@@ -172,7 +173,7 @@ public class MeFragment extends Fragment {
                 break;
             case R.id.stories:
                 intent.setClass(getContext(), MyStoriesActivity.class);
-                intent.putExtra("userId",myInfo.getId());
+                intent.putExtra("userId", myInfo.getId());
                 startActivity(intent);
                 break;
             case R.id.traces:
@@ -195,9 +196,9 @@ public class MeFragment extends Fragment {
      */
     private void updateFromCloud() {
         Integer userId = myInfo.getId();
-        String url  = Config.USER_INFO + userId;
-        CommonUtil.printRequest("获取用户信息",url);
-        Ion.with(this).load("GET",url).asString().setCallback(new FutureCallback<String>() {
+        String url = Config.USER_INFO + userId;
+        CommonUtil.printRequest("获取用户信息", url);
+        Ion.with(this).load("GET", url).asString().setCallback(new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 User u = RequestUtil.requestToUser(result);
@@ -207,7 +208,6 @@ public class MeFragment extends Fragment {
     }
 
     /**
-     *
      * @param u
      */
     private void updateProfile(User u) {
@@ -218,19 +218,19 @@ public class MeFragment extends Fragment {
                 .dontTransform()
                 .into(avatar);
         nick.setText(u.getNickname());
-        fans.setText("粉丝:"+u.getIsFocusCount());
-        follows.setText("关注:"+u.getFocusCount());
+        fans.setText("粉丝:" + u.getIsFocusCount());
+        follows.setText("关注:" + u.getFocusCount());
 
         saveUserInfo(u);
     }
 
     private void saveUserInfo(User u) {
-        StoreBox.saveUserInfo(getContext(),u);
+        StoreBox.saveUserInfo(getContext(), u);
     }
 
     private void gotoLogin() {
         Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivityForResult(intent,LoginActivity.REQUEST_LOGIN);
+        startActivityForResult(intent, LoginActivity.REQUEST_LOGIN);
     }
 
     @Override
@@ -238,17 +238,17 @@ public class MeFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         //登录界面返回
-        if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
-           stateChanges();
+        if (requestCode == LoginActivity.REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
+            stateChanges();
         }
 
         //设置界面返回
-        if (requestCode == SettingsActivity.REQUEST_SETTINGS && resultCode == SettingsActivity.SETTINGS_UPDATED){
+        if (requestCode == SettingsActivity.REQUEST_SETTINGS && resultCode == SettingsActivity.SETTINGS_UPDATED) {
             stateChanges();
         }
     }
 
-    private void stateChanges(){
+    private void stateChanges() {
         checkUser();
         initUserProfile();
     }

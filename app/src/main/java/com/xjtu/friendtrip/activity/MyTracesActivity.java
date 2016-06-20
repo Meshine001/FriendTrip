@@ -12,7 +12,7 @@ import com.xjtu.friendtrip.util.CommonUtil;
 
 import butterknife.ButterKnife;
 
-public class MyTracesActivity extends AppCompatActivity {
+public class MyTracesActivity extends BaseActivity {
 
 
     Integer userId;
@@ -22,6 +22,7 @@ public class MyTracesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_traces);
         ButterKnife.bind(this);
+        initToolbar("游记集");
         initData();
     }
 

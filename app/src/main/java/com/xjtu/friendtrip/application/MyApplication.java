@@ -111,7 +111,8 @@ public class MyApplication extends Application {
                             JSONObject jo = new JSONObject(result);
                             Tencent.picAuth = jo.getString("sign");
                         } catch (JSONException e1) {
-                            e1.printStackTrace();
+                            //e1.printStackTrace();
+
                         }
                     }
                 });

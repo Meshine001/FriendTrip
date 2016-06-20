@@ -16,6 +16,12 @@ public class StoreBox {
         PrefUtils.setIntegerPreference(context,"isFocusCount",user.getIsFocusCount());
         PrefUtils.setStringPreference(context,"profilePhoto",user.getProfilePhoto());
         PrefUtils.setStringPreference(context,"nickname",user.getNickname());
+        PrefUtils.setStringPreference(context,"email",user.getEmail());
+        PrefUtils.setStringPreference(context,"region",user.getRegion());
+        PrefUtils.setStringPreference(context,"gender",user.getGender());
+        PrefUtils.setStringPreference(context,"birthday",user.getBirthday());
+        PrefUtils.setStringPreference(context,"signature",user.getSignature());
+
     }
 
     public static boolean isSomeOneHere(Context context){
@@ -31,7 +37,12 @@ public class StoreBox {
                 PrefUtils.getIntegerPreference(context,"focusCount",0),
                 PrefUtils.getIntegerPreference(context,"isFocusCount",0),
                 PrefUtils.getStringPreference(context,"profilePhoto"),
-                PrefUtils.getStringPreference(context,"nickname"));
+                PrefUtils.getStringPreference(context,"nickname"),
+                PrefUtils.getStringPreference(context,"email"),
+                PrefUtils.getStringPreference(context,"region"),
+                PrefUtils.getStringPreference(context,"gender"),
+                PrefUtils.getStringPreference(context,"birthday"),
+                PrefUtils.getStringPreference(context,"signature"));
         return u;
 
     }
@@ -57,5 +68,10 @@ public class StoreBox {
         PrefUtils.setIntegerPreference(context,"friendsCount",0);
         PrefUtils.setStringPreference(context,"profilePhoto",null);
         PrefUtils.setStringPreference(context,"nickname",null);
+        PrefUtils.setStringPreference(context,"email",null);
+        PrefUtils.setStringPreference(context,"region",null);
+        PrefUtils.setStringPreference(context,"gender",null);
+        PrefUtils.setStringPreference(context,"birthday",null);
+        PrefUtils.setStringPreference(context,"signature",null);
     }
 }

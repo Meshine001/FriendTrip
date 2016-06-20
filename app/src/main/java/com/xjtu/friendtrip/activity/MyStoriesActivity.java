@@ -36,6 +36,7 @@ public class MyStoriesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_stories);
+        initToolbar("心情集");
         ButterKnife.bind(this);
         initRecyclerList();
         initData();

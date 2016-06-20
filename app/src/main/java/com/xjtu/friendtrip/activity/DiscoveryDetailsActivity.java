@@ -142,13 +142,18 @@ public class DiscoveryDetailsActivity extends BaseActivity {
         initComment();
     }
 
-    private void initComment() {
+    public void initComment() {
+        likeLayout.removeAllViewsInLayout();
         int width = CommonUtil.getScreenWidth(this);
         int avaterSize = width / 7;
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(avaterSize, avaterSize);
+        int margin = avaterSize/5;
+        lp.setMargins(margin,margin,margin,margin);
         likeCount.setText("" + details.getStarCount());
+        Integer uId = MyApplication.getUser().getId();
         for (final Star s : details.getStarses()) {
-            if (s.getId() == MyApplication.getUser().getId()){
+            Log.e("Star","Star:"+s.getId()+" Usr:"+MyApplication.getUser().getId());
+            if (s.getId() == uId){
                 Log.i(TAG,"用户已经点赞");
                 topSubRight.setImageResource(R.drawable.ic_like_filled);
                 likeFlag = true;
